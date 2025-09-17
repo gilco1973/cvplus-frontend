@@ -1,0 +1,26 @@
+{
+  "generic": "An error occurred. Please try again.",
+  "network": "Network error. Please check your connection.",
+  "timeout": "Request timed out. Please try again.",
+  "notFound": "Page not found.",
+  "unauthorized": "You are not authorized to access this resource.",
+  "forbidden": "Access forbidden.",
+  "serverError": "Server error. Please try again later.",
+  "validationError": "Please check your input and try again.",
+  "fileUploadError": "File upload failed. Please try again.",
+  "processingError": "Processing failed. Please try again.",
+  "paymentError": "Payment failed. Please try again.",
+  "quotaExceeded": "Quota exceeded. Please upgrade your plan.",
+  "api": {
+    "connectionFailed": "Failed to connect to server",
+    "invalidResponse": "Invalid response from server",
+    "rateLimitExceeded": "Rate limit exceeded. Please try again later"
+  },
+  "validation": {
+    "required": "This field is required",
+    "invalidEmail": "Please enter a valid email address",
+    "invalidUrl": "Please enter a valid URL",
+    "minLength": "Minimum {{min}} characters required",
+    "maxLength": "Maximum {{max}} characters allowed"
+  }
+}

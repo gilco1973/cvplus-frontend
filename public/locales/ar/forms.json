@@ -1,0 +1,110 @@
+{
+  "contactForm": {
+    "title": "التواصل",
+    "subtitle": "التواصل مع {{contactName}}",
+    "fields": {
+      "name": {
+        "label": "اسمك",
+        "placeholder": "أدخِل اسمك الكامل",
+        "required": "true"
+      },
+      "email": {
+        "label": "بريدك الإلكتروني",
+        "placeholder": "أدخِل عنوان بريدك الإلكتروني",
+        "required": "true"
+      },
+      "phone": {
+        "label": "رقم الهاتف",
+        "placeholder": "أدخِل رقم هاتفك (اختياري)"
+      },
+      "company": {
+        "label": "الشركة",
+        "placeholder": "أدخِل اسم شركتك (اختياري)"
+      },
+      "subject": {
+        "label": "الموضوع",
+        "placeholder": "اختر موضوعاً",
+        "required": "true",
+        "options": {
+          "jobOpportunity": "فرصة عمل",
+          "collaboration": "تعاون",
+          "consultation": "استشارة",
+          "generalInquiry": "استفسار عام",
+          "other": "آخر"
+        }
+      },
+      "message": {
+        "label": "الرسالة",
+        "placeholder": "أدخِل رسالتك...",
+        "required": "true",
+        "counter": "{{current}}/{{max}} حرف"
+      }
+    },
+    "buttons": {
+      "send": "إرسال الرسالة",
+      "sending": "جارٍ الإرسال...",
+      "retry": "إعادة المحاولة"
+    },
+    "status": {
+      "success": "تم إرسال الرسالة بنجاح!",
+      "error": "فشل إرسال الرسالة. يرجى إعادة المحاولة.",
+      "networkError": "خطأ في الشبكة. يرجى فحص اتصالك وإعادة المحاولة.",
+      "validationError": "يرجى إصلاح الأخطاء المذكورة أعلاه وإعادة المحاولة."
+    },
+    "validation": {
+      "nameRequired": "يرجى إدخال اسمك",
+      "emailRequired": "يرجى إدخال عنوان بريدك الإلكتروني",
+      "emailInvalid": "يرجى إدخال عنوان بريد إلكتروني صالح",
+      "subjectRequired": "يرجى اختيار موضوع",
+      "messageRequired": "يرجى إدخال رسالة",
+      "messageMaxLength": "لا يمكن أن تتجاوز الرسالة {{max}} حرف",
+      "phoneInvalid": "يرجى إدخال رقم هاتف صالح"
+    }
+  },
+  "urlInput": {
+    "placeholder": "https://example.com/my-cv",
+    "button": {
+      "submit": "بدء المعالجة",
+      "processing": "جارٍ المعالجة..."
+    },
+    "help": "أدخِل رابط سيرتك الذاتية على الإنترنت أو ملف LinkedIn الشخصي",
+    "validation": {
+      "required": "يرجى إدخال URL",
+      "invalid": "يرجى إدخال URL صالح يبدأ بـ http:// أو https://"
+    }
+  },
+  "fileUpload": {
+    "dropzone": {
+      "drag": "اسحب وأفلِت سيرتك الذاتية هنا",
+      "or": "أو",
+      "browse": "تصفح الملفات"
+    },
+    "formats": "التنسيقات المدعومة: PDF، DOCX، TXT",
+    "maxSize": "الحد الأقصى لحجم الملف: 10 ميجابايت",
+    "validation": {
+      "invalidFormat": "تنسيق ملف غير صالح. يرجى رفع ملف PDF أو DOCX أو TXT.",
+      "fileTooLarge": "الملف كبير جداً. الحد الأقصى هو 10 ميجابايت.",
+      "uploadFailed": "فشل رفع الملف. يرجى إعادة المحاولة."
+    }
+  },
+  "labels": {
+    "required": "مطلوب",
+    "optional": "اختياري",
+    "loading": "جارٍ التحميل..."
+  },
+  "placeholders": {
+    "enterText": "أدخِل النص...",
+    "selectOption": "اختر خياراً...",
+    "uploadFile": "رفع ملف..."
+  },
+  "buttons": {
+    "cancel": "إلغاء",
+    "submit": "إرسال",
+    "save": "حفظ",
+    "reset": "إعادة تعيين",
+    "clear": "مسح",
+    "edit": "تحرير",
+    "delete": "حذف",
+    "retry": "إعادة المحاولة"
+  }
+}

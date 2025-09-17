@@ -1,0 +1,41 @@
+{
+  "title": "Powerful Features",
+  "subtitle": "Everything you need to create an outstanding professional profile",
+  "items": {
+    "aiPowered": {
+      "title": "AI-Powered Analysis",
+      "description": "Advanced AI analyzes your CV and provides personalized recommendations for maximum impact"
+    },
+    "interactiveElements": {
+      "title": "Interactive Elements",
+      "description": "Add clickable portfolios, video introductions, and dynamic content that engages recruiters"
+    },
+    "multipleFormats": {
+      "title": "Multiple Formats",
+      "description": "Generate your CV in PDF, web portal, and interactive formats for different use cases"
+    },
+    "atsOptimization": {
+      "title": "ATS Optimization",
+      "description": "Ensure your CV passes Applicant Tracking Systems with optimized keywords and formatting"
+    },
+    "realTimeProcessing": {
+      "title": "Real-Time Processing",
+      "description": "Get instant results with our lightning-fast AI processing and live status updates"
+    }
+  },
+  "categories": {
+    "aiPowered": "AI-Powered",
+    "interactive": "Interactive",
+    "visual": "Visual",
+    "multimedia": "Multimedia",
+    "portal": "Web Portal"
+  },
+  "selected": "{{count}} features selected",
+  "premium": "Premium",
+  "free": "Free",
+  "included": "Included",
+  "upgrade": "Upgrade to unlock",
+  "generateCV": "Generate CV",
+  "preview": "Preview",
+  "customize": "Customize"
+}

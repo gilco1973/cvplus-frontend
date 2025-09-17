@@ -1,0 +1,26 @@
+{
+  "generic": "Ocurrió un error. Inténtalo de nuevo.",
+  "network": "Error de red. Verifica tu conexión.",
+  "timeout": "Se agotó el tiempo de espera. Inténtalo de nuevo.",
+  "notFound": "Página no encontrada.",
+  "unauthorized": "No tienes autorización para acceder a este recurso.",
+  "forbidden": "Acceso denegado.",
+  "serverError": "Error del servidor. Inténtalo más tarde.",
+  "validationError": "Verifica tu entrada e inténtalo de nuevo.",
+  "fileUploadError": "Error al subir archivo. Inténtalo de nuevo.",
+  "processingError": "Error de procesamiento. Inténtalo de nuevo.",
+  "paymentError": "Error de pago. Inténtalo de nuevo.",
+  "quotaExceeded": "Cuota excedida. Actualiza tu plan.",
+  "api": {
+    "connectionFailed": "Error al conectar con el servidor",
+    "invalidResponse": "Respuesta inválida del servidor",
+    "rateLimitExceeded": "Límite de velocidad excedido. Inténtalo más tarde"
+  },
+  "validation": {
+    "required": "Este campo es obligatorio",
+    "invalidEmail": "Ingresa una dirección de correo válida",
+    "invalidUrl": "Ingresa una URL válida",
+    "minLength": "Mínimo {{min}} caracteres requeridos",
+    "maxLength": "Máximo {{max}} caracteres permitidos"
+  }
+}

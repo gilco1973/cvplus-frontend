@@ -1,0 +1,58 @@
+{
+  "compilerOptions": {
+    "target": "ES2020",
+    "useDefineForClassFields": true,
+    "lib": ["ES2020", "DOM", "DOM.Iterable"],
+    "module": "ESNext",
+    "skipLibCheck": true,
+    "declaration": true,
+    "declarationMap": true,
+    "outDir": "./dist",
+
+    /* Bundler mode */
+    "moduleResolution": "bundler",
+    "allowImportingTsExtensions": true,
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    "noEmit": false,
+    "jsx": "react-jsx",
+
+    /* Module exports for @cvplus/frontend */
+    "baseUrl": ".",
+    "paths": {
+      "@/*": ["./src/*"],
+      "@/components/*": ["./src/components/*"],
+      "@/hooks/*": ["./src/hooks/*"],
+      "@/contexts/*": ["./src/contexts/*"],
+      "@/types/*": ["./src/types/*"],
+      "@/utils/*": ["./src/utils/*"],
+      "@/providers/*": ["./src/providers/*"],
+
+      /* Microservices path mappings */
+      "@/microservices/*": ["./src/microservices/*"],
+      "@/auth-ui/*": ["./src/microservices/auth-ui/*"],
+      "@/cv-processing-ui/*": ["./src/microservices/cv-processing-ui/*"],
+      "@/multimedia-ui/*": ["./src/microservices/multimedia-ui/*"],
+      "@/analytics-ui/*": ["./src/microservices/analytics-ui/*"],
+      "@/premium-ui/*": ["./src/microservices/premium-ui/*"],
+      "@/public-profiles-ui/*": ["./src/microservices/public-profiles-ui/*"],
+      "@/admin-ui/*": ["./src/microservices/admin-ui/*"],
+      "@/workflow-ui/*": ["./src/microservices/workflow-ui/*"],
+      "@/payments-ui/*": ["./src/microservices/payments-ui/*"],
+      "@/core-ui/*": ["./src/microservices/core-ui/*"]
+    },
+
+    /* Linting */
+    "strict": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "noFallthroughCasesInSwitch": true
+  },
+  "include": ["src/**/*"],
+  "exclude": ["node_modules", "dist", "**/*.test.ts", "**/*.test.tsx"],
+  "files": [],
+  "references": [
+    { "path": "./tsconfig.app.json" },
+    { "path": "./tsconfig.node.json" }
+  ]
+}

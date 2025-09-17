@@ -1,0 +1,22 @@
+{
+  "title": "Upgrade to Premium",
+  "subtitle": "Unlock all features",
+  "benefits": {
+    "unlimited": "Unlimited CV generations",
+    "allFeatures": "Access to all features",
+    "priority": "Priority processing",
+    "customDomain": "Custom domain for web portal",
+    "analytics": "Advanced analytics",
+    "support": "Priority support"
+  },
+  "plans": {
+    "free": "Free",
+    "pro": "Pro",
+    "lifetime": "Lifetime"
+  },
+  "cta": {
+    "upgrade": "Upgrade Now",
+    "viewPlans": "View Plans",
+    "startTrial": "Start Free Trial"
+  }
+}

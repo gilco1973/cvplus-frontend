@@ -1,0 +1,110 @@
+{
+  "contactForm": {
+    "title": "Kontakt aufnehmen",
+    "subtitle": "Kontaktieren Sie {{contactName}}",
+    "fields": {
+      "name": {
+        "label": "Ihr Name",
+        "placeholder": "Geben Sie Ihren vollständigen Namen ein",
+        "required": "true"
+      },
+      "email": {
+        "label": "Ihre E-Mail",
+        "placeholder": "Geben Sie Ihre E-Mail-Adresse ein",
+        "required": "true"
+      },
+      "phone": {
+        "label": "Telefonnummer",
+        "placeholder": "Geben Sie Ihre Telefonnummer ein (optional)"
+      },
+      "company": {
+        "label": "Unternehmen",
+        "placeholder": "Geben Sie Ihren Firmennamen ein (optional)"
+      },
+      "subject": {
+        "label": "Betreff",
+        "placeholder": "Wählen Sie einen Betreff",
+        "required": "true",
+        "options": {
+          "jobOpportunity": "Stellenangebot",
+          "collaboration": "Zusammenarbeit",
+          "consultation": "Beratung",
+          "generalInquiry": "Allgemeine Anfrage",
+          "other": "Andere"
+        }
+      },
+      "message": {
+        "label": "Nachricht",
+        "placeholder": "Geben Sie Ihre Nachricht ein...",
+        "required": "true",
+        "counter": "{{current}}/{{max}} Zeichen"
+      }
+    },
+    "buttons": {
+      "send": "Nachricht senden",
+      "sending": "Wird gesendet...",
+      "retry": "Erneut versuchen"
+    },
+    "status": {
+      "success": "Nachricht erfolgreich gesendet!",
+      "error": "Nachricht konnte nicht gesendet werden. Bitte versuchen Sie es erneut.",
+      "networkError": "Netzwerkfehler. Bitte überprüfen Sie Ihre Verbindung und versuchen Sie es erneut.",
+      "validationError": "Bitte korrigieren Sie die Fehler oben und versuchen Sie es erneut."
+    },
+    "validation": {
+      "nameRequired": "Bitte geben Sie Ihren Namen ein",
+      "emailRequired": "Bitte geben Sie Ihre E-Mail-Adresse ein",
+      "emailInvalid": "Bitte geben Sie eine gültige E-Mail-Adresse ein",
+      "subjectRequired": "Bitte wählen Sie einen Betreff",
+      "messageRequired": "Bitte geben Sie eine Nachricht ein",
+      "messageMaxLength": "Nachricht darf nicht mehr als {{max}} Zeichen enthalten",
+      "phoneInvalid": "Bitte geben Sie eine gültige Telefonnummer ein"
+    }
+  },
+  "urlInput": {
+    "placeholder": "https://beispiel.com/mein-lebenslauf",
+    "button": {
+      "submit": "Verarbeitung starten",
+      "processing": "Verarbeitung..."
+    },
+    "help": "Geben Sie die URL Ihres Online-Lebenslaufs oder LinkedIn-Profils ein",
+    "validation": {
+      "required": "Bitte geben Sie eine URL ein",
+      "invalid": "Bitte geben Sie eine gültige URL beginnend mit http:// oder https:// ein"
+    }
+  },
+  "fileUpload": {
+    "dropzone": {
+      "drag": "Ziehen Sie Ihren Lebenslauf hierher",
+      "or": "oder",
+      "browse": "Dateien durchsuchen"
+    },
+    "formats": "Unterstützte Formate: PDF, DOCX, TXT",
+    "maxSize": "Maximale Dateigröße: 10MB",
+    "validation": {
+      "invalidFormat": "Ungültiges Dateiformat. Bitte laden Sie eine PDF-, DOCX- oder TXT-Datei hoch.",
+      "fileTooLarge": "Datei ist zu groß. Maximale Größe ist 10MB.",
+      "uploadFailed": "Datei-Upload fehlgeschlagen. Bitte versuchen Sie es erneut."
+    }
+  },
+  "labels": {
+    "required": "Erforderlich",
+    "optional": "Optional",
+    "loading": "Lädt..."
+  },
+  "placeholders": {
+    "enterText": "Text eingeben...",
+    "selectOption": "Option wählen...",
+    "uploadFile": "Datei hochladen..."
+  },
+  "buttons": {
+    "cancel": "Abbrechen",
+    "submit": "Absenden",
+    "save": "Speichern",
+    "reset": "Zurücksetzen",
+    "clear": "Löschen",
+    "edit": "Bearbeiten",
+    "delete": "Löschen",
+    "retry": "Erneut versuchen"
+  }
+}

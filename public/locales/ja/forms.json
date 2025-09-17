@@ -1,0 +1,110 @@
+{
+  "contactForm": {
+    "title": "お問い合わせ",
+    "subtitle": "{{contactName}}に連絡する",
+    "fields": {
+      "name": {
+        "label": "お名前",
+        "placeholder": "フルネームを入力してください",
+        "required": "true"
+      },
+      "email": {
+        "label": "メールアドレス",
+        "placeholder": "メールアドレスを入力してください",
+        "required": "true"
+      },
+      "phone": {
+        "label": "電話番号",
+        "placeholder": "電話番号を入力してください（任意）"
+      },
+      "company": {
+        "label": "会社名",
+        "placeholder": "会社名を入力してください（任意）"
+      },
+      "subject": {
+        "label": "件名",
+        "placeholder": "件名を選択してください",
+        "required": "true",
+        "options": {
+          "jobOpportunity": "求人機会",
+          "collaboration": "コラボレーション",
+          "consultation": "コンサルティング",
+          "generalInquiry": "一般的なお問い合わせ",
+          "other": "その他"
+        }
+      },
+      "message": {
+        "label": "メッセージ",
+        "placeholder": "メッセージを入力してください...",
+        "required": "true",
+        "counter": "{{current}}/{{max}} 文字"
+      }
+    },
+    "buttons": {
+      "send": "メッセージを送信",
+      "sending": "送信中...",
+      "retry": "再試行"
+    },
+    "status": {
+      "success": "メッセージが正常に送信されました！",
+      "error": "メッセージの送信に失敗しました。もう一度お試しください。",
+      "networkError": "ネットワークエラーです。接続を確認してもう一度お試しください。",
+      "validationError": "上記のエラーを修正してもう一度お試しください。"
+    },
+    "validation": {
+      "nameRequired": "お名前を入力してください",
+      "emailRequired": "メールアドレスを入力してください",
+      "emailInvalid": "有効なメールアドレスを入力してください",
+      "subjectRequired": "件名を選択してください",
+      "messageRequired": "メッセージを入力してください",
+      "messageMaxLength": "メッセージは{{max}}文字を超えることはできません",
+      "phoneInvalid": "有効な電話番号を入力してください"
+    }
+  },
+  "urlInput": {
+    "placeholder": "https://example.com/my-cv",
+    "button": {
+      "submit": "処理を開始",
+      "processing": "処理中..."
+    },
+    "help": "オンラインの履歴書またはLinkedInプロファイルのURLを入力してください",
+    "validation": {
+      "required": "URLを入力してください",
+      "invalid": "http://またはhttps://で始まる有効なURLを入力してください"
+    }
+  },
+  "fileUpload": {
+    "dropzone": {
+      "drag": "履歴書をここにドラッグ＆ドロップしてください",
+      "or": "または",
+      "browse": "ファイルを参照"
+    },
+    "formats": "サポートされるフォーマット：PDF、DOCX、TXT",
+    "maxSize": "最大ファイルサイズ：10MB",
+    "validation": {
+      "invalidFormat": "無効なファイル形式です。PDF、DOCX、またはTXTファイルをアップロードしてください。",
+      "fileTooLarge": "ファイルが大きすぎます。最大サイズは10MBです。",
+      "uploadFailed": "ファイルのアップロードに失敗しました。もう一度お試しください。"
+    }
+  },
+  "labels": {
+    "required": "必須",
+    "optional": "任意",
+    "loading": "読み込み中..."
+  },
+  "placeholders": {
+    "enterText": "テキストを入力...",
+    "selectOption": "オプションを選択...",
+    "uploadFile": "ファイルをアップロード..."
+  },
+  "buttons": {
+    "cancel": "キャンセル",
+    "submit": "送信",
+    "save": "保存",
+    "reset": "リセット",
+    "clear": "クリア",
+    "edit": "編集",
+    "delete": "削除",
+    "retry": "再試行"
+  }
+}

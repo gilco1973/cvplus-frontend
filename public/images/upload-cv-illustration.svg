@@ -1,0 +1,62 @@
+<svg viewBox="0 0 400 300" xmlns="http://www.w3.org/2000/svg">
+  <!-- Background -->
+  <rect width="400" height="300" fill="#1f2937" rx="8"/>
+  
+  <!-- Upload Cloud -->
+  <g transform="translate(200, 100)">
+    <!-- Cloud Shape -->
+    <path d="M -60 20 C -60 0, -40 -20, -20 -20 C -15 -30, 0 -35, 15 -30 C 20 -35, 35 -35, 45 -25 C 60 -25, 70 -10, 70 5 C 70 20, 60 30, 45 30 L -45 30 C -60 30, -70 20, -60 5" 
+          fill="#374151" stroke="#4b5563" stroke-width="2"/>
+    
+    <!-- Upload Arrow -->
+    <g transform="translate(0, 5)">
+      <line x1="0" y1="15" x2="0" y2="-5" stroke="#06b6d4" stroke-width="3" stroke-linecap="round"/>
+      <polyline points="-8,-5 0,-13 8,-5" stroke="#06b6d4" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+    </g>
+  </g>
+  
+  <!-- Document Icons -->
+  <g transform="translate(80, 180)">
+    <!-- PDF Icon -->
+    <rect x="0" y="0" width="50" height="65" rx="4" fill="#4b5563" stroke="#6b7280" stroke-width="1"/>
+    <rect x="0" y="0" width="50" height="15" rx="4" fill="#dc2626"/>
+    <text x="25" y="11" text-anchor="middle" fill="white" font-size="10" font-weight="bold">PDF</text>
+    <line x1="10" y1="25" x2="40" y2="25" stroke="#9ca3af" stroke-width="1"/>
+    <line x1="10" y1="35" x2="40" y2="35" stroke="#9ca3af" stroke-width="1"/>
+    <line x1="10" y1="45" x2="30" y2="45" stroke="#9ca3af" stroke-width="1"/>
+  </g>
+  
+  <g transform="translate(150, 180)">
+    <!-- DOCX Icon -->
+    <rect x="0" y="0" width="50" height="65" rx="4" fill="#4b5563" stroke="#6b7280" stroke-width="1"/>
+    <rect x="0" y="0" width="50" height="15" rx="4" fill="#2563eb"/>
+    <text x="25" y="11" text-anchor="middle" fill="white" font-size="10" font-weight="bold">DOCX</text>
+    <line x1="10" y1="25" x2="40" y2="25" stroke="#9ca3af" stroke-width="1"/>
+    <line x1="10" y1="35" x2="40" y2="35" stroke="#9ca3af" stroke-width="1"/>
+    <line x1="10" y1="45" x2="30" y2="45" stroke="#9ca3af" stroke-width="1"/>
+  </g>
+  
+  <g transform="translate(270, 180)">
+    <!-- URL Icon -->
+    <rect x="0" y="0" width="50" height="65" rx="4" fill="#4b5563" stroke="#6b7280" stroke-width="1"/>
+    <rect x="0" y="0" width="50" height="15" rx="4" fill="#10b981"/>
+    <text x="25" y="11" text-anchor="middle" fill="white" font-size="10" font-weight="bold">URL</text>
+    <!-- Globe icon -->
+    <circle cx="25" cy="40" r="12" fill="none" stroke="#9ca3af" stroke-width="1.5"/>
+    <ellipse cx="25" cy="40" rx="6" ry="12" fill="none" stroke="#9ca3af" stroke-width="1"/>
+    <line x1="13" y1="40" x2="37" y2="40" stroke="#9ca3af" stroke-width="1"/>
+  </g>
+  
+  <!-- Animated dots -->
+  <g transform="translate(200, 150)">
+    <circle cx="-20" cy="0" r="3" fill="#06b6d4">
+      <animate attributeName="opacity" values="0;1;0" dur="1.5s" repeatCount="indefinite" begin="0s"/>
+    </circle>
+    <circle cx="0" cy="0" r="3" fill="#06b6d4">
+      <animate attributeName="opacity" values="0;1;0" dur="1.5s" repeatCount="indefinite" begin="0.5s"/>
+    </circle>
+    <circle cx="20" cy="0" r="3" fill="#06b6d4">
+      <animate attributeName="opacity" values="0;1;0" dur="1.5s" repeatCount="indefinite" begin="1s"/>
+    </circle>
+  </g>
+</svg>

@@ -1,0 +1,49 @@
+<svg viewBox="0 0 400 500" xmlns="http://www.w3.org/2000/svg">
+  <!-- Background -->
+  <rect width="400" height="500" fill="#ffffff"/>
+  
+  <!-- Creative Header Shape -->
+  <path d="M 0 0 L 400 0 L 400 150 Q 200 180 0 150 Z" fill="url(#creative-gradient)"/>
+  
+  <!-- Gradient Definition -->
+  <defs>
+    <linearGradient id="creative-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#8b5cf6;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#ec4899;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+  
+  <!-- Profile Circle with Border -->
+  <circle cx="70" cy="80" r="35" fill="#ffffff"/>
+  <circle cx="70" cy="80" r="30" fill="#fbbf24"/>
+  
+  <!-- Creative Name Display -->
+  <rect x="130" y="50" width="220" height="20" rx="10" fill="#ffffff" opacity="0.95"/>
+  <rect x="130" y="85" width="180" height="14" rx="7" fill="#ffffff" opacity="0.8"/>
+  
+  <!-- About Section with Icon -->
+  <circle cx="40" cy="210" r="15" fill="#8b5cf6" opacity="0.2"/>
+  <rect x="70" y="200" width="80" height="12" rx="2" fill="#8b5cf6"/>
+  <rect x="30" y="225" width="340" height="6" rx="2" fill="#e5e7eb"/>
+  <rect x="30" y="237" width="320" height="6" rx="2" fill="#e5e7eb"/>
+  
+  <!-- Experience Cards -->
+  <rect x="30" y="270" width="340" height="80" rx="10" fill="#f3f4f6" stroke="#e5e7eb" stroke-width="1"/>
+  <rect x="45" y="285" width="150" height="12" rx="2" fill="#374151"/>
+  <rect x="45" y="305" width="120" height="8" rx="2" fill="#6b7280"/>
+  <rect x="45" y="320" width="280" height="5" rx="2" fill="#d1d5db"/>
+  <rect x="45" y="330" width="260" height="5" rx="2" fill="#d1d5db"/>
+  
+  <!-- Skills Visual -->
+  <rect x="30" y="370" width="80" height="12" rx="2" fill="#ec4899"/>
+  
+  <!-- Skill Bars -->
+  <rect x="30" y="395" width="340" height="20" rx="10" fill="#f3f4f6"/>
+  <rect x="30" y="395" width="280" height="20" rx="10" fill="#8b5cf6" opacity="0.6"/>
+  
+  <rect x="30" y="425" width="340" height="20" rx="10" fill="#f3f4f6"/>
+  <rect x="30" y="425" width="300" height="20" rx="10" fill="#ec4899" opacity="0.6"/>
+  
+  <rect x="30" y="455" width="340" height="20" rx="10" fill="#f3f4f6"/>
+  <rect x="30" y="455" width="250" height="20" rx="10" fill="#fbbf24" opacity="0.6"/>
+</svg>

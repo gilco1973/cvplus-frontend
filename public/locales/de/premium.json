@@ -1,0 +1,22 @@
+{
+  "title": "Auf Premium upgraden",
+  "subtitle": "Alle Funktionen freischalten",
+  "benefits": {
+    "unlimited": "Unbegrenzte Lebenslauf-Generierungen",
+    "allFeatures": "Zugang zu allen Funktionen",
+    "priority": "Prioritäts-Verarbeitung",
+    "customDomain": "Benutzerdefinierte Domain für Web-Portal",
+    "analytics": "Erweiterte Analysen",
+    "support": "Prioritäts-Support"
+  },
+  "plans": {
+    "free": "Kostenlos",
+    "pro": "Pro",
+    "lifetime": "Lebenslang"
+  },
+  "cta": {
+    "upgrade": "Jetzt upgraden",
+    "viewPlans": "Pläne ansehen",
+    "startTrial": "Kostenlose Testversion starten"
+  }
+}

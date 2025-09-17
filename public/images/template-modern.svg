@@ -1,0 +1,41 @@
+<svg viewBox="0 0 400 500" xmlns="http://www.w3.org/2000/svg">
+  <!-- Background -->
+  <rect width="400" height="500" fill="#ffffff"/>
+  
+  <!-- Header Section -->
+  <rect width="400" height="120" fill="#3b82f6"/>
+  
+  <!-- Profile Circle -->
+  <circle cx="60" cy="60" r="30" fill="#ffffff" opacity="0.9"/>
+  
+  <!-- Name and Title -->
+  <rect x="110" y="30" width="200" height="20" rx="3" fill="#ffffff" opacity="0.9"/>
+  <rect x="110" y="60" width="150" height="12" rx="3" fill="#ffffff" opacity="0.7"/>
+  
+  <!-- Content Sections -->
+  <!-- Summary -->
+  <rect x="30" y="150" width="340" height="8" rx="2" fill="#e5e7eb"/>
+  <rect x="30" y="165" width="320" height="8" rx="2" fill="#e5e7eb"/>
+  <rect x="30" y="180" width="300" height="8" rx="2" fill="#e5e7eb"/>
+  
+  <!-- Experience Section -->
+  <rect x="30" y="220" width="100" height="12" rx="2" fill="#3b82f6"/>
+  
+  <rect x="30" y="250" width="150" height="10" rx="2" fill="#374151"/>
+  <rect x="30" y="268" width="120" height="8" rx="2" fill="#9ca3af"/>
+  <rect x="30" y="285" width="340" height="6" rx="2" fill="#e5e7eb"/>
+  <rect x="30" y="297" width="320" height="6" rx="2" fill="#e5e7eb"/>
+  
+  <rect x="30" y="320" width="150" height="10" rx="2" fill="#374151"/>
+  <rect x="30" y="338" width="120" height="8" rx="2" fill="#9ca3af"/>
+  <rect x="30" y="355" width="340" height="6" rx="2" fill="#e5e7eb"/>
+  <rect x="30" y="367" width="320" height="6" rx="2" fill="#e5e7eb"/>
+  
+  <!-- Skills Section -->
+  <rect x="30" y="400" width="80" height="12" rx="2" fill="#3b82f6"/>
+  
+  <rect x="30" y="430" width="60" height="20" rx="10" fill="#dbeafe"/>
+  <rect x="100" y="430" width="80" height="20" rx="10" fill="#dbeafe"/>
+  <rect x="190" y="430" width="70" height="20" rx="10" fill="#dbeafe"/>
+  <rect x="270" y="430" width="90" height="20" rx="10" fill="#dbeafe"/>
+</svg>

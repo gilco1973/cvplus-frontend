@@ -1,0 +1,26 @@
+{
+  "generic": "Ein Fehler ist aufgetreten. Bitte versuchen Sie es erneut.",
+  "network": "Netzwerkfehler. Bitte überprüfen Sie Ihre Verbindung.",
+  "timeout": "Zeitlimit überschritten. Bitte versuchen Sie es erneut.",
+  "notFound": "Seite nicht gefunden.",
+  "unauthorized": "Sie sind nicht berechtigt, auf diese Ressource zuzugreifen.",
+  "forbidden": "Zugriff verweigert.",
+  "serverError": "Serverfehler. Bitte versuchen Sie es später erneut.",
+  "validationError": "Bitte überprüfen Sie Ihre Eingabe und versuchen Sie es erneut.",
+  "fileUploadError": "Datei-Upload fehlgeschlagen. Bitte versuchen Sie es erneut.",
+  "processingError": "Verarbeitung fehlgeschlagen. Bitte versuchen Sie es erneut.",
+  "paymentError": "Zahlung fehlgeschlagen. Bitte versuchen Sie es erneut.",
+  "quotaExceeded": "Kontingent überschritten. Bitte upgraden Sie Ihren Plan.",
+  "api": {
+    "connectionFailed": "Verbindung zum Server fehlgeschlagen",
+    "invalidResponse": "Ungültige Antwort vom Server",
+    "rateLimitExceeded": "Rate-Limit überschritten. Bitte versuchen Sie es später erneut"
+  },
+  "validation": {
+    "required": "Dieses Feld ist erforderlich",
+    "invalidEmail": "Bitte geben Sie eine gültige E-Mail-Adresse ein",
+    "invalidUrl": "Bitte geben Sie eine gültige URL ein",
+    "minLength": "Mindestens {{min}} Zeichen erforderlich",
+    "maxLength": "Maximal {{max}} Zeichen erlaubt"
+  }
+}

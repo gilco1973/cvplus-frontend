@@ -1,0 +1,33 @@
+<svg viewBox="0 0 400 100" xmlns="http://www.w3.org/2000/svg">
+  <!-- Document Icon -->
+  <g transform="translate(10, 10)">
+    <!-- Document shape -->
+    <rect x="0" y="0" width="60" height="80" rx="5" fill="#f8f9fa" stroke="#2d3748" stroke-width="2"/>
+    
+    <!-- Lines on document -->
+    <rect x="10" y="15" width="30" height="4" rx="2" fill="#4a5568"/>
+    <rect x="10" y="25" width="30" height="4" rx="2" fill="#4a5568"/>
+    <rect x="10" y="35" width="30" height="4" rx="2" fill="#4a5568"/>
+    <rect x="10" y="45" width="30" height="4" rx="2" fill="#4a5568"/>
+  </g>
+  
+  <!-- AI/Tech Connection Lines -->
+  <g transform="translate(70, 40)">
+    <!-- Main curved line -->
+    <path d="M 0 10 Q 15 0, 30 10 T 60 10" stroke="#00bcd4" stroke-width="3" fill="none"/>
+    <!-- Connection dots -->
+    <circle cx="0" cy="10" r="6" fill="#00bcd4"/>
+    <circle cx="30" cy="10" r="6" fill="#00bcd4"/>
+    <circle cx="60" cy="10" r="6" fill="#00bcd4"/>
+    <!-- Additional branch -->
+    <path d="M 30 10 Q 40 -10, 50 -10" stroke="#00bcd4" stroke-width="2.5" fill="none"/>
+    <circle cx="50" cy="-10" r="5" fill="#00bcd4"/>
+  </g>
+  
+  <!-- CVPlus Text -->
+  <g transform="translate(150, 60)">
+    <text font-family="Arial, sans-serif" font-size="48" fill="#2d3748">
+      <tspan font-weight="800">CV</tspan><tspan font-weight="300">isionary</tspan>
+    </text>
+  </g>
+</svg>

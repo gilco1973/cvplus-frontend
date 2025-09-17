@@ -1,0 +1,91 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`PortalQRIntegration Snapshots > matches snapshot for basic configuration 1`] = `
+<div
+  class="cv-feature-wrapper relative rounded-lg border transition-all duration-200 bg-gray-50 border-gray-300 shadow-sm hover:shadow-md  p-6"
+>
+  <div
+    class="text-center"
+  >
+    <div
+      class="w-12 h-12 mx-auto mb-4 text-red-500"
+    >
+      <svg
+        class="w-full h-full"
+        fill="none"
+        stroke="currentColor"
+        viewBox="0 0 24 24"
+      >
+        <path
+          d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.732 16.5c-.77.833.192 2.5 1.732 2.5z"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          stroke-width="2"
+        />
+      </svg>
+    </div>
+    <h3
+      class="text-lg font-semibold text-gray-900 mb-2"
+    >
+      Feature Error
+    </h3>
+    <p
+      class="text-sm text-gray-600 mb-4"
+    >
+      [vitest] No "default" export is defined on the "qrcode" mock. Did you forget to return it from "vi.mock"?
+If you need to partially mock a module, you can use "importOriginal" helper inside:
+
+    </p>
+    <button
+      class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+    >
+      Try Again
+    </button>
+  </div>
+</div>
+`;
+
+exports[`PortalQRIntegration Snapshots > matches snapshot with all display options enabled 1`] = `
+<div
+  class="cv-feature-wrapper relative rounded-lg border transition-all duration-200 bg-gray-50 border-gray-300 shadow-sm hover:shadow-md  p-6"
+>
+  <div
+    class="text-center"
+  >
+    <div
+      class="w-12 h-12 mx-auto mb-4 text-red-500"
+    >
+      <svg
+        class="w-full h-full"
+        fill="none"
+        stroke="currentColor"
+        viewBox="0 0 24 24"
+      >
+        <path
+          d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.732 16.5c-.77.833.192 2.5 1.732 2.5z"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          stroke-width="2"
+        />
+      </svg>
+    </div>
+    <h3
+      class="text-lg font-semibold text-gray-900 mb-2"
+    >
+      Feature Error
+    </h3>
+    <p
+      class="text-sm text-gray-600 mb-4"
+    >
+      [vitest] No "default" export is defined on the "qrcode" mock. Did you forget to return it from "vi.mock"?
+If you need to partially mock a module, you can use "importOriginal" helper inside:
+
+    </p>
+    <button
+      class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+    >
+      Try Again
+    </button>
+  </div>
+</div>
+`;

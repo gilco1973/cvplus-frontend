@@ -1,0 +1,148 @@
+{
+  "navigation": {
+    "home": "ホーム",
+    "upload": "履歴書をアップロード",
+    "analysis": "分析",
+    "features": "機能",
+    "results": "結果",
+    "signIn": "サインイン",
+    "signOut": "サインアウト",
+    "dashboard": "ダッシュボード",
+    "profile": "プロフィール",
+    "settings": "設定",
+    "help": "ヘルプ",
+    "pricing": "価格"
+  },
+  "hero": {
+    "title": "履歴書を変革する",
+    "titleHighlight": "紙からパワーへ",
+    "subtitle": "紙からパワーへ",
+    "description": "従来の履歴書を、今日の競争の激しい就職市場で際立つインタラクティブでAI駆動のプロフェッショナルプロフィールに変換します",
+    "cta": {
+      "start": "始める",
+      "learnMore": "詳細を見る",
+      "demo": "デモを見る",
+      "upload": "履歴書をアップロード",
+      "signIn": "サインインして続行",
+      "getStarted": "始める",
+      "getStartedAria": "CVPlus変換を開始",
+      "watchDemo": "デモを見る",
+      "pauseDemo": "デモを一時停止",
+      "playDemoAria": "デモ動画を再生",
+      "pauseDemoAria": "デモ動画を一時停止"
+    },
+    "video": {
+      "brand": "CVPlus",
+      "title": "CVPlusの動作を見る",
+      "description": "従来の履歴書を強力でインタラクティブなプロフェッショナルプロフィールに変換する方法をご覧ください"
+    },
+    "trustIndicators": {
+      "cvsTransformed": "変換された履歴書",
+      "userRating": "ユーザー評価",
+      "averageTime": "平均処理時間"
+    },
+    "accessibility": {
+      "sectionLabel": "ヒーローセクション",
+      "videoControls": {
+        "playVideo": "動画を再生",
+        "pauseVideo": "動画を一時停止",
+        "muteVideo": "動画をミュート",
+        "unmuteVideo": "動画のミュートを解除",
+        "enterFullscreen": "フルスクリーンにする",
+        "videoProgress": "動画の進行状況"
+      },
+      "browserNotSupported": "お使いのブラウザーはビデオタグをサポートしていません。"
+    }
+  },
+  "aboutPage": {
+    "title": "CVPlusについて",
+    "subtitle": "プロフェッショナルが自分を表現する方法を変革することに専念するオープンソースプロジェクト",
+    "creator": {
+      "title": "Gil Klainert作成",
+      "description1": "こんにちは！私はGil Klainert、ソフトウェアエンジニアリングリーダーでAIエキスパートです。実世界の問題を解決するための技術の活用に情熱を持っています。私はCVPlusをコミュニティへのオープンソースの贈り物として作成しました。誰もがキャリアを前進させるのに役立つ強力なツールへのアクセスを得るべきだと信じているからです。",
+      "description2": "このプロジェクトは、AI、ウェブ開発、ユーザーエクスペリエンスデザインの私の専門知識を組み合わせて、人々の職業生活に本当の違いをもたらすものを作成しています。",
+      "visitWebsite": "Klainert.comを訪問",
+      "viewGitHub": "GitHubで表示"
+    },
+    "mission": {
+      "title": "私たちのミッション",
+      "description": "CVPlusは単純な信念から生まれました：あなたのプロフェッショナルな物語は、最も説得力のある方法で語られるに値します。私たちは、AIを活用したキャリアツールへのアクセスを民主化し、背景や経済状況に関係なく、すべての人が無料でアクセスできるようにするためにここにいます。"
+    },
+    "values": {
+      "openSource": {
+        "title": "オープンソース",
+        "description": "MITライセンスの下でリリースされたCVPlusは、使用、変更、配布が自由です。私たちはコミュニティ主導の開発の力を信じています。"
+      },
+      "aiPowered": {
+        "title": "AI駆動",
+        "description": "Claude AIの高度な機能を活用して、あなたのプロフェッショナルプロファイルを理解、分析し、インテリジェントな洞察で向上させます。"
+      },
+      "innovation": {
+        "title": "イノベーション優先",
+        "description": "AIキャリアポッドキャスト、インタラクティブタイムライン、CVに生命を吹き込む動的QRコードなどの機能で常に境界を押し広げています。"
+      },
+      "community": {
+        "title": "コミュニティ主導",
+        "description": "コミュニティのために、コミュニティによって構築されました。世界中のユーザーからの貢献、フィードバック、アイデアを歓迎します。"
+      }
+    },
+    "contributing": {
+      "title": "貢献したいですか？",
+      "description": "CVPlusは貢献を歓迎します！開発者、デザイナー、または素晴らしいアイデアを持つ人なら誰でも、人々がプロフェッショナルな物語を提示する方法を革命化するという私たちのミッションに参加していただきたいと思います。",
+      "contributeGitHub": "GitHubで貢献",
+      "reportIssues": "問題・アイデアを報告"
+    },
+    "techStack": {
+      "title": "現代技術で構築"
+    },
+    "cta": {
+      "title": "CVを変革する準備はできましたか？",
+      "description": "今日からキャリア変革の旅を始めましょう",
+      "getStarted": "今すぐ始める",
+      "backToHome": "ホームに戻る"
+    }
+  },
+  "paymentSuccess": {
+    "authRequired": {
+      "title": "認証が必要です",
+      "description": "お支払いを確認するためにサインインしてください。",
+      "goToPricing": "料金ページへ"
+    },
+    "verification": {
+      "title": "お支払い確認中",
+      "description": "お支払いの確認とプレミアムアクセスの有効化をお待ちください。",
+      "pleaseWait": "しばらくお待ちください..."
+    },
+    "error": {
+      "title": "確認エラー",
+      "paymentCanceled": "お支払いがキャンセルされました",
+      "authRequired": "確認を完了するためにサインインしてください",
+      "verificationFailed": "お支払い状況を確認できません。問題が続く場合はサポートにお問い合わせください。",
+      "invalidParameters": "無効なお支払い確認パラメータ"
+    },
+    "success": {
+      "title": "CVPlusプレミアムへようこそ！",
+      "description": "お支払いが完了し、プレミアムアクセスが有効化されました。",
+      "welcomePremium": "お支払い完了！CVPlusプレミアムへようこそ！",
+      "premiumActivated": "プレミアムアクセスが正常に有効化されました！",
+      "statusConfirmed": "プレミアムステータスが確認されました！すべてのプレミアム機能への生涯アクセスが可能です。",
+      "statusPending": "プレミアムアクセスの有効化中です。もう少しお待ちください。",
+      "whatsNext": "次は何ができますか？"
+    },
+    "benefits": {
+      "webPortal": "個人ウェブポータルへのアクセス",
+      "aiPodcasts": "AIキャリアポッドキャストの生成",
+      "analytics": "高度な分析ダッシュボードの使用",
+      "removeBranding": "CVPlusブランディングの削除"
+    },
+    "actions": {
+      "contactSupport": "サポートに連絡",
+      "backToPricing": "料金ページに戻る",
+      "startUsing": "プレミアム機能を開始"
+    },
+    "support": {
+      "questionsPrefix": "ご質問がございましたら、",
+      "supportPage": "サポートページ"
+    }
+  }
+}

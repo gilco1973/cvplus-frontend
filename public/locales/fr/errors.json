@@ -1,0 +1,26 @@
+{
+  "generic": "Une erreur s'est produite. Veuillez réessayer.",
+  "network": "Erreur réseau. Vérifiez votre connexion.",
+  "timeout": "Délai d'attente dépassé. Veuillez réessayer.",
+  "notFound": "Page non trouvée.",
+  "unauthorized": "Vous n'êtes pas autorisé à accéder à cette ressource.",
+  "forbidden": "Accès interdit.",
+  "serverError": "Erreur serveur. Veuillez réessayer plus tard.",
+  "validationError": "Vérifiez votre saisie et réessayez.",
+  "fileUploadError": "Échec du téléchargement du fichier. Veuillez réessayer.",
+  "processingError": "Échec du traitement. Veuillez réessayer.",
+  "paymentError": "Échec du paiement. Veuillez réessayer.",
+  "quotaExceeded": "Quota dépassé. Veuillez mettre à niveau votre plan.",
+  "api": {
+    "connectionFailed": "Échec de la connexion au serveur",
+    "invalidResponse": "Réponse invalide du serveur",
+    "rateLimitExceeded": "Limite de taux dépassée. Veuillez réessayer plus tard"
+  },
+  "validation": {
+    "required": "Ce champ est requis",
+    "invalidEmail": "Veuillez saisir une adresse email valide",
+    "invalidUrl": "Veuillez saisir une URL valide",
+    "minLength": "Minimum {{min}} caractères requis",
+    "maxLength": "Maximum {{max}} caractères autorisés"
+  }
+}

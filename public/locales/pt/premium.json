@@ -1,0 +1,22 @@
+{
+  "title": "Upgrade para Premium",
+  "subtitle": "Desbloqueie todos os recursos",
+  "benefits": {
+    "unlimited": "Gerações ilimitadas de currículo",
+    "allFeatures": "Acesso a todos os recursos",
+    "priority": "Processamento prioritário",
+    "customDomain": "Domínio personalizado para portal web",
+    "analytics": "Análises avançadas",
+    "support": "Suporte prioritário"
+  },
+  "plans": {
+    "free": "Grátis",
+    "pro": "Pro",
+    "lifetime": "Vitalicio"
+  },
+  "cta": {
+    "upgrade": "Upgrade Agora",
+    "viewPlans": "Ver Planos",
+    "startTrial": "Iniciar Teste Grátis"
+  }
+}

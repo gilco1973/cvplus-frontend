@@ -1,0 +1,41 @@
+{
+  "title": "Funciones Poderosas",
+  "subtitle": "Todo lo que necesitas para crear un perfil profesional excepcional",
+  "items": {
+    "aiPowered": {
+      "title": "Análisis con IA",
+      "description": "IA avanzada analiza tu CV y proporciona recomendaciones personalizadas para máximo impacto"
+    },
+    "interactiveElements": {
+      "title": "Elementos Interactivos",
+      "description": "Añade portafolios clicables, presentaciones en video y contenido dinámico que atrae a los reclutadores"
+    },
+    "multipleFormats": {
+      "title": "Múltiples Formatos",
+      "description": "Genera tu CV en PDF, portal web y formatos interactivos para diferentes casos de uso"
+    },
+    "atsOptimization": {
+      "title": "Optimización ATS",
+      "description": "Asegura que tu CV pase los Sistemas de Seguimiento de Candidatos con palabras clave y formato optimizados"
+    },
+    "realTimeProcessing": {
+      "title": "Procesamiento en Tiempo Real",
+      "description": "Obtén resultados instantáneos con nuestro procesamiento de IA ultrarrápido y actualizaciones de estado en vivo"
+    }
+  },
+  "categories": {
+    "aiPowered": "Con IA",
+    "interactive": "Interactivo",
+    "visual": "Visual",
+    "multimedia": "Multimedia",
+    "portal": "Portal Web"
+  },
+  "selected": "{{count}} funciones seleccionadas",
+  "premium": "Premium",
+  "free": "Gratis",
+  "included": "Incluido",
+  "upgrade": "Actualizar para desbloquear",
+  "generateCV": "Generar CV",
+  "preview": "Vista previa",
+  "customize": "Personalizar"
+}

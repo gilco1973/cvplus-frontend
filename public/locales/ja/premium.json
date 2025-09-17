@@ -1,0 +1,22 @@
+{
+  "title": "プレミアムにアップグレード",
+  "subtitle": "すべての機能をロック解除",
+  "benefits": {
+    "unlimited": "無制限の履歴書生成",
+    "allFeatures": "すべての機能へのアクセス",
+    "priority": "優先処理",
+    "customDomain": "ウェブポータル用カスタムドメイン",
+    "analytics": "高度な分析",
+    "support": "優先サポート"
+  },
+  "plans": {
+    "free": "無料",
+    "pro": "プロ",
+    "lifetime": "ライフタイム"
+  },
+  "cta": {
+    "upgrade": "今すぐアップグレード",
+    "viewPlans": "プランを見る",
+    "startTrial": "無料トライアルを開始"
+  }
+}

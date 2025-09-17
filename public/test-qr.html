@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>QRCode Component Test</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 40px;
+            background-color: #f5f5f5;
+        }
+        .test-container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            padding: 40px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .component-error {
+            background-color: #fee;
+            border: 1px solid #fcc;
+            border-radius: 5px;
+            padding: 15px;
+            margin: 20px 0;
+        }
+        .error-details {
+            font-size: 0.9em;
+            color: #666;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="test-container">
+        <h1>🧪 QRCode Component Loading Test</h1>
+        <p>This page tests if the DynamicQRCode React component loads properly from the componentRenderer system.</p>
+        
+        <hr>
+        
+        <h2>Test 1: Basic QR Code Component</h2>
+        <div class="react-component-placeholder" 
+             data-component="DynamicQRCode" 
+             data-props='{"jobId":"test-job-123","profileId":"test-profile-456","isEnabled":true,"data":{"url":"https://example.com/cv/test","profileUrl":"https://example.com/profile/test"},"customization":{"size":256,"style":"square","backgroundColor":"#FFFFFF","foregroundColor":"#000000"},"className":"test-qr-code","mode":"public"}'>
+            <div class="component-loading">
+                <p>⏳ Loading QR Code Component...</p>
+            </div>
+        </div>
+        
+        <hr>
+        
+        <h2>Test 2: ContactForm Component (for comparison)</h2>
+        <div class="react-component-placeholder" 
+             data-component="ContactForm" 
+             data-props='{"jobId":"test-contact-123","profileId":"test-profile-456","isEnabled":true,"data":{"contactName":"Test User","email":"test@example.com"},"className":"test-contact-form","mode":"public"}'>
+            <div class="component-loading">
+                <p>⏳ Loading Contact Form Component...</p>
+            </div>
+        </div>
+        
+        <hr>
+        
+        <h2>🔍 Debug Information</h2>
+        <div id="debug-info">
+            <p><strong>JavaScript Console:</strong> Open browser DevTools to see detailed component loading logs.</p>
+            <p><strong>Expected Logs:</strong></p>
+            <ul>
+                <li>🚀 Starting React component initialization...</li>
+                <li>🔄 Found [number] React component placeholders</li>
+                <li>🔎 Processing placeholder 1/2</li>
+                <li>🏷️ Component name from data-component: "DynamicQRCode"</li>
+                <li>✅ Found component in registry</li>
+                <li>🎉 Successfully rendered DynamicQRCode component</li>
+            </ul>
+        </div>
+        
+        <hr>
+        
+        <h2>📋 Manual Tests</h2>
+        <ol>
+            <li><strong>Component Registry Check:</strong> Look for "Available components in registry" log</li>
+            <li><strong>Props Parsing:</strong> Verify props are correctly parsed from JSON</li>
+            <li><strong>React Element Creation:</strong> Check if React.createElement succeeds</li>
+            <li><strong>Root Rendering:</strong> Verify createRoot and render complete</li>
+        </ol>
+    </div>
+
+    <!-- Import the component renderer module -->
+    <script type="module">
+        import { initializeReactComponents, renderReactComponent } from '/src/utils/componentRendererFix';
+        
+        // Make functions available globally for testing
+        window.initializeReactComponents = initializeReactComponents;
+        window.renderReactComponent = renderReactComponent;
+        
+        // Additional logging for manual testing
+        console.log('🧪 QR Code Test Page Loaded');
+        console.log('📊 Available React component functions:', {
+            renderReactComponent: typeof window.renderReactComponent,
+            initializeReactComponents: typeof window.initializeReactComponents
+        });
+        
+        // Manual initialization trigger
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('📅 DOM Content Loaded');
+            
+            // Initialize components immediately since we have the functions
+            console.log('🔄 Starting component initialization...');
+            if (typeof window.initializeReactComponents === 'function') {
+                window.initializeReactComponents().then(count => {
+                    console.log(`✅ Successfully initialized ${count} components`);
+                });
+            } else {
+                console.error('❌ initializeReactComponents function not available');
+            }
+        });
+    </script>
+</body>
+</html>

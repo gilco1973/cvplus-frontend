@@ -1,0 +1,110 @@
+{
+  "contactForm": {
+    "title": "Contactar",
+    "subtitle": "Contactar a {{contactName}}",
+    "fields": {
+      "name": {
+        "label": "Tu Nombre",
+        "placeholder": "Ingresa tu nombre completo",
+        "required": "true"
+      },
+      "email": {
+        "label": "Tu Email",
+        "placeholder": "Ingresa tu dirección de correo",
+        "required": "true"
+      },
+      "phone": {
+        "label": "Número de Teléfono",
+        "placeholder": "Ingresa tu número de teléfono (opcional)"
+      },
+      "company": {
+        "label": "Empresa",
+        "placeholder": "Ingresa el nombre de tu empresa (opcional)"
+      },
+      "subject": {
+        "label": "Asunto",
+        "placeholder": "Selecciona un asunto",
+        "required": "true",
+        "options": {
+          "jobOpportunity": "Oportunidad Laboral",
+          "collaboration": "Colaboración",
+          "consultation": "Consultoría",
+          "generalInquiry": "Consulta General",
+          "other": "Otro"
+        }
+      },
+      "message": {
+        "label": "Mensaje",
+        "placeholder": "Ingresa tu mensaje...",
+        "required": "true",
+        "counter": "{{current}}/{{max}} caracteres"
+      }
+    },
+    "buttons": {
+      "send": "Enviar Mensaje",
+      "sending": "Enviando...",
+      "retry": "Intentar de Nuevo"
+    },
+    "status": {
+      "success": "¡Mensaje enviado exitosamente!",
+      "error": "Error al enviar mensaje. Inténtalo de nuevo.",
+      "networkError": "Error de red. Verifica tu conexión e inténtalo de nuevo.",
+      "validationError": "Corrige los errores de arriba e inténtalo de nuevo."
+    },
+    "validation": {
+      "nameRequired": "Ingresa tu nombre",
+      "emailRequired": "Ingresa tu dirección de correo",
+      "emailInvalid": "Ingresa una dirección de correo válida",
+      "subjectRequired": "Selecciona un asunto",
+      "messageRequired": "Ingresa un mensaje",
+      "messageMaxLength": "El mensaje no puede exceder {{max}} caracteres",
+      "phoneInvalid": "Ingresa un número de teléfono válido"
+    }
+  },
+  "urlInput": {
+    "placeholder": "https://ejemplo.com/mi-cv",
+    "button": {
+      "submit": "Iniciar Procesamiento",
+      "processing": "Procesando..."
+    },
+    "help": "Ingresa la URL de tu CV en línea o perfil de LinkedIn",
+    "validation": {
+      "required": "Ingresa una URL",
+      "invalid": "Ingresa una URL válida que comience con http:// o https://"
+    }
+  },
+  "fileUpload": {
+    "dropzone": {
+      "drag": "Arrastra y suelta tu CV aquí",
+      "or": "o",
+      "browse": "Examinar Archivos"
+    },
+    "formats": "Formatos soportados: PDF, DOCX, TXT",
+    "maxSize": "Tamaño máximo de archivo: 10MB",
+    "validation": {
+      "invalidFormat": "Formato de archivo inválido. Sube un archivo PDF, DOCX o TXT.",
+      "fileTooLarge": "Archivo demasiado grande. El tamaño máximo es 10MB.",
+      "uploadFailed": "Error al subir archivo. Inténtalo de nuevo."
+    }
+  },
+  "labels": {
+    "required": "Obligatorio",
+    "optional": "Opcional",
+    "loading": "Cargando..."
+  },
+  "placeholders": {
+    "enterText": "Ingresa texto...",
+    "selectOption": "Selecciona una opción...",
+    "uploadFile": "Subir archivo..."
+  },
+  "buttons": {
+    "cancel": "Cancelar",
+    "submit": "Enviar",
+    "save": "Guardar",
+    "reset": "Restablecer",
+    "clear": "Limpiar",
+    "edit": "Editar",
+    "delete": "Eliminar",
+    "retry": "Intentar de Nuevo"
+  }
+}

@@ -1,0 +1,22 @@
+{
+  "title": "Passer à Premium",
+  "subtitle": "Débloquez toutes les fonctionnalités",
+  "benefits": {
+    "unlimited": "Générations illimitées de CV",
+    "allFeatures": "Accès à toutes les fonctionnalités",
+    "priority": "Traitement prioritaire",
+    "customDomain": "Domaine personnalisé pour portail web",
+    "analytics": "Analyses avancées",
+    "support": "Support prioritaire"
+  },
+  "plans": {
+    "free": "Gratuit",
+    "pro": "Pro",
+    "lifetime": "À vie"
+  },
+  "cta": {
+    "upgrade": "Mettre à Niveau Maintenant",
+    "viewPlans": "Voir les Plans",
+    "startTrial": "Commencer l'Essai Gratuit"
+  }
+}

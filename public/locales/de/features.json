@@ -1,0 +1,41 @@
+{
+  "title": "Leistungsstarke Funktionen",
+  "subtitle": "Alles was Sie brauchen, um ein herausragendes professionelles Profil zu erstellen",
+  "items": {
+    "aiPowered": {
+      "title": "KI-gestützte Analyse",
+      "description": "Fortschrittliche KI analysiert Ihren Lebenslauf und bietet personalisierte Empfehlungen für maximale Wirkung"
+    },
+    "interactiveElements": {
+      "title": "Interaktive Elemente",
+      "description": "Fügen Sie klickbare Portfolios, Video-Einführungen und dynamische Inhalte hinzu, die Recruiter ansprechen"
+    },
+    "multipleFormats": {
+      "title": "Mehrere Formate",
+      "description": "Generieren Sie Ihren Lebenslauf in PDF-, Webportal- und interaktiven Formaten für verschiedene Anwendungsfälle"
+    },
+    "atsOptimization": {
+      "title": "ATS-Optimierung",
+      "description": "Stellen Sie sicher, dass Ihr Lebenslauf Bewerbermanagementsysteme mit optimierten Keywords und Formatierung passiert"
+    },
+    "realTimeProcessing": {
+      "title": "Echtzeit-Verarbeitung",
+      "description": "Erhalten Sie sofortige Ergebnisse mit unserer blitzschnellen KI-Verarbeitung und Live-Statusupdates"
+    }
+  },
+  "categories": {
+    "aiPowered": "KI-gestützt",
+    "interactive": "Interaktiv",
+    "visual": "Visuell",
+    "multimedia": "Multimedia",
+    "portal": "Web-Portal"
+  },
+  "selected": "{{count}} Funktionen ausgewählt",
+  "premium": "Premium",
+  "free": "Kostenlos",
+  "included": "Enthalten",
+  "upgrade": "Upgrade zum Freischalten",
+  "generateCV": "Lebenslauf generieren",
+  "preview": "Vorschau",
+  "customize": "Anpassen"
+}

@@ -1,0 +1,450 @@
+{
+  "navigation": {
+    "home": "Inicio",
+    "upload": "Subir CV",
+    "analysis": "Análisis",
+    "features": "Características",
+    "results": "Resultados",
+    "signIn": "Iniciar sesión",
+    "signOut": "Cerrar sesión",
+    "dashboard": "Panel",
+    "profile": "Perfil",
+    "settings": "Configuración",
+    "help": "Ayuda",
+    "pricing": "Precios"
+  },
+  "hero": {
+    "title": "Transforma tu CV",
+    "subtitle": "De Papel a Poderoso",
+    "description": "Convierte tu CV tradicional en un perfil profesional interactivo y potenciado por IA que destaca en el competitivo mercado laboral actual",
+    "cta": {
+      "start": "Comenzar",
+      "learnMore": "Más información",
+      "demo": "Ver demostración",
+      "upload": "Sube tu CV",
+      "signIn": "Inicia sesión para continuar",
+      "getStarted": "Comenzar",
+      "getStartedAria": "Comenzar con la transformación CVPlus",
+      "watchDemo": "Ver demostración",
+      "pauseDemo": "Pausar demostración",
+      "playDemoAria": "Reproducir video de demostración",
+      "pauseDemoAria": "Pausar video de demostración"
+    },
+    "video": {
+      "brand": "CVPlus",
+      "title": "Ve CVPlus en acción",
+      "description": "Observa cómo transformamos CVs tradicionales en perfiles profesionales poderosos e interactivos"
+    },
+    "trustIndicators": {
+      "cvsTransformed": "CVs Transformados",
+      "userRating": "Calificación de Usuario",
+      "averageTime": "Tiempo Promedio de Proceso"
+    },
+    "accessibility": {
+      "sectionLabel": "Sección hero",
+      "videoControls": {
+        "playVideo": "Reproducir video",
+        "pauseVideo": "Pausar video",
+        "muteVideo": "Silenciar video",
+        "unmuteVideo": "Activar sonido del video",
+        "enterFullscreen": "Pantalla completa",
+        "videoProgress": "Progreso del video"
+      },
+      "browserNotSupported": "Tu navegador no admite la etiqueta de video."
+    }
+  },
+  "upload": {
+    "title": "Sube tu CV",
+    "subtitle": "Comienza tu viaje de transformación del CV",
+    "drag": "Arrastra y suelta tu CV aquí",
+    "or": "o",
+    "browse": "Buscar archivos",
+    "formats": "Formatos compatibles: PDF, DOCX, TXT",
+    "maxSize": "Tamaño máximo del archivo: 10MB",
+    "processing": "Procesando tu CV...",
+    "analyzing": "Analizando contenido...",
+    "extracting": "Extrayendo información...",
+    "success": "¡CV subido con éxito!",
+    "error": "Error al subir el CV. Por favor, inténtalo de nuevo.",
+    "invalidFormat": "Formato de archivo inválido. Por favor, sube un archivo PDF, DOCX o TXT.",
+    "fileTooLarge": "El archivo es demasiado grande. El tamaño máximo es 10MB."
+  },
+  "analysis": {
+    "title": "Resultados del análisis IA",
+    "subtitle": "Tu CV ha sido analizado",
+    "score": "Puntuación general",
+    "strengths": "Fortalezas clave",
+    "improvements": "Áreas de mejora",
+    "recommendations": "Recomendaciones",
+    "insights": "Perspectivas IA",
+    "roleDetection": "Roles detectados",
+    "skillsAnalysis": "Análisis de habilidades",
+    "experienceOverview": "Resumen de experiencia",
+    "viewDetails": "Ver detalles",
+    "selectRole": "Seleccionar rol objetivo",
+    "applyRecommendations": "Aplicar recomendaciones"
+  },
+  "features": {
+    "title": "Seleccionar características",
+    "subtitle": "Personaliza tu CV interactivo",
+    "categories": {
+      "aiPowered": "Potenciado por IA",
+      "interactive": "Interactivo",
+      "visual": "Visual",
+      "multimedia": "Multimedia",
+      "portal": "Portal web"
+    },
+    "selected": "{{count}} características seleccionadas",
+    "premium": "Premium",
+    "free": "Gratis",
+    "included": "Incluido",
+    "upgrade": "Actualiza para desbloquear",
+    "generateCV": "Generar CV",
+    "preview": "Vista previa",
+    "customize": "Personalizar"
+  },
+  "results": {
+    "title": "Tu CV transformado",
+    "subtitle": "Listo para impresionar",
+    "download": "Descargar",
+    "share": "Compartir",
+    "preview": "Vista previa",
+    "edit": "Editar",
+    "formats": {
+      "pdf": "Descargar PDF",
+      "docx": "Descargar DOCX",
+      "html": "Descargar HTML",
+      "json": "Exportar datos"
+    },
+    "sharing": {
+      "title": "Comparte tu CV",
+      "publicUrl": "URL pública",
+      "copyLink": "Copiar enlace",
+      "qrCode": "Código QR",
+      "email": "Correo electrónico",
+      "social": "Compartir en redes sociales"
+    }
+  },
+  "premium": {
+    "title": "Actualiza a Premium",
+    "subtitle": "Desbloquea todas las características",
+    "benefits": {
+      "unlimited": "Generaciones de CV ilimitadas",
+      "allFeatures": "Acceso a todas las características",
+      "priority": "Procesamiento prioritario",
+      "customDomain": "Dominio personalizado para portal web",
+      "analytics": "Análisis avanzados",
+      "support": "Soporte prioritario"
+    },
+    "plans": {
+      "free": "Gratis",
+      "pro": "Pro",
+      "lifetime": "De por vida"
+    },
+    "cta": {
+      "upgrade": "Actualizar ahora",
+      "viewPlans": "Ver planes",
+      "startTrial": "Comenzar prueba gratuita"
+    }
+  },
+  "auth": {
+    "signIn": "Iniciar sesión",
+    "signUp": "Registrarse",
+    "signOut": "Cerrar sesión",
+    "email": "Correo electrónico",
+    "password": "Contraseña",
+    "confirmPassword": "Confirmar contraseña",
+    "forgotPassword": "¿Olvidaste tu contraseña?",
+    "resetPassword": "Restablecer contraseña",
+    "continueWith": "Continuar con {{provider}}",
+    "orContinueWith": "O continuar con",
+    "alreadyHaveAccount": "¿Ya tienes una cuenta?",
+    "dontHaveAccount": "¿No tienes una cuenta?",
+    "termsAndConditions": "Términos y condiciones",
+    "privacyPolicy": "Política de privacidad"
+  },
+  "common": {
+    "loading": "Cargando...",
+    "saving": "Guardando...",
+    "saved": "Guardado",
+    "cancel": "Cancelar",
+    "confirm": "Confirmar",
+    "delete": "Eliminar",
+    "edit": "Editar",
+    "save": "Guardar",
+    "close": "Cerrar",
+    "back": "Atrás",
+    "next": "Siguiente",
+    "previous": "Anterior",
+    "finish": "Finalizar",
+    "submit": "Enviar",
+    "continue": "Continuar",
+    "skip": "Omitir",
+    "retry": "Reintentar",
+    "refresh": "Actualizar",
+    "search": "Buscar",
+    "filter": "Filtrar",
+    "sort": "Ordenar",
+    "export": "Exportar",
+    "import": "Importar",
+    "select": "Seleccionar",
+    "selectAll": "Seleccionar todo",
+    "deselectAll": "Deseleccionar todo",
+    "yes": "Sí",
+    "no": "No",
+    "ok": "OK",
+    "apply": "Aplicar",
+    "reset": "Restablecer",
+    "clear": "Limpiar",
+    "view": "Ver",
+    "more": "Más",
+    "less": "Menos",
+    "showMore": "Mostrar más",
+    "showLess": "Mostrar menos",
+    "new": "Nuevo",
+    "add": "Agregar",
+    "remove": "Eliminar",
+    "update": "Actualizar",
+    "install": "Instalar",
+    "uninstall": "Desinstalar",
+    "enable": "Habilitar",
+    "disable": "Deshabilitar",
+    "on": "Encendido",
+    "off": "Apagado"
+  },
+  "errors": {
+    "generic": "Ocurrió un error. Por favor, inténtalo de nuevo.",
+    "network": "Error de red. Por favor, verifica tu conexión.",
+    "timeout": "Tiempo de espera agotado. Por favor, inténtalo de nuevo.",
+    "notFound": "Página no encontrada.",
+    "unauthorized": "No estás autorizado para acceder a este recurso.",
+    "forbidden": "Acceso prohibido.",
+    "serverError": "Error del servidor. Por favor, inténtalo más tarde.",
+    "validationError": "Por favor, verifica tu entrada e inténtalo de nuevo.",
+    "fileUploadError": "Error al subir el archivo. Por favor, inténtalo de nuevo.",
+    "processingError": "Error de procesamiento. Por favor, inténtalo de nuevo.",
+    "paymentError": "Error de pago. Por favor, inténtalo de nuevo.",
+    "quotaExceeded": "Cuota excedida. Por favor, actualiza tu plan."
+  },
+  "success": {
+    "saved": "¡Guardado exitosamente!",
+    "updated": "¡Actualizado exitosamente!",
+    "deleted": "¡Eliminado exitosamente!",
+    "uploaded": "¡Subido exitosamente!",
+    "generated": "¡Generado exitosamente!",
+    "sent": "¡Enviado exitosamente!",
+    "copied": "¡Copiado al portapapeles!",
+    "downloaded": "¡Descarga iniciada!"
+  },
+  "aboutPage": {
+    "title": "Acerca de CVPlus",
+    "subtitle": "Un proyecto de código abierto dedicado a transformar cómo los profesionales se presentan",
+    "creator": {
+      "title": "Creado por Gil Klainert",
+      "description1": "¡Hola! Soy Gil Klainert, un Líder de Ingeniería de Software y Experto en IA apasionado por aprovechar la tecnología para resolver problemas del mundo real. Creé CVPlus como un regalo de código abierto para la comunidad, creyendo que todos merecen acceso a herramientas poderosas que pueden ayudarles a avanzar en sus carreras.",
+      "description2": "Este proyecto combina mi experiencia en IA, desarrollo web y diseño de experiencia de usuario para crear algo que marque una diferencia real en la vida profesional de las personas.",
+      "visitWebsite": "Visitar Klainert.com",
+      "viewGitHub": "Ver en GitHub"
+    },
+    "mission": {
+      "title": "Nuestra Misión",
+      "description": "CVPlus nació de una creencia simple: tu historia profesional merece ser contada de la manera más convincente posible. Estamos aquí para democratizar el acceso a las herramientas de carrera impulsadas por IA, haciéndolas gratuitas y accesibles para todos, independientemente de su origen o situación financiera."
+    },
+    "values": {
+      "openSource": {
+        "title": "Código Abierto",
+        "description": "Publicado bajo la Licencia MIT, CVPlus es gratuito para usar, modificar y distribuir. Creemos en el poder del desarrollo impulsado por la comunidad."
+      },
+      "aiPowered": {
+        "title": "Impulsado por IA",
+        "description": "Aprovechando las capacidades avanzadas de Claude AI para entender, analizar y mejorar tu perfil profesional con insights inteligentes."
+      },
+      "innovation": {
+        "title": "Innovación Primero",
+        "description": "Empujando constantemente los límites con características como podcasts de carrera con IA, líneas de tiempo interactivas y códigos QR dinámicos que dan vida a los CVs."
+      },
+      "community": {
+        "title": "Impulsado por la Comunidad",
+        "description": "Construido para la comunidad, por la comunidad. Damos la bienvenida a contribuciones, comentarios e ideas de usuarios de todo el mundo."
+      }
+    },
+    "contributing": {
+      "title": "¿Quieres Contribuir?",
+      "description": "¡CVPlus está abierto a contribuciones! Ya seas desarrollador, diseñador o simplemente alguien con grandes ideas, nos encantaría tenerte en nuestra misión de revolucionar cómo las personas presentan sus historias profesionales.",
+      "contributeGitHub": "Contribuir en GitHub",
+      "reportIssues": "Reportar Problemas e Ideas"
+    },
+    "techStack": {
+      "title": "Construido con Tecnología Moderna"
+    },
+    "cta": {
+      "title": "¿Listo para Transformar tu CV?",
+      "description": "Comienza tu viaje de transformación profesional hoy",
+      "getStarted": "Comenzar Ahora",
+      "backToHome": "Volver al Inicio"
+    }
+  },
+  "footer": {
+    "company": "Empresa",
+    "about": "Acerca de",
+    "careers": "Carreras",
+    "blog": "Blog",
+    "contact": "Contacto",
+    "legal": "Legal",
+    "privacy": "Política de privacidad",
+    "terms": "Términos de servicio",
+    "cookies": "Política de cookies",
+    "support": "Soporte",
+    "help": "Centro de ayuda",
+    "faq": "Preguntas frecuentes",
+    "documentation": "Documentación",
+    "social": "Síguenos",
+    "copyright": "© {{year}} CVPlus. Todos los derechos reservados."
+  },
+  "paymentSuccess": {
+    "authRequired": {
+      "title": "Autenticación Requerida",
+      "description": "Por favor, inicia sesión para verificar tu pago.",
+      "goToPricing": "Ir a Precios"
+    },
+    "verification": {
+      "title": "Verificando Pago",
+      "description": "Por favor espera mientras verificamos tu pago y activamos tu acceso premium.",
+      "pleaseWait": "Esto puede tomar unos momentos..."
+    },
+    "error": {
+      "title": "Error de Verificación",
+      "paymentCanceled": "El pago fue cancelado",
+      "authRequired": "Por favor inicia sesión para completar la verificación",
+      "verificationFailed": "No se pudo verificar el estado del pago. Por favor contacta al soporte si esto persiste.",
+      "invalidParameters": "Parámetros de verificación de pago inválidos"
+    },
+    "success": {
+      "title": "¡Bienvenido a CVPlus Premium!",
+      "description": "Tu pago fue exitoso y tu acceso premium ha sido activado.",
+      "welcomePremium": "¡Pago exitoso! ¡Bienvenido a CVPlus Premium!",
+      "premiumActivated": "¡Acceso premium activado exitosamente!",
+      "statusConfirmed": "¡Estado premium confirmado! Ahora tienes acceso de por vida a todas las funciones premium.",
+      "statusPending": "El acceso premium se está activando. Esto puede tomar unos momentos más.",
+      "whatsNext": "¿Qué Sigue?"
+    },
+    "benefits": {
+      "webPortal": "Accede a tu portal web personal",
+      "aiPodcasts": "Genera podcasts de carrera con IA",
+      "analytics": "Usa el panel de análisis avanzado",
+      "removeBranding": "Elimina la marca CVPlus"
+    },
+    "actions": {
+      "contactSupport": "Contactar Soporte",
+      "backToPricing": "Volver a Precios",
+      "startUsing": "Comenzar a Usar Funciones Premium"
+    },
+    "support": {
+      "questionsPrefix": "Si tienes alguna pregunta, visita nuestra",
+      "supportPage": "página de soporte"
+    }
+  },
+  "forms": {
+    "contactForm": {
+      "title": "Contactar",
+      "subtitle": "Contactar a {{contactName}}",
+      "fields": {
+        "name": {
+          "label": "Tu Nombre",
+          "placeholder": "Ingresa tu nombre completo",
+          "required": "true"
+        },
+        "email": {
+          "label": "Tu Email",
+          "placeholder": "Ingresa tu dirección de correo",
+          "required": "true"
+        },
+        "phone": {
+          "label": "Número de Teléfono",
+          "placeholder": "Ingresa tu número de teléfono (opcional)"
+        },
+        "company": {
+          "label": "Empresa",
+          "placeholder": "Ingresa el nombre de tu empresa (opcional)"
+        },
+        "subject": {
+          "label": "Asunto",
+          "placeholder": "Selecciona un asunto",
+          "required": "true",
+          "options": {
+            "jobOpportunity": "Oportunidad Laboral",
+            "collaboration": "Colaboración",
+            "consultation": "Consultoría",
+            "generalInquiry": "Consulta General",
+            "other": "Otro"
+          }
+        },
+        "message": {
+          "label": "Mensaje",
+          "placeholder": "Ingresa tu mensaje...",
+          "required": "true",
+          "counter": "{{current}}/{{max}} caracteres"
+        }
+      },
+      "buttons": {
+        "send": "Enviar Mensaje",
+        "sending": "Enviando...",
+        "retry": "Intentar de Nuevo"
+      },
+      "status": {
+        "success": "¡Mensaje enviado exitosamente!",
+        "error": "Error al enviar mensaje. Inténtalo de nuevo.",
+        "networkError": "Error de red. Verifica tu conexión e inténtalo de nuevo.",
+        "validationError": "Corrige los errores de arriba e inténtalo de nuevo."
+      },
+      "validation": {
+        "nameRequired": "Ingresa tu nombre",
+        "emailRequired": "Ingresa tu dirección de correo",
+        "emailInvalid": "Ingresa una dirección de correo válida",
+        "subjectRequired": "Selecciona un asunto",
+        "messageRequired": "Ingresa un mensaje",
+        "messageMaxLength": "El mensaje no puede exceder {{max}} caracteres",
+        "phoneInvalid": "Ingresa un número de teléfono válido"
+      }
+    },
+    "urlInput": {
+      "placeholder": "https://ejemplo.com/mi-cv",
+      "button": {
+        "submit": "Iniciar Procesamiento",
+        "processing": "Procesando..."
+      },
+      "help": "Ingresa la URL de tu CV en línea o perfil de LinkedIn",
+      "validation": {
+        "required": "Ingresa una URL",
+        "invalid": "Ingresa una URL válida que comience con http:// o https://"
+      }
+    },
+    "fileUpload": {
+      "dropzone": {
+        "drag": "Arrastra y suelta tu CV aquí",
+        "or": "o",
+        "browse": "Examinar Archivos"
+      },
+      "formats": "Formatos soportados: PDF, DOCX, TXT",
+      "maxSize": "Tamaño máximo de archivo: 10MB",
+      "validation": {
+        "invalidFormat": "Formato de archivo inválido. Sube un archivo PDF, DOCX o TXT.",
+        "fileTooLarge": "Archivo demasiado grande. El tamaño máximo es 10MB.",
+        "uploadFailed": "Error al subir archivo. Inténtalo de nuevo."
+      }
+    },
+    "common": {
+      "required": "Obligatorio",
+      "optional": "Opcional",
+      "cancel": "Cancelar",
+      "submit": "Enviar",
+      "save": "Guardar",
+      "reset": "Restablecer",
+      "clear": "Limpiar",
+      "edit": "Editar",
+      "delete": "Eliminar",
+      "loading": "Cargando...",
+      "retry": "Intentar de Nuevo"
+    }
+  }
+}

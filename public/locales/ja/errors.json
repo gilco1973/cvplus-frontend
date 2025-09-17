@@ -1,0 +1,26 @@
+{
+  "generic": "エラーが発生しました。もう一度お試しください。",
+  "network": "ネットワークエラーです。接続を確認してください。",
+  "timeout": "リクエストがタイムアウトしました。もう一度お試しください。",
+  "notFound": "ページが見つかりません。",
+  "unauthorized": "このリソースへのアクセス権限がありません。",
+  "forbidden": "アクセスが禁止されています。",
+  "serverError": "サーバーエラーです。後でもう一度お試しください。",
+  "validationError": "入力内容を確認してもう一度お試しください。",
+  "fileUploadError": "ファイルのアップロードに失敗しました。もう一度お試しください。",
+  "processingError": "処理に失敗しました。もう一度お試しください。",
+  "paymentError": "支払いに失敗しました。もう一度お試しください。",
+  "quotaExceeded": "クォータを超過しました。プランをアップグレードしてください。",
+  "api": {
+    "connectionFailed": "サーバーへの接続に失敗しました",
+    "invalidResponse": "サーバーからの無効なレスポンス",
+    "rateLimitExceeded": "レート制限を超過しました。後でもう一度お試しください"
+  },
+  "validation": {
+    "required": "このフィールドは必須です",
+    "invalidEmail": "有効なメールアドレスを入力してください",
+    "invalidUrl": "有効なURLを入力してください",
+    "minLength": "最低{{min}}文字必要です",
+    "maxLength": "最大{{max}}文字までです"
+  }
+}

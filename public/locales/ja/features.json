@@ -1,0 +1,41 @@
+{
+  "title": "強力な機能",
+  "subtitle": "優れたプロフェッショナルプロファイルを作成するために必要なすべて",
+  "items": {
+    "aiPowered": {
+      "title": "AI駆動分析",
+      "description": "高度なAIが履歴書を分析し、最大のインパクトをもたらすパーソナライズされた推奨事項を提供します"
+    },
+    "interactiveElements": {
+      "title": "インタラクティブ要素",
+      "description": "クリック可能なポートフォリオ、動画紹介、採用担当者を引きつけるダイナミックなコンテンツを追加します"
+    },
+    "multipleFormats": {
+      "title": "複数フォーマット",
+      "description": "異なる用途に合わせてPDF、ウェブポータル、インタラクティブフォーマットで履歴書を生成します"
+    },
+    "atsOptimization": {
+      "title": "ATS最適化",
+      "description": "最適化されたキーワードとフォーマットで履歴書が申請者追跡システムを通過することを保証します"
+    },
+    "realTimeProcessing": {
+      "title": "リアルタイム処理",
+      "description": "超高速AI処理とライブステータス更新で即座に結果を得られます"
+    }
+  },
+  "categories": {
+    "aiPowered": "AI駆動",
+    "interactive": "インタラクティブ",
+    "visual": "ビジュアル",
+    "multimedia": "マルチメディア",
+    "portal": "ウェブポータル"
+  },
+  "selected": "{{count}}個の機能が選択されています",
+  "premium": "プレミアム",
+  "free": "無料",
+  "included": "含まれています",
+  "upgrade": "アップグレードしてロック解除",
+  "generateCV": "履歴書生成",
+  "preview": "プレビュー",
+  "customize": "カスタマイズ"
+}

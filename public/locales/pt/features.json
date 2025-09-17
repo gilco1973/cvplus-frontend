@@ -1,0 +1,41 @@
+{
+  "title": "Recursos Poderosos",
+  "subtitle": "Tudo o que você precisa para criar um perfil profissional excepcional",
+  "items": {
+    "aiPowered": {
+      "title": "Análise com IA",
+      "description": "IA avançada analisa seu currículo e fornece recomendações personalizadas para máximo impacto"
+    },
+    "interactiveElements": {
+      "title": "Elementos Interativos",
+      "description": "Adicione portfólios clicáveis, apresentações em vídeo e conteúdo dinâmico que envolve recrutadores"
+    },
+    "multipleFormats": {
+      "title": "Múltiplos Formatos",
+      "description": "Gere seu currículo em PDF, portal web e formatos interativos para diferentes casos de uso"
+    },
+    "atsOptimization": {
+      "title": "Otimização ATS",
+      "description": "Garanta que seu currículo passe pelos Sistemas de Rastreamento de Candidatos com palavras-chave e formatação otimizadas"
+    },
+    "realTimeProcessing": {
+      "title": "Processamento em Tempo Real",
+      "description": "Obtenha resultados instantâneos com nosso processamento de IA ultrarrrápido e atualizações de status ao vivo"
+    }
+  },
+  "categories": {
+    "aiPowered": "Com IA",
+    "interactive": "Interativo",
+    "visual": "Visual",
+    "multimedia": "Multimídia",
+    "portal": "Portal Web"
+  },
+  "selected": "{{count}} recursos selecionados",
+  "premium": "Premium",
+  "free": "Grátis",
+  "included": "Incluído",
+  "upgrade": "Upgrade para desbloquear",
+  "generateCV": "Gerar Currículo",
+  "preview": "Visualizar",
+  "customize": "Personalizar"
+}

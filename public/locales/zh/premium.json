@@ -1,0 +1,22 @@
+{
+  "title": "升级到高级版",
+  "subtitle": "解锁所有功能",
+  "benefits": {
+    "unlimited": "无限制简历生成",
+    "allFeatures": "访问所有功能",
+    "priority": "优先处理",
+    "customDomain": "网站门户的自定义域名",
+    "analytics": "高级分析",
+    "support": "优先支持"
+  },
+  "plans": {
+    "free": "免费",
+    "pro": "专业版",
+    "lifetime": "终身版"
+  },
+  "cta": {
+    "upgrade": "立即升级",
+    "viewPlans": "查看套餐",
+    "startTrial": "开始免费试用"
+  }
+}

@@ -1,0 +1,450 @@
+{
+  "navigation": {
+    "home": "Accueil",
+    "upload": "Télécharger CV",
+    "analysis": "Analyse",
+    "features": "Fonctionnalités",
+    "results": "Résultats",
+    "signIn": "Se connecter",
+    "signOut": "Se déconnecter",
+    "dashboard": "Tableau de bord",
+    "profile": "Profil",
+    "settings": "Paramètres",
+    "help": "Aide",
+    "pricing": "Tarifs"
+  },
+  "hero": {
+    "title": "Transformez votre CV",
+    "subtitle": "Du papier à la puissance",
+    "description": "Transformez votre CV traditionnel en un profil professionnel interactif et alimenté par l'IA qui se démarque sur le marché du travail concurrentiel d'aujourd'hui",
+    "cta": {
+      "start": "Commencer",
+      "learnMore": "En savoir plus",
+      "demo": "Voir la démo",
+      "upload": "Téléchargez votre CV",
+      "signIn": "Connectez-vous pour continuer",
+      "getStarted": "Commencer",
+      "getStartedAria": "Commencer avec la transformation CVPlus",
+      "watchDemo": "Regarder la démo",
+      "pauseDemo": "Mettre en pause la démo",
+      "playDemoAria": "Lire la vidéo de démonstration",
+      "pauseDemoAria": "Mettre en pause la vidéo de démonstration"
+    },
+    "video": {
+      "brand": "CVPlus",
+      "title": "Voir CVPlus en action",
+      "description": "Découvrez comment nous transformons les CV traditionnels en profils professionnels puissants et interactifs"
+    },
+    "trustIndicators": {
+      "cvsTransformed": "CV Transformés",
+      "userRating": "Note Utilisateur",
+      "averageTime": "Temps de Traitement Moyen"
+    },
+    "accessibility": {
+      "sectionLabel": "Section héro",
+      "videoControls": {
+        "playVideo": "Lire la vidéo",
+        "pauseVideo": "Mettre en pause la vidéo",
+        "muteVideo": "Couper le son de la vidéo",
+        "unmuteVideo": "Réactiver le son de la vidéo",
+        "enterFullscreen": "Passer en plein écran",
+        "videoProgress": "Progression de la vidéo"
+      },
+      "browserNotSupported": "Votre navigateur ne prend pas en charge la balise vidéo."
+    }
+  },
+  "upload": {
+    "title": "Téléchargez votre CV",
+    "subtitle": "Commencez votre parcours de transformation de CV",
+    "drag": "Glissez et déposez votre CV ici",
+    "or": "ou",
+    "browse": "Parcourir les fichiers",
+    "formats": "Formats pris en charge : PDF, DOCX, TXT",
+    "maxSize": "Taille maximale du fichier : 10 Mo",
+    "processing": "Traitement de votre CV...",
+    "analyzing": "Analyse du contenu...",
+    "extracting": "Extraction des informations...",
+    "success": "CV téléchargé avec succès !",
+    "error": "Échec du téléchargement du CV. Veuillez réessayer.",
+    "invalidFormat": "Format de fichier invalide. Veuillez télécharger un fichier PDF, DOCX ou TXT.",
+    "fileTooLarge": "Le fichier est trop volumineux. La taille maximale est de 10 Mo."
+  },
+  "analysis": {
+    "title": "Résultats de l'analyse IA",
+    "subtitle": "Votre CV a été analysé",
+    "score": "Score global",
+    "strengths": "Points forts",
+    "improvements": "Axes d'amélioration",
+    "recommendations": "Recommandations",
+    "insights": "Aperçus IA",
+    "roleDetection": "Rôles détectés",
+    "skillsAnalysis": "Analyse des compétences",
+    "experienceOverview": "Aperçu de l'expérience",
+    "viewDetails": "Voir les détails",
+    "selectRole": "Sélectionner le rôle cible",
+    "applyRecommendations": "Appliquer les recommandations"
+  },
+  "features": {
+    "title": "Sélectionner les fonctionnalités",
+    "subtitle": "Personnalisez votre CV interactif",
+    "categories": {
+      "aiPowered": "Alimenté par l'IA",
+      "interactive": "Interactif",
+      "visual": "Visuel",
+      "multimedia": "Multimédia",
+      "portal": "Portail web"
+    },
+    "selected": "{{count}} fonctionnalités sélectionnées",
+    "premium": "Premium",
+    "free": "Gratuit",
+    "included": "Inclus",
+    "upgrade": "Passez à la version supérieure pour débloquer",
+    "generateCV": "Générer le CV",
+    "preview": "Aperçu",
+    "customize": "Personnaliser"
+  },
+  "results": {
+    "title": "Votre CV transformé",
+    "subtitle": "Prêt à impressionner",
+    "download": "Télécharger",
+    "share": "Partager",
+    "preview": "Aperçu",
+    "edit": "Modifier",
+    "formats": {
+      "pdf": "Télécharger PDF",
+      "docx": "Télécharger DOCX",
+      "html": "Télécharger HTML",
+      "json": "Exporter les données"
+    },
+    "sharing": {
+      "title": "Partagez votre CV",
+      "publicUrl": "URL publique",
+      "copyLink": "Copier le lien",
+      "qrCode": "Code QR",
+      "email": "Email",
+      "social": "Partager sur les réseaux sociaux"
+    }
+  },
+  "premium": {
+    "title": "Passez à Premium",
+    "subtitle": "Débloquez toutes les fonctionnalités",
+    "benefits": {
+      "unlimited": "Générations de CV illimitées",
+      "allFeatures": "Accès à toutes les fonctionnalités",
+      "priority": "Traitement prioritaire",
+      "customDomain": "Domaine personnalisé pour le portail web",
+      "analytics": "Analyses avancées",
+      "support": "Support prioritaire"
+    },
+    "plans": {
+      "free": "Gratuit",
+      "pro": "Pro",
+      "lifetime": "À vie"
+    },
+    "cta": {
+      "upgrade": "Mettre à niveau maintenant",
+      "viewPlans": "Voir les plans",
+      "startTrial": "Commencer l'essai gratuit"
+    }
+  },
+  "auth": {
+    "signIn": "Se connecter",
+    "signUp": "S'inscrire",
+    "signOut": "Se déconnecter",
+    "email": "Email",
+    "password": "Mot de passe",
+    "confirmPassword": "Confirmer le mot de passe",
+    "forgotPassword": "Mot de passe oublié ?",
+    "resetPassword": "Réinitialiser le mot de passe",
+    "continueWith": "Continuer avec {{provider}}",
+    "orContinueWith": "Ou continuer avec",
+    "alreadyHaveAccount": "Vous avez déjà un compte ?",
+    "dontHaveAccount": "Vous n'avez pas de compte ?",
+    "termsAndConditions": "Termes et conditions",
+    "privacyPolicy": "Politique de confidentialité"
+  },
+  "common": {
+    "loading": "Chargement...",
+    "saving": "Enregistrement...",
+    "saved": "Enregistré",
+    "cancel": "Annuler",
+    "confirm": "Confirmer",
+    "delete": "Supprimer",
+    "edit": "Modifier",
+    "save": "Enregistrer",
+    "close": "Fermer",
+    "back": "Retour",
+    "next": "Suivant",
+    "previous": "Précédent",
+    "finish": "Terminer",
+    "submit": "Soumettre",
+    "continue": "Continuer",
+    "skip": "Passer",
+    "retry": "Réessayer",
+    "refresh": "Actualiser",
+    "search": "Rechercher",
+    "filter": "Filtrer",
+    "sort": "Trier",
+    "export": "Exporter",
+    "import": "Importer",
+    "select": "Sélectionner",
+    "selectAll": "Tout sélectionner",
+    "deselectAll": "Tout désélectionner",
+    "yes": "Oui",
+    "no": "Non",
+    "ok": "OK",
+    "apply": "Appliquer",
+    "reset": "Réinitialiser",
+    "clear": "Effacer",
+    "view": "Voir",
+    "more": "Plus",
+    "less": "Moins",
+    "showMore": "Afficher plus",
+    "showLess": "Afficher moins",
+    "new": "Nouveau",
+    "add": "Ajouter",
+    "remove": "Supprimer",
+    "update": "Mettre à jour",
+    "install": "Installer",
+    "uninstall": "Désinstaller",
+    "enable": "Activer",
+    "disable": "Désactiver",
+    "on": "Activé",
+    "off": "Désactivé"
+  },
+  "errors": {
+    "generic": "Une erreur s'est produite. Veuillez réessayer.",
+    "network": "Erreur réseau. Veuillez vérifier votre connexion.",
+    "timeout": "Délai d'attente dépassé. Veuillez réessayer.",
+    "notFound": "Page non trouvée.",
+    "unauthorized": "Vous n'êtes pas autorisé à accéder à cette ressource.",
+    "forbidden": "Accès interdit.",
+    "serverError": "Erreur serveur. Veuillez réessayer plus tard.",
+    "validationError": "Veuillez vérifier votre saisie et réessayer.",
+    "fileUploadError": "Échec du téléchargement du fichier. Veuillez réessayer.",
+    "processingError": "Échec du traitement. Veuillez réessayer.",
+    "paymentError": "Échec du paiement. Veuillez réessayer.",
+    "quotaExceeded": "Quota dépassé. Veuillez mettre à niveau votre plan."
+  },
+  "success": {
+    "saved": "Enregistré avec succès !",
+    "updated": "Mis à jour avec succès !",
+    "deleted": "Supprimé avec succès !",
+    "uploaded": "Téléchargé avec succès !",
+    "generated": "Généré avec succès !",
+    "sent": "Envoyé avec succès !",
+    "copied": "Copié dans le presse-papiers !",
+    "downloaded": "Téléchargement démarré !"
+  },
+  "aboutPage": {
+    "title": "À propos de CVPlus",
+    "subtitle": "Un projet open-source dédié à transformer la façon dont les professionnels se présentent",
+    "creator": {
+      "title": "Créé par Gil Klainert",
+      "description1": "Salut ! Je suis Gil Klainert, un Leader en Ingénierie Logicielle et Expert en IA passionné par l'exploitation de la technologie pour résoudre des problèmes du monde réel. J'ai créé CVPlus comme un cadeau open-source à la communauté, croyant que chacun mérite l'accès à des outils puissants qui peuvent les aider à faire progresser leur carrière.",
+      "description2": "Ce projet combine mon expertise en IA, développement web et conception d'expérience utilisateur pour créer quelque chose qui fait une vraie différence dans la vie professionnelle des gens.",
+      "visitWebsite": "Visiter Klainert.com",
+      "viewGitHub": "Voir sur GitHub"
+    },
+    "mission": {
+      "title": "Notre Mission",
+      "description": "CVPlus est né d'une croyance simple : votre histoire professionnelle mérite d'être racontée de la manière la plus convaincante possible. Nous sommes là pour démocratiser l'accès aux outils de carrière alimentés par l'IA, les rendant gratuits et accessibles à tous, quel que soit leur origine ou leur situation financière."
+    },
+    "values": {
+      "openSource": {
+        "title": "Open Source",
+        "description": "Publié sous licence MIT, CVPlus est gratuit à utiliser, modifier et distribuer. Nous croyons au pouvoir du développement communautaire."
+      },
+      "aiPowered": {
+        "title": "Alimenté par l'IA",
+        "description": "Exploitant les capacités avancées de Claude AI pour comprendre, analyser et améliorer votre profil professionnel avec des insights intelligents."
+      },
+      "innovation": {
+        "title": "Innovation d'Abord",
+        "description": "Repoussant constamment les limites avec des fonctionnalités comme les podcasts de carrière IA, les chronologies interactives et les codes QR dynamiques qui donnent vie aux CVs."
+      },
+      "community": {
+        "title": "Communautaire",
+        "description": "Construit pour la communauté, par la communauté. Nous accueillons les contributions, commentaires et idées d'utilisateurs du monde entier."
+      }
+    },
+    "contributing": {
+      "title": "Vous voulez contribuer ?",
+      "description": "CVPlus est ouvert aux contributions ! Que vous soyez développeur, designer ou simplement quelqu'un avec de grandes idées, nous aimerions vous avoir dans notre mission de révolutionner la façon dont les gens présentent leurs histoires professionnelles.",
+      "contributeGitHub": "Contribuer sur GitHub",
+      "reportIssues": "Signaler des Problèmes et Idées"
+    },
+    "techStack": {
+      "title": "Construit avec une Technologie Moderne"
+    },
+    "cta": {
+      "title": "Prêt à transformer votre CV ?",
+      "description": "Commencez votre parcours de transformation de carrière aujourd'hui",
+      "getStarted": "Commencer Maintenant",
+      "backToHome": "Retour à l'Accueil"
+    }
+  },
+  "footer": {
+    "company": "Entreprise",
+    "about": "À propos",
+    "careers": "Carrières",
+    "blog": "Blog",
+    "contact": "Contact",
+    "legal": "Légal",
+    "privacy": "Politique de confidentialité",
+    "terms": "Conditions d'utilisation",
+    "cookies": "Politique des cookies",
+    "support": "Support",
+    "help": "Centre d'aide",
+    "faq": "FAQ",
+    "documentation": "Documentation",
+    "social": "Suivez-nous",
+    "copyright": "© {{year}} CVPlus. Tous droits réservés."
+  },
+  "paymentSuccess": {
+    "authRequired": {
+      "title": "Authentification Requise",
+      "description": "Veuillez vous connecter pour vérifier votre paiement.",
+      "goToPricing": "Aller aux Tarifs"
+    },
+    "verification": {
+      "title": "Vérification du Paiement",
+      "description": "Veuillez patienter pendant que nous vérifions votre paiement et activons votre accès premium.",
+      "pleaseWait": "Cela peut prendre quelques instants..."
+    },
+    "error": {
+      "title": "Erreur de Vérification",
+      "paymentCanceled": "Le paiement a été annulé",
+      "authRequired": "Veuillez vous connecter pour terminer la vérification",
+      "verificationFailed": "Impossible de vérifier le statut du paiement. Veuillez contacter le support si cela persiste.",
+      "invalidParameters": "Paramètres de vérification de paiement invalides"
+    },
+    "success": {
+      "title": "Bienvenue dans CVPlus Premium !",
+      "description": "Votre paiement a réussi et votre accès premium a été activé.",
+      "welcomePremium": "Paiement réussi ! Bienvenue dans CVPlus Premium !",
+      "premiumActivated": "Accès premium activé avec succès !",
+      "statusConfirmed": "Statut premium confirmé ! Vous avez maintenant un accès à vie à toutes les fonctionnalités premium.",
+      "statusPending": "L'accès premium est en cours d'activation. Cela peut prendre encore quelques instants.",
+      "whatsNext": "Et Maintenant ?"
+    },
+    "benefits": {
+      "webPortal": "Accédez à votre portail web personnel",
+      "aiPodcasts": "Générez des podcasts de carrière IA",
+      "analytics": "Utilisez le tableau de bord d'analyse avancé",
+      "removeBranding": "Supprimez la marque CVPlus"
+    },
+    "actions": {
+      "contactSupport": "Contacter le Support",
+      "backToPricing": "Retour aux Tarifs",
+      "startUsing": "Commencer à Utiliser les Fonctionnalités Premium"
+    },
+    "support": {
+      "questionsPrefix": "Si vous avez des questions, visitez notre",
+      "supportPage": "page de support"
+    }
+  },
+  "forms": {
+    "contactForm": {
+      "title": "Prendre Contact",
+      "subtitle": "Contacter {{contactName}}",
+      "fields": {
+        "name": {
+          "label": "Votre Nom",
+          "placeholder": "Saisissez votre nom complet",
+          "required": "true"
+        },
+        "email": {
+          "label": "Votre Email",
+          "placeholder": "Saisissez votre adresse email",
+          "required": "true"
+        },
+        "phone": {
+          "label": "Numéro de Téléphone",
+          "placeholder": "Saisissez votre numéro de téléphone (optionnel)"
+        },
+        "company": {
+          "label": "Entreprise",
+          "placeholder": "Saisissez le nom de votre entreprise (optionnel)"
+        },
+        "subject": {
+          "label": "Sujet",
+          "placeholder": "Sélectionnez un sujet",
+          "required": "true",
+          "options": {
+            "jobOpportunity": "Opportunité d'Emploi",
+            "collaboration": "Collaboration",
+            "consultation": "Consultation",
+            "generalInquiry": "Demande Générale",
+            "other": "Autre"
+          }
+        },
+        "message": {
+          "label": "Message",
+          "placeholder": "Saisissez votre message...",
+          "required": "true",
+          "counter": "{{current}}/{{max}} caractères"
+        }
+      },
+      "buttons": {
+        "send": "Envoyer le Message",
+        "sending": "Envoi...",
+        "retry": "Réessayer"
+      },
+      "status": {
+        "success": "Message envoyé avec succès !",
+        "error": "Échec de l'envoi du message. Veuillez réessayer.",
+        "networkError": "Erreur réseau. Vérifiez votre connexion et réessayez.",
+        "validationError": "Corrigez les erreurs ci-dessus et réessayez."
+      },
+      "validation": {
+        "nameRequired": "Veuillez saisir votre nom",
+        "emailRequired": "Veuillez saisir votre adresse email",
+        "emailInvalid": "Veuillez saisir une adresse email valide",
+        "subjectRequired": "Veuillez sélectionner un sujet",
+        "messageRequired": "Veuillez saisir un message",
+        "messageMaxLength": "Le message ne peut pas dépasser {{max}} caractères",
+        "phoneInvalid": "Veuillez saisir un numéro de téléphone valide"
+      }
+    },
+    "urlInput": {
+      "placeholder": "https://exemple.com/mon-cv",
+      "button": {
+        "submit": "Commencer le Traitement",
+        "processing": "Traitement..."
+      },
+      "help": "Saisissez l'URL de votre CV en ligne ou profil LinkedIn",
+      "validation": {
+        "required": "Veuillez saisir une URL",
+        "invalid": "Veuillez saisir une URL valide commençant par http:// ou https://"
+      }
+    },
+    "fileUpload": {
+      "dropzone": {
+        "drag": "Glissez et déposez votre CV ici",
+        "or": "ou",
+        "browse": "Parcourir les Fichiers"
+      },
+      "formats": "Formats supportés : PDF, DOCX, TXT",
+      "maxSize": "Taille maximale du fichier : 10MB",
+      "validation": {
+        "invalidFormat": "Format de fichier invalide. Veuillez télécharger un fichier PDF, DOCX ou TXT.",
+        "fileTooLarge": "Fichier trop volumineux. La taille maximale est de 10MB.",
+        "uploadFailed": "Échec du téléchargement du fichier. Veuillez réessayer."
+      }
+    },
+    "common": {
+      "required": "Requis",
+      "optional": "Optionnel",
+      "cancel": "Annuler",
+      "submit": "Soumettre",
+      "save": "Enregistrer",
+      "reset": "Réinitialiser",
+      "clear": "Effacer",
+      "edit": "Modifier",
+      "delete": "Supprimer",
+      "loading": "Chargement...",
+      "retry": "Réessayer"
+    }
+  }
+}

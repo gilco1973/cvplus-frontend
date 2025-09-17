@@ -1,0 +1,148 @@
+{
+  "navigation": {
+    "home": "Startseite",
+    "upload": "CV hochladen",
+    "analysis": "Analyse",
+    "features": "Features",
+    "results": "Ergebnisse",
+    "signIn": "Anmelden",
+    "signOut": "Abmelden",
+    "dashboard": "Dashboard",
+    "profile": "Profil",
+    "settings": "Einstellungen",
+    "help": "Hilfe",
+    "pricing": "Preise"
+  },
+  "hero": {
+    "title": "Verwandeln Sie Ihren Lebenslauf",
+    "titleHighlight": "Von Papier zu Macht",
+    "subtitle": "Von Papier zu Macht",
+    "description": "Verwandeln Sie Ihren traditionellen Lebenslauf in ein interaktives, KI-gestütztes Berufsprofil, das sich im heutigen Wettbewerbsumfeld abhebt",
+    "cta": {
+      "start": "Loslegen",
+      "learnMore": "Mehr erfahren",
+      "demo": "Demo ansehen",
+      "upload": "Lebenslauf hochladen",
+      "signIn": "Anmelden zum Fortfahren",
+      "getStarted": "Loslegen",
+      "getStartedAria": "Mit CVPlus-Transformation beginnen",
+      "watchDemo": "Demo ansehen",
+      "pauseDemo": "Demo pausieren",
+      "playDemoAria": "Demo-Video abspielen",
+      "pauseDemoAria": "Demo-Video pausieren"
+    },
+    "video": {
+      "brand": "CVPlus",
+      "title": "CVPlus in Aktion sehen",
+      "description": "Sehen Sie, wie wir traditionelle Lebensläufe in kraftvolle, interaktive Berufsprofile verwandeln"
+    },
+    "trustIndicators": {
+      "cvsTransformed": "Lebensläufe Verwandelt",
+      "userRating": "Nutzerbewertung",
+      "averageTime": "Durchschnittliche Verarbeitungszeit"
+    },
+    "accessibility": {
+      "sectionLabel": "Hero-Bereich",
+      "videoControls": {
+        "playVideo": "Video abspielen",
+        "pauseVideo": "Video pausieren",
+        "muteVideo": "Video stumm schalten",
+        "unmuteVideo": "Video-Ton einschalten",
+        "enterFullscreen": "Vollbild öffnen",
+        "videoProgress": "Video-Fortschritt"
+      },
+      "browserNotSupported": "Ihr Browser unterstützt das Video-Tag nicht."
+    }
+  },
+  "aboutPage": {
+    "title": "Über CVPlus",
+    "subtitle": "Ein Open-Source-Projekt, das darauf ausgelegt ist, wie Fachkräfte sich präsentieren zu transformieren",
+    "creator": {
+      "title": "Erstellt von Gil Klainert",
+      "description1": "Hallo! Ich bin Gil Klainert, ein Software Engineering Leader und KI-Experte mit Leidenschaft für die Nutzung von Technologie zur Lösung realer Probleme. Ich habe CVPlus als Open-Source-Geschenk an die Gemeinschaft erstellt, da ich glaube, dass jeder Zugang zu mächtigen Tools verdient, die ihnen helfen können, ihre Karriere voranzutreiben.",
+      "description2": "Dieses Projekt kombiniert meine Expertise in KI, Webentwicklung und User Experience Design, um etwas zu schaffen, das einen echten Unterschied im Berufsleben der Menschen macht.",
+      "visitWebsite": "Klainert.com besuchen",
+      "viewGitHub": "Auf GitHub ansehen"
+    },
+    "mission": {
+      "title": "Unsere Mission",
+      "description": "CVPlus entstand aus einem einfachen Glauben: Ihre berufliche Geschichte verdient es, auf die überzeugendste Weise erzählt zu werden. Wir sind hier, um den Zugang zu KI-gestützten Karriere-Tools zu demokratisieren und sie für alle kostenlos und zugänglich zu machen, unabhängig von ihrem Hintergrund oder ihrer finanziellen Situation."
+    },
+    "values": {
+      "openSource": {
+        "title": "Open Source",
+        "description": "Unter der MIT-Lizenz veröffentlicht, ist CVPlus kostenlos zu nutzen, zu modifizieren und zu verteilen. Wir glauben an die Kraft der community-getriebenen Entwicklung."
+      },
+      "aiPowered": {
+        "title": "KI-Gestützt",
+        "description": "Nutzung der erweiterten Fähigkeiten von Claude AI, um Ihr berufliches Profil zu verstehen, zu analysieren und mit intelligenten Einsichten zu verbessern."
+      },
+      "innovation": {
+        "title": "Innovation Zuerst",
+        "description": "Ständiges Überschreiten von Grenzen mit Features wie KI-Karriere-Podcasts, interaktiven Zeitplänen und dynamischen QR-Codes, die CVs zum Leben erwecken."
+      },
+      "community": {
+        "title": "Community-Getrieben",
+        "description": "Für die Community, von der Community gebaut. Wir begrüßen Beiträge, Feedback und Ideen von Nutzern weltweit."
+      }
+    },
+    "contributing": {
+      "title": "Möchten Sie beitragen?",
+      "description": "CVPlus ist offen für Beiträge! Ob Sie Entwickler, Designer oder einfach jemand mit großartigen Ideen sind, wir würden uns freuen, Sie in unserer Mission zu haben, die Art zu revolutionieren, wie Menschen ihre beruflichen Geschichten präsentieren.",
+      "contributeGitHub": "Auf GitHub beitragen",
+      "reportIssues": "Probleme & Ideen melden"
+    },
+    "techStack": {
+      "title": "Mit Moderner Technologie Gebaut"
+    },
+    "cta": {
+      "title": "Bereit, Ihren Lebenslauf zu verwandeln?",
+      "description": "Beginnen Sie heute Ihre Karriere-Transformation",
+      "getStarted": "Jetzt Loslegen",
+      "backToHome": "Zurück zur Startseite"
+    }
+  },
+  "paymentSuccess": {
+    "authRequired": {
+      "title": "Authentifizierung Erforderlich",
+      "description": "Bitte melden Sie sich an, um Ihre Zahlung zu verifizieren.",
+      "goToPricing": "Zu den Preisen"
+    },
+    "verification": {
+      "title": "Zahlung Wird Verifiziert",
+      "description": "Bitte warten Sie, während wir Ihre Zahlung verifizieren und Ihren Premium-Zugang aktivieren.",
+      "pleaseWait": "Dies kann einen Moment dauern..."
+    },
+    "error": {
+      "title": "Verifizierungsfehler",
+      "paymentCanceled": "Zahlung wurde abgebrochen",
+      "authRequired": "Bitte melden Sie sich an, um die Verifizierung abzuschließen",
+      "verificationFailed": "Zahlungsstatus konnte nicht verifiziert werden. Bitte kontaktieren Sie den Support, falls dies anhält.",
+      "invalidParameters": "Ungültige Zahlungsverifizierungsparameter"
+    },
+    "success": {
+      "title": "Willkommen bei CVPlus Premium!",
+      "description": "Ihre Zahlung war erfolgreich und Ihr Premium-Zugang wurde aktiviert.",
+      "welcomePremium": "Zahlung erfolgreich! Willkommen bei CVPlus Premium!",
+      "premiumActivated": "Premium-Zugang erfolgreich aktiviert!",
+      "statusConfirmed": "Premium-Status bestätigt! Sie haben jetzt lebenslangen Zugang zu allen Premium-Funktionen.",
+      "statusPending": "Premium-Zugang wird aktiviert. Dies kann noch einen Moment dauern.",
+      "whatsNext": "Was kommt als Nächstes?"
+    },
+    "benefits": {
+      "webPortal": "Zugang zu Ihrem persönlichen Webportal",
+      "aiPodcasts": "KI-Karriere-Podcasts erstellen",
+      "analytics": "Erweiterte Analyse-Dashboard nutzen",
+      "removeBranding": "CVPlus-Branding entfernen"
+    },
+    "actions": {
+      "contactSupport": "Support Kontaktieren",
+      "backToPricing": "Zurück zu den Preisen",
+      "startUsing": "Premium-Funktionen Nutzen"
+    },
+    "support": {
+      "questionsPrefix": "Bei Fragen besuchen Sie unsere",
+      "supportPage": "Support-Seite"
+    }
+  }
+}

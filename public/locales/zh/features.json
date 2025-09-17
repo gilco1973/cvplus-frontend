@@ -1,0 +1,41 @@
+{
+  "title": "强大功能",
+  "subtitle": "创建出色专业档案所需的一切",
+  "items": {
+    "aiPowered": {
+      "title": "AI 驱动分析",
+      "description": "先进的 AI 分析您的简历并提供个性化建议以实现最大影响"
+    },
+    "interactiveElements": {
+      "title": "交互元素",
+      "description": "添加可点击的作品集、视频介绍和动态内容，吸引招聘人员"
+    },
+    "multipleFormats": {
+      "title": "多种格式",
+      "description": "为不同用例生成 PDF、网站门户和交互式格式的简历"
+    },
+    "atsOptimization": {
+      "title": "ATS 优化",
+      "description": "确保您的简历通过优化的关键词和格式通过申请人跟踪系统"
+    },
+    "realTimeProcessing": {
+      "title": "实时处理",
+      "description": "通过我们的超快 AI 处理和实时状态更新获得即时结果"
+    }
+  },
+  "categories": {
+    "aiPowered": "AI 驱动",
+    "interactive": "交互式",
+    "visual": "视觉",
+    "multimedia": "多媒体",
+    "portal": "网站门户"
+  },
+  "selected": "已选择 {{count}} 项功能",
+  "premium": "高级版",
+  "free": "免费",
+  "included": "包含",
+  "upgrade": "升级解锁",
+  "generateCV": "生成简历",
+  "preview": "预览",
+  "customize": "自定义"
+}

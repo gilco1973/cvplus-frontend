@@ -1,0 +1,26 @@
+{
+  "generic": "发生错误。请重试。",
+  "network": "网络错误。请检查您的连接。",
+  "timeout": "请求超时。请重试。",
+  "notFound": "找不到页面。",
+  "unauthorized": "您无权访问此资源。",
+  "forbidden": "访问被禁止。",
+  "serverError": "服务器错误。请稍后重试。",
+  "validationError": "请检查您的输入并重试。",
+  "fileUploadError": "文件上传失败。请重试。",
+  "processingError": "处理失败。请重试。",
+  "paymentError": "支付失败。请重试。",
+  "quotaExceeded": "超出配额。请升级您的套餐。",
+  "api": {
+    "connectionFailed": "连接服务器失败",
+    "invalidResponse": "服务器响应无效",
+    "rateLimitExceeded": "超出速率限制。请稍后重试"
+  },
+  "validation": {
+    "required": "此字段为必填项",
+    "invalidEmail": "请输入有效的电子邮件地址",
+    "invalidUrl": "请输入有效的 URL",
+    "minLength": "需要至少 {{min}} 个字符",
+    "maxLength": "最多允许 {{max}} 个字符"
+  }
+}

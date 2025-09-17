@@ -1,0 +1,110 @@
+{
+  "contactForm": {
+    "title": "Get in Touch",
+    "subtitle": "Contact {{contactName}}",
+    "fields": {
+      "name": {
+        "label": "Your Name",
+        "placeholder": "Enter your full name",
+        "required": "true"
+      },
+      "email": {
+        "label": "Your Email",
+        "placeholder": "Enter your email address",
+        "required": "true"
+      },
+      "phone": {
+        "label": "Phone Number",
+        "placeholder": "Enter your phone number (optional)"
+      },
+      "company": {
+        "label": "Company",
+        "placeholder": "Enter your company name (optional)"
+      },
+      "subject": {
+        "label": "Subject",
+        "placeholder": "Select a subject",
+        "required": "true",
+        "options": {
+          "jobOpportunity": "Job Opportunity",
+          "collaboration": "Collaboration",
+          "consultation": "Consultation",
+          "generalInquiry": "General Inquiry",
+          "other": "Other"
+        }
+      },
+      "message": {
+        "label": "Message",
+        "placeholder": "Enter your message...",
+        "required": "true",
+        "counter": "{{current}}/{{max}} characters"
+      }
+    },
+    "buttons": {
+      "send": "Send Message",
+      "sending": "Sending...",
+      "retry": "Try Again"
+    },
+    "status": {
+      "success": "Message sent successfully!",
+      "error": "Failed to send message. Please try again.",
+      "networkError": "Network error. Please check your connection and try again.",
+      "validationError": "Please correct the errors above and try again."
+    },
+    "validation": {
+      "nameRequired": "Please enter your name",
+      "emailRequired": "Please enter your email address",
+      "emailInvalid": "Please enter a valid email address",
+      "subjectRequired": "Please select a subject",
+      "messageRequired": "Please enter a message",
+      "messageMaxLength": "Message cannot exceed {{max}} characters",
+      "phoneInvalid": "Please enter a valid phone number"
+    }
+  },
+  "urlInput": {
+    "placeholder": "https://example.com/my-cv",
+    "button": {
+      "submit": "Start Processing",
+      "processing": "Processing..."
+    },
+    "help": "Enter the URL of your online CV or LinkedIn profile",
+    "validation": {
+      "required": "Please enter a URL",
+      "invalid": "Please enter a valid URL starting with http:// or https://"
+    }
+  },
+  "fileUpload": {
+    "dropzone": {
+      "drag": "Drag and drop your CV here",
+      "or": "or",
+      "browse": "Browse Files"
+    },
+    "formats": "Supported formats: PDF, DOCX, TXT",
+    "maxSize": "Maximum file size: 10MB",
+    "validation": {
+      "invalidFormat": "Invalid file format. Please upload a PDF, DOCX, or TXT file.",
+      "fileTooLarge": "File is too large. Maximum size is 10MB.",
+      "uploadFailed": "Failed to upload file. Please try again."
+    }
+  },
+  "labels": {
+    "required": "Required",
+    "optional": "Optional",
+    "loading": "Loading..."
+  },
+  "placeholders": {
+    "enterText": "Enter text...",
+    "selectOption": "Select an option...",
+    "uploadFile": "Upload file..."
+  },
+  "buttons": {
+    "cancel": "Cancel",
+    "submit": "Submit",
+    "save": "Save",
+    "reset": "Reset",
+    "clear": "Clear",
+    "edit": "Edit",
+    "delete": "Delete",
+    "retry": "Retry"
+  }
+}

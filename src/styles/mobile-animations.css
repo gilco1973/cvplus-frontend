@@ -1,0 +1,358 @@
+/* Mobile Navigation Animations */
+
+/* Smooth transitions for all interactive elements */
+.mobile-nav-transition {
+  transition: all 0.2s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+.mobile-nav-transition-fast {
+  transition: all 0.15s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+.mobile-nav-transition-slow {
+  transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+/* Page transition animations */
+.page-enter {
+  opacity: 0;
+  transform: translateX(100%);
+}
+
+.page-enter-active {
+  opacity: 1;
+  transform: translateX(0);
+  transition: opacity 300ms cubic-bezier(0.25, 0.46, 0.45, 0.94),
+              transform 300ms cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+.page-exit {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+.page-exit-active {
+  opacity: 0;
+  transform: translateX(-100%);
+  transition: opacity 300ms cubic-bezier(0.25, 0.46, 0.45, 0.94),
+              transform 300ms cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+/* Step navigation slide animations */
+.step-slide-enter {
+  opacity: 0;
+  transform: translateX(50px);
+}
+
+.step-slide-enter-active {
+  opacity: 1;
+  transform: translateX(0);
+  transition: opacity 250ms ease-out,
+              transform 250ms ease-out;
+}
+
+.step-slide-exit {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+.step-slide-exit-active {
+  opacity: 0;
+  transform: translateX(-50px);
+  transition: opacity 250ms ease-out,
+              transform 250ms ease-out;
+}
+
+/* Bottom nav slide up animation */
+.bottom-nav-slide-up {
+  animation: slideUpFromBottom 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+@keyframes slideUpFromBottom {
+  from {
+    transform: translateY(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+/* Header collapse animation */
+.header-collapse {
+  animation: headerCollapse 0.2s ease-out forwards;
+}
+
+@keyframes headerCollapse {
+  from {
+    height: 56px;
+    padding-top: 12px;
+    padding-bottom: 12px;
+  }
+  to {
+    height: 48px;
+    padding-top: 8px;
+    padding-bottom: 8px;
+  }
+}
+
+/* Touch feedback animations */
+.touch-feedback {
+  position: relative;
+  overflow: hidden;
+}
+
+.touch-feedback::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 0;
+  height: 0;
+  border-radius: 50%;
+  background-color: currentColor;
+  opacity: 0.1;
+  transform: translate(-50%, -50%);
+  transition: width 0.3s ease, height 0.3s ease;
+  pointer-events: none;
+}
+
+.touch-feedback:active::before {
+  width: 200px;
+  height: 200px;
+}
+
+/* Swipe gesture visual feedback */
+.swipe-indicator {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+  z-index: 1000;
+  opacity: 0;
+  transition: opacity 0.2s ease;
+}
+
+.swipe-indicator.active {
+  opacity: 1;
+}
+
+.swipe-indicator-left {
+  animation: swipeLeftIndicator 0.3s ease-out;
+}
+
+.swipe-indicator-right {
+  animation: swipeRightIndicator 0.3s ease-out;
+}
+
+@keyframes swipeLeftIndicator {
+  0% {
+    transform: translate(-50%, -50%) translateX(30px);
+    opacity: 0;
+  }
+  50% {
+    opacity: 1;
+  }
+  100% {
+    transform: translate(-50%, -50%) translateX(-30px);
+    opacity: 0;
+  }
+}
+
+@keyframes swipeRightIndicator {
+  0% {
+    transform: translate(-50%, -50%) translateX(-30px);
+    opacity: 0;
+  }
+  50% {
+    opacity: 1;
+  }
+  100% {
+    transform: translate(-50%, -50%) translateX(30px);
+    opacity: 0;
+  }
+}
+
+/* Pull to refresh animation */
+.pull-to-refresh-indicator {
+  transform: translateY(-60px);
+  transition: transform 0.2s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+.pull-to-refresh-indicator.visible {
+  transform: translateY(0);
+}
+
+.pull-to-refresh-spinner {
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Feature selection card animations */
+.feature-card-enter {
+  opacity: 0;
+  transform: scale(0.95) translateY(10px);
+}
+
+.feature-card-enter-active {
+  opacity: 1;
+  transform: scale(1) translateY(0);
+  transition: opacity 200ms ease-out,
+              transform 200ms ease-out;
+}
+
+.feature-card-selected {
+  animation: featureCardSelect 0.2s ease-out;
+}
+
+@keyframes featureCardSelect {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.02);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+/* Step progress animation */
+.step-progress-fill {
+  animation: progressFill 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+@keyframes progressFill {
+  from {
+    width: 0%;
+  }
+  to {
+    width: var(--progress-width, 100%);
+  }
+}
+
+/* Breadcrumb expand animation */
+.breadcrumb-expand {
+  animation: breadcrumbExpand 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+@keyframes breadcrumbExpand {
+  from {
+    max-height: 0;
+    opacity: 0;
+  }
+  to {
+    max-height: 200px;
+    opacity: 1;
+  }
+}
+
+/* Loading state animations */
+.loading-pulse {
+  animation: loadingPulse 1.5s ease-in-out infinite;
+}
+
+@keyframes loadingPulse {
+  0% {
+    opacity: 0.6;
+  }
+  50% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0.6;
+  }
+}
+
+.loading-shimmer {
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(255, 255, 255, 0.2) 50%,
+    transparent 100%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+/* Safe area support for iOS */
+@supports (padding-top: env(safe-area-inset-top)) {
+  .safe-area-pt {
+    padding-top: env(safe-area-inset-top);
+  }
+  
+  .safe-area-pb {
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+  
+  .safe-area-pl {
+    padding-left: env(safe-area-inset-left);
+  }
+  
+  .safe-area-pr {
+    padding-right: env(safe-area-inset-right);
+  }
+}
+
+/* Responsive breakpoints for animations */
+@media (max-width: 768px) {
+  /* Reduce motion on mobile for performance */
+  .mobile-nav-transition {
+    transition-duration: 0.15s;
+  }
+  
+  .page-enter-active,
+  .page-exit-active {
+    transition-duration: 200ms;
+  }
+  
+  /* Simpler animations for low-end devices */
+  @media (prefers-reduced-motion: reduce) {
+    .mobile-nav-transition,
+    .mobile-nav-transition-fast,
+    .mobile-nav-transition-slow,
+    .page-enter-active,
+    .page-exit-active,
+    .step-slide-enter-active,
+    .step-slide-exit-active {
+      transition: none;
+    }
+    
+    .bottom-nav-slide-up,
+    .header-collapse,
+    .swipe-indicator-left,
+    .swipe-indicator-right,
+    .feature-card-enter-active,
+    .feature-card-selected,
+    .step-progress-fill,
+    .breadcrumb-expand {
+      animation: none;
+    }
+  }
+}
+
+/* High refresh rate display support */
+@media (min-resolution: 120dpi) {
+  .mobile-nav-transition {
+    transition-timing-function: cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  }
+}

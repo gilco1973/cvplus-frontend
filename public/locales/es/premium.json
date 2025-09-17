@@ -1,0 +1,22 @@
+{
+  "title": "Actualizar a Premium",
+  "subtitle": "Desbloquea todas las funciones",
+  "benefits": {
+    "unlimited": "Generaciones ilimitadas de CV",
+    "allFeatures": "Acceso a todas las funciones",
+    "priority": "Procesamiento prioritario",
+    "customDomain": "Dominio personalizado para portal web",
+    "analytics": "Análisis avanzados",
+    "support": "Soporte prioritario"
+  },
+  "plans": {
+    "free": "Gratis",
+    "pro": "Pro",
+    "lifetime": "De por vida"
+  },
+  "cta": {
+    "upgrade": "Actualizar Ahora",
+    "viewPlans": "Ver Planes",
+    "startTrial": "Iniciar Prueba Gratuita"
+  }
+}

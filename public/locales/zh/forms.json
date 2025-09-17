@@ -1,0 +1,110 @@
+{
+  "contactForm": {
+    "title": "联系我们",
+    "subtitle": "联系 {{contactName}}",
+    "fields": {
+      "name": {
+        "label": "您的姓名",
+        "placeholder": "请输入您的全名",
+        "required": "true"
+      },
+      "email": {
+        "label": "您的邮箱",
+        "placeholder": "请输入您的电子邮件地址",
+        "required": "true"
+      },
+      "phone": {
+        "label": "电话号码",
+        "placeholder": "请输入您的电话号码（可选）"
+      },
+      "company": {
+        "label": "公司",
+        "placeholder": "请输入您的公司名称（可选）"
+      },
+      "subject": {
+        "label": "主题",
+        "placeholder": "选择一个主题",
+        "required": "true",
+        "options": {
+          "jobOpportunity": "工作机会",
+          "collaboration": "合作",
+          "consultation": "咨询",
+          "generalInquiry": "一般询问",
+          "other": "其他"
+        }
+      },
+      "message": {
+        "label": "消息",
+        "placeholder": "请输入您的消息...",
+        "required": "true",
+        "counter": "{{current}}/{{max}} 个字符"
+      }
+    },
+    "buttons": {
+      "send": "发送消息",
+      "sending": "发送中...",
+      "retry": "重试"
+    },
+    "status": {
+      "success": "消息发送成功！",
+      "error": "发送消息失败。请重试。",
+      "networkError": "网络错误。请检查您的连接并重试。",
+      "validationError": "请纠正上面的错误并重试。"
+    },
+    "validation": {
+      "nameRequired": "请输入您的姓名",
+      "emailRequired": "请输入您的电子邮件地址",
+      "emailInvalid": "请输入有效的电子邮件地址",
+      "subjectRequired": "请选择一个主题",
+      "messageRequired": "请输入消息",
+      "messageMaxLength": "消息不能超过 {{max}} 个字符",
+      "phoneInvalid": "请输入有效的电话号码"
+    }
+  },
+  "urlInput": {
+    "placeholder": "https://example.com/my-cv",
+    "button": {
+      "submit": "开始处理",
+      "processing": "处理中..."
+    },
+    "help": "输入您的在线简历或 LinkedIn 资料的 URL",
+    "validation": {
+      "required": "请输入 URL",
+      "invalid": "请输入以 http:// 或 https:// 开头的有效 URL"
+    }
+  },
+  "fileUpload": {
+    "dropzone": {
+      "drag": "将您的简历拖放到这里",
+      "or": "或",
+      "browse": "浏览文件"
+    },
+    "formats": "支持的格式：PDF、DOCX、TXT",
+    "maxSize": "最大文件大小：10MB",
+    "validation": {
+      "invalidFormat": "文件格式无效。请上传 PDF、DOCX 或 TXT 文件。",
+      "fileTooLarge": "文件太大。最大大小为 10MB。",
+      "uploadFailed": "文件上传失败。请重试。"
+    }
+  },
+  "labels": {
+    "required": "必填",
+    "optional": "可选",
+    "loading": "加载中..."
+  },
+  "placeholders": {
+    "enterText": "输入文字...",
+    "selectOption": "选择一个选项...",
+    "uploadFile": "上传文件..."
+  },
+  "buttons": {
+    "cancel": "取消",
+    "submit": "提交",
+    "save": "保存",
+    "reset": "重置",
+    "clear": "清除",
+    "edit": "编辑",
+    "delete": "删除",
+    "retry": "重试"
+  }
+}

@@ -1,0 +1,148 @@
+{
+  "navigation": {
+    "home": "首页",
+    "upload": "上传简历",
+    "analysis": "分析",
+    "features": "功能",
+    "results": "结果",
+    "signIn": "登录",
+    "signOut": "退出登录",
+    "dashboard": "仪表盘",
+    "profile": "个人资料",
+    "settings": "设置",
+    "help": "帮助",
+    "pricing": "价格"
+  },
+  "hero": {
+    "title": "转换您的简历",
+    "titleHighlight": "从纸质到强大",
+    "subtitle": "从纸质到强大",
+    "description": "将您的传统简历转换为交互式的AI驱动专业档案，在当今竞争激烈的就业市场中脱颖而出",
+    "cta": {
+      "start": "开始",
+      "learnMore": "了解更多",
+      "demo": "查看演示",
+      "upload": "上传您的简历",
+      "signIn": "登录以继续",
+      "getStarted": "开始",
+      "getStartedAria": "开始CVPlus转换",
+      "watchDemo": "观看演示",
+      "pauseDemo": "暂停演示",
+      "playDemoAria": "播放演示视频",
+      "pauseDemoAria": "暂停演示视频"
+    },
+    "video": {
+      "brand": "CVPlus",
+      "title": "查看CVPlus的实际效果",
+      "description": "观看我们如何将传统简历转换为强大的交互式专业档案"
+    },
+    "trustIndicators": {
+      "cvsTransformed": "已转换的简历",
+      "userRating": "用户评分",
+      "averageTime": "平均处理时间"
+    },
+    "accessibility": {
+      "sectionLabel": "主页横幅部分",
+      "videoControls": {
+        "playVideo": "播放视频",
+        "pauseVideo": "暂停视频",
+        "muteVideo": "静音视频",
+        "unmuteVideo": "取消静音视频",
+        "enterFullscreen": "进入全屏",
+        "videoProgress": "视频进度"
+      },
+      "browserNotSupported": "您的浏览器不支持视频标签。"
+    }
+  },
+  "aboutPage": {
+    "title": "关于CVPlus",
+    "subtitle": "致力于改变专业人士展示自己方式的开源项目",
+    "creator": {
+      "title": "由Gil Klainert创建",
+      "description1": "您好！我是Gil Klainert，一名软件工程领导者和AI专家，致力于利用技术解决现实世界的问题。我将CVPlus作为开源礼物奉献给社区，相信每个人都应该获得能够帮助他们推进职业发展的强大工具的访问权限。",
+      "description2": "这个项目结合了我在AI、网络开发和用户体验设计方面的专业知识，创造了能够真正改变人们职业生活的产品。",
+      "visitWebsite": "访问Klainert.com",
+      "viewGitHub": "在GitHub上查看"
+    },
+    "mission": {
+      "title": "我们的使命",
+      "description": "CVPlus源于一个简单的信念：您的职业故事值得以最引人注目的方式讲述。我们致力于普及AI驱动的职业工具的访问，让每个人都能免费获得，无论其背景或经济状况如何。"
+    },
+    "values": {
+      "openSource": {
+        "title": "开源",
+        "description": "在MIT许可证下发布，CVPlus可以免费使用、修改和分发。我们相信社区驱动开发的力量。"
+      },
+      "aiPowered": {
+        "title": "AI驱动",
+        "description": "利用Claude AI的先进能力来理解、分析和通过智能洞察增强您的专业档案。"
+      },
+      "innovation": {
+        "title": "创新优先",
+        "description": "通过AI职业播客、交互式时间线和让简历生动起来的动态二维码等功能不断推进边界。"
+      },
+      "community": {
+        "title": "社区驱动",
+        "description": "为社区而建，由社区共建。我们欢迎来自世界各地用户的贡献、反馈和想法。"
+      }
+    },
+    "contributing": {
+      "title": "想要贡献吗？",
+      "description": "CVPlus欢迎贡献！无论您是开发者、设计师还是只是有好想法的人，我们都希望您能加入我们的使命，革新人们展示职业故事的方式。",
+      "contributeGitHub": "在GitHub上贡献",
+      "reportIssues": "报告问题和想法"
+    },
+    "techStack": {
+      "title": "采用现代技术构建"
+    },
+    "cta": {
+      "title": "准备好转换您的简历了吗？",
+      "description": "今天就开始您的职业转型之旅",
+      "getStarted": "立即开始",
+      "backToHome": "返回首页"
+    }
+  },
+  "paymentSuccess": {
+    "authRequired": {
+      "title": "需要身份验证",
+      "description": "请登录以验证您的付款。",
+      "goToPricing": "前往定价页面"
+    },
+    "verification": {
+      "title": "正在验证付款",
+      "description": "请稍候，我们正在验证您的付款并激活您的高级访问权限。",
+      "pleaseWait": "这可能需要一些时间..."
+    },
+    "error": {
+      "title": "验证错误",
+      "paymentCanceled": "付款已取消",
+      "authRequired": "请登录以完成验证",
+      "verificationFailed": "无法验证付款状态。如果此问题持续存在，请联系支持。",
+      "invalidParameters": "无效的付款验证参数"
+    },
+    "success": {
+      "title": "欢迎使用CVPlus高级版！",
+      "description": "您的付款成功，您的高级访问权限已激活。",
+      "welcomePremium": "付款成功！欢迎使用CVPlus高级版！",
+      "premiumActivated": "高级访问权限激活成功！",
+      "statusConfirmed": "高级状态已确认！您现在拥有所有高级功能的终身访问权限。",
+      "statusPending": "高级访问权限正在激活中。这可能还需要一些时间。",
+      "whatsNext": "下一步是什么？"
+    },
+    "benefits": {
+      "webPortal": "访问您的个人网络门户",
+      "aiPodcasts": "生成AI职业播客",
+      "analytics": "使用高级分析仪表板",
+      "removeBranding": "移除CVPlus品牌标识"
+    },
+    "actions": {
+      "contactSupport": "联系支持",
+      "backToPricing": "返回定价页面",
+      "startUsing": "开始使用高级功能"
+    },
+    "support": {
+      "questionsPrefix": "如果您有任何问题，请访问我们的",
+      "supportPage": "支持页面"
+    }
+  }
+}

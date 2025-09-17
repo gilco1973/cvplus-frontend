@@ -1,0 +1,47 @@
+{
+  "name": "CVPlus - AI-Powered CV Transformation",
+  "short_name": "CVPlus",
+  "description": "From Paper to Powerful: Your CV, Reinvented",
+  "start_url": "/",
+  "display": "standalone",
+  "theme_color": "#00bcd4",
+  "background_color": "#ffffff",
+  "icons": [
+    {
+      "src": "/images/CVisionary_Logo_16px_no_slogan.png",
+      "sizes": "16x16",
+      "type": "image/png"
+    },
+    {
+      "src": "/images/CVisionary_Logo_32px_no_slogan.png",
+      "sizes": "32x32",
+      "type": "image/png"
+    },
+    {
+      "src": "/images/CVisionary_Logo_64px_no_slogan.png",
+      "sizes": "64x64",
+      "type": "image/png"
+    },
+    {
+      "src": "/images/CVisionary_Logo_128px_no_slogan.png",
+      "sizes": "128x128",
+      "type": "image/png"
+    },
+    {
+      "src": "/images/CVisionary_Logo_256px_no_slogan.png",
+      "sizes": "256x256",
+      "type": "image/png"
+    },
+    {
+      "src": "/images/CVisionary_Logo_512px_no_slogan.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    },
+    {
+      "src": "/images/cvisionary-icon-square.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}

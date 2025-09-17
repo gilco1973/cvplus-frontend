@@ -1,0 +1,39 @@
+<svg width="800" height="600" viewBox="0 0 800 600" xmlns="http://www.w3.org/2000/svg">
+  <!-- Background -->
+  <rect width="800" height="600" fill="#2d2d2d"/>
+  
+  <!-- Document Icon -->
+  <g transform="translate(120, 220)">
+    <!-- Document shape -->
+    <rect x="0" y="0" width="120" height="160" rx="10" fill="white"/>
+    <!-- Lines on document -->
+    <rect x="20" y="30" width="60" height="8" rx="4" fill="#4a4a4a"/>
+    <rect x="20" y="50" width="60" height="8" rx="4" fill="#4a4a4a"/>
+    <rect x="20" y="70" width="60" height="8" rx="4" fill="#4a4a4a"/>
+    <rect x="20" y="90" width="60" height="8" rx="4" fill="#4a4a4a"/>
+  </g>
+  
+  <!-- AI/Tech Connection Lines -->
+  <g transform="translate(240, 280)">
+    <!-- Main curved line -->
+    <path d="M 0 20 Q 30 0, 60 20 T 120 20" stroke="#00bcd4" stroke-width="4" fill="none"/>
+    <!-- Connection dots -->
+    <circle cx="0" cy="20" r="12" fill="#00bcd4"/>
+    <circle cx="60" cy="20" r="12" fill="#00bcd4"/>
+    <circle cx="120" cy="20" r="12" fill="#00bcd4"/>
+    <!-- Additional branch -->
+    <path d="M 60 20 Q 80 -20, 100 -20" stroke="#00bcd4" stroke-width="3" fill="none"/>
+    <circle cx="100" cy="-20" r="10" fill="#00bcd4"/>
+  </g>
+  
+  <!-- Text -->
+  <g transform="translate(380, 260)">
+    <!-- CVPlus -->
+    <text x="0" y="0" font-family="Arial, sans-serif" font-size="80" font-weight="bold" fill="white">CV</text>
+    <text x="130" y="0" font-family="Arial, sans-serif" font-size="80" font-weight="300" fill="white">isionary</text>
+    
+    <!-- Tagline -->
+    <text x="0" y="50" font-family="Arial, sans-serif" font-size="32" font-weight="300" fill="#cccccc">From Paper to Powerful:</text>
+    <text x="0" y="90" font-family="Arial, sans-serif" font-size="32" font-weight="300" fill="#cccccc">Your CV, Reinvented</text>
+  </g>
+</svg>

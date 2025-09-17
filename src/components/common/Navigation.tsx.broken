@@ -1,0 +1,59 @@
+import React, { useState } from 'react';
+import { Link, useLocation } from 'react-router-dom';
+import { Menu, X } from 'lucide-react';
+import { Logo } from '../Logo';
+import { UserMenu } from '../UserMenu';
+import { useAuth } from '../../contexts/AuthContext';
+import { designSystem } from '../../config/designSystem';
+import toast from 'react-hot-toast';
+
+interface NavigationProps {
+  variant?: 'default' | 'transparent' | 'solid';
+  className?: string;
+}
+
+interface NavLink {
+  href: string;
+  label: string;
+  external?: boolean;
+}
+
+const navLinks: NavLink[] = [
+  { href: '/', label: 'Home' },
+  { href: '/features', label: 'Features' },
+  { href: '/pricing', label: 'Pricing' },
+  { href: '/about', label: 'About' },
+  { href: '/faq', label: 'FAQ' },
+];
+
+export const Navigation: React.FC<NavigationProps> = ({
+  variant = 'default',
+  className = ''
+}) => {
+  const location = useLocation();
+  const { user, signInWithGoogle } = useAuth();
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+
+  // Get variant-specific styling
+  const getVariantClasses = () => {
+    switch (variant) {
+      case 'transparent':
+        return {
+          background: 'bg-transparent',
+          border: 'border-transparent',
+          backdrop: '',
+        };
+      case 'solid':
+        return {
+          background: 'bg-neutral-800',
+          border: 'border-b border-neutral-700',
+          backdrop: '',
+        };
+      default:
+        return {
+          background: designSystem.components.navigation.header.background,
+          border: designSystem.components.navigation.header.border,
+          backdrop: 'backdrop-blur-md',
+        };
+    }
+  };\n\n  const variantClasses = getVariantClasses();\n\n  const isActiveRoute = (href: string): boolean => {\n    if (href === '/') {\n      return location.pathname === '/';\n    }\n    return location.pathname.startsWith(href);\n  };\n\n  const handleSignIn = async () => {\n    try {\n      await signInWithGoogle();\n      toast.success('Signed in successfully!');\n    } catch (error) {\n      console.error('Sign in error:', error);\n      toast.error('Failed to sign in');\n    }\n  };\n\n  const closeMobileMenu = () => {\n    setIsMobileMenuOpen(false);\n  };\n\n  return (\n    <header \n      className={`${\n        designSystem.components.navigation.header.sticky\n      } ${variantClasses.background} ${variantClasses.border} ${\n        variantClasses.backdrop\n      } ${className}`}\n    >\n      <div className=\"max-w-7xl mx-auto px-4 sm:px-6 lg:px-8\">\n        <div className=\"flex items-center justify-between h-16\">\n          {/* Logo */}\n          <Link to=\"/\" className=\"flex-shrink-0\">\n            <Logo \n              size=\"medium\" \n              variant=\"white\"\n              className=\"transition-opacity hover:opacity-80\"\n            />\n          </Link>\n\n          {/* Desktop Navigation */}\n          <nav className=\"hidden md:flex items-center space-x-8\" aria-label=\"Main navigation\">\n            {navLinks.map((link) => {\n              const isActive = isActiveRoute(link.href);\n              \n              return (\n                <Link\n                  key={link.href}\n                  to={link.href}\n                  className={`${\n                    designSystem.components.navigation.link.base\n                  } ${\n                    isActive \n                      ? designSystem.components.navigation.link.active\n                      : designSystem.components.navigation.link.default\n                  }`}\n                  aria-current={isActive ? 'page' : undefined}\n                >\n                  {link.label}\n                </Link>\n              );\n            })}\n            \n            {/* User Authentication */}\n            {user ? (\n              <UserMenu variant=\"white\" size=\"default\" />\n            ) : (\n              <button\n                onClick={handleSignIn}\n                className={`${\n                  designSystem.components.button.base\n                } ${\n                  designSystem.components.button.variants.primary.default\n                } ${\n                  designSystem.components.button.sizes.md\n                }`}\n                aria-label=\"Sign in with Google\"\n              >\n                Sign In\n              </button>\n            )}\n          </nav>\n\n          {/* Mobile menu button */}\n          <button\n            onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}\n            className=\"md:hidden p-2 rounded-lg hover:bg-neutral-700 transition-colors focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 focus:ring-offset-neutral-900\"\n            aria-expanded={isMobileMenuOpen}\n            aria-label=\"Toggle mobile menu\"\n          >\n            {isMobileMenuOpen ? (\n              <X className=\"w-6 h-6 text-neutral-300\" />\n            ) : (\n              <Menu className=\"w-6 h-6 text-neutral-300\" />\n            )}\n          </button>\n        </div>\n      </div>\n\n      {/* Mobile Navigation Menu */}\n      {isMobileMenuOpen && (\n        <>\n          {/* Overlay */}\n          <div \n            className=\"fixed inset-0 bg-black/50 backdrop-blur-sm z-40 md:hidden\"\n            onClick={closeMobileMenu}\n            aria-hidden=\"true\"\n          />\n          \n          {/* Mobile menu */}\n          <div className=\"md:hidden fixed top-16 left-0 right-0 bg-neutral-800 border-b border-neutral-700 shadow-lg z-50\">\n            <nav className=\"px-4 py-4 space-y-2\" aria-label=\"Mobile navigation\">\n              {navLinks.map((link) => {\n                const isActive = isActiveRoute(link.href);\n                \n                return (\n                  <Link\n                    key={link.href}\n                    to={link.href}\n                    onClick={closeMobileMenu}\n                    className={`${\n                      designSystem.components.navigation.link.base\n                    } ${\n                      designSystem.components.navigation.link.mobile\n                    } ${\n                      isActive\n                        ? 'text-primary-400 bg-primary-400/10'\n                        : 'text-neutral-300 hover:text-primary-400 hover:bg-neutral-700'\n                    } rounded-lg transition-colors`}\n                    aria-current={isActive ? 'page' : undefined}\n                  >\n                    {link.label}\n                  </Link>\n                );\n              })}\n              \n              {/* Mobile User Authentication */}\n              <div className=\"pt-4 border-t border-neutral-700\">\n                {user ? (\n                  <div className=\"px-4 py-2\">\n                    <UserMenu variant=\"white\" size=\"default\" />\n                  </div>\n                ) : (\n                  <button\n                    onClick={() => {\n                      handleSignIn();\n                      closeMobileMenu();\n                    }}\n                    className={`w-full ${\n                      designSystem.components.button.base\n                    } ${\n                      designSystem.components.button.variants.primary.default\n                    } ${\n                      designSystem.components.button.sizes.md\n                    }`}\n                  >\n                    Sign In\n                  </button>\n                )}\n              </div>\n            </nav>\n          </div>\n        </>\n      )}\n    </header>\n  );\n};\n\n// Export as default\nexport default Navigation;
