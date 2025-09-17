@@ -1,0 +1,419 @@
+// @ts-ignore
+/**
+ * MultimediaService Usage Examples
+ * Demonstrates how to use the MultimediaService for various operations
+ *
+ * @author CVPlus Development Team
+ * @version 1.0.0
+  */
+
+import { initializeApp } from 'firebase/app';
+import { getFunctions } from 'firebase/functions';
+import { getStorage } from 'firebase/storage';
+import {
+  MultimediaService,
+  forDevelopment,
+  forProduction,
+  CVData,
+  PodcastOptions,
+  VideoOptions
+} from '../index';
+
+// ============================================================================
+// INITIALIZATION EXAMPLES
+// ============================================================================
+
+/**
+ * Example 1: Initialize for development with emulators
+  */
+export function initializeForDevelopment() {
+  // Initialize Firebase
+  const app = initializeApp({
+    projectId: 'cvplus-dev',
+    storageBucket: 'cvplus-dev.appspot.com'
+  });
+
+  const functions = getFunctions(app);
+  const storage = getStorage(app);
+
+  // Initialize MultimediaService for development
+  const multimediaService = forDevelopment(functions, storage);
+
+  return multimediaService;
+}
+
+/**
+ * Example 2: Initialize for production
+  */
+export function initializeForProduction() {
+  const app = initializeApp({
+    projectId: 'cvplus-prod',
+    storageBucket: 'cvplus-prod.appspot.com',
+    // Add your Firebase config
+  });
+
+  const functions = getFunctions(app);
+  const storage = getStorage(app);
+
+  const multimediaService = forProduction(functions, storage);
+
+  return multimediaService;
+}
+
+// ============================================================================
+// USAGE EXAMPLES
+// ============================================================================
+
+/**
+ * Example 3: Generate a podcast from CV data
+  */
+export async function generatePodcastExample(multimediaService: MultimediaService) {
+  const cvData: CVData = {
+    id: 'cv-123',
+    userId: 'user-456',
+    personalInfo: {
+      name: 'John Doe',
+      email: 'john.doe@example.com',
+      phone: '+1-555-0123',
+      summary: 'Experienced software engineer with 5+ years in full-stack development'
+    },
+    experience: [
+      {
+        title: 'Senior Software Engineer',
+        company: 'Tech Corp',
+        duration: '2021 - Present',
+        description: 'Led development of scalable web applications using React and Node.js'
+      },
+      {
+        title: 'Software Engineer',
+        company: 'StartupXYZ',
+        duration: '2019 - 2021',
+        description: 'Built microservices architecture and improved system performance by 40%'
+      }
+    ],
+    education: [
+      {
+        degree: 'Bachelor of Science in Computer Science',
+        institution: 'University of Technology',
+        year: '2019'
+      }
+    ],
+    skills: ['JavaScript', 'React', 'Node.js', 'Python', 'AWS', 'Docker'],
+    achievements: [
+      'Led team of 5 developers on major product launch',
+      'Reduced application load time by 60%',
+      'Implemented CI/CD pipeline reducing deployment time by 80%'
+    ]
+  };
+
+  const podcastOptions: PodcastOptions = {
+    style: 'professional',
+    duration: 'medium',
+    voice: 'male',
+    includeIntro: true,
+    includeOutro: true,
+    backgroundMusic: true,
+    language: 'en'
+  };
+
+  try {
+    // Start podcast generation
+    const job = await multimediaService.generatePodcast(cvData, podcastOptions);
+    console.log('Podcast generation started:', job.id);
+
+    // Subscribe to progress updates
+    const eventSource = multimediaService.subscribeToGeneration(job.id, (status) => {
+      console.log(`Generation progress: ${status.progress}% - ${status.stage}`);
+
+      if (status.status === 'completed' && status.result) {
+        console.log('Podcast generated successfully:', status.result.url);
+        eventSource.close();
+      } else if (status.status === 'failed') {
+        console.error('Podcast generation failed:', status.error);
+        eventSource.close();
+      }
+    });
+
+    return job;
+  } catch (error) {
+    console.error('Failed to start podcast generation:', error);
+    throw error;
+  }
+}
+
+/**
+ * Example 4: Generate a video introduction
+  */
+export async function generateVideoExample(multimediaService: MultimediaService) {
+  const cvData: CVData = {
+    // ... same CV data as above
+    id: 'cv-123',
+    userId: 'user-456',
+    personalInfo: {
+      name: 'Sarah Johnson',
+      email: 'sarah.johnson@example.com',
+      summary: 'Creative UI/UX designer with passion for user-centered design'
+    },
+    experience: [],
+    education: [],
+    skills: ['Figma', 'Adobe Creative Suite', 'User Research', 'Prototyping']
+  };
+
+  const videoOptions: VideoOptions = {
+    style: 'professional',
+    duration: 'short',
+    avatarStyle: 'professional',
+    background: 'office',
+    includeSubtitles: true,
+    includeNameCard: true,
+    quality: 'high',
+    orientation: 'landscape'
+  };
+
+  try {
+    const job = await multimediaService.generateVideo(cvData, videoOptions);
+    console.log('Video generation started:', job.id);
+
+    // Monitor progress
+    const eventSource = multimediaService.subscribeToGeneration(job.id, (status) => {
+      console.log(`Video generation: ${status.progress}% complete`);
+    });
+
+    return job;
+  } catch (error) {
+    console.error('Video generation failed:', error);
+    throw error;
+  }
+}
+
+/**
+ * Example 5: Upload and manage media files
+  */
+export async function uploadMediaExample(multimediaService: MultimediaService) {
+  const fileInput = document.getElementById('media-upload') as HTMLInputElement;
+  const file = fileInput?.files?.[0];
+
+  if (!file) {
+    throw new Error('No file selected');
+  }
+
+  const metadata = {
+    id: `media-${Date.now()}`,
+    userId: 'user-456',
+    type: 'image' as const,
+    tags: ['portfolio', 'project-screenshot'],
+    description: 'Project screenshot for portfolio',
+    customMetadata: {
+      project: 'E-commerce Platform',
+      category: 'web-development'
+    }
+  };
+
+  try {
+    const mediaItem = await multimediaService.uploadMedia(
+      file,
+      metadata,
+      (progress) => {
+        console.log(`Upload progress: ${progress.percentage.toFixed(1)}%`);
+      }
+    );
+
+    console.log('Media uploaded successfully:', mediaItem);
+    return mediaItem;
+  } catch (error) {
+    console.error('Upload failed:', error);
+    throw error;
+  }
+}
+
+/**
+ * Example 6: Create and manage playlists
+  */
+export async function playlistExample(multimediaService: MultimediaService) {
+  try {
+    // Create a new playlist
+    const playlist = await multimediaService.createPlaylist(
+      'My Professional Portfolio',
+      ['media-1', 'media-2', 'media-3']
+    );
+
+    console.log('Playlist created:', playlist);
+
+    // Add items to playlist
+    const updatedPlaylist = await multimediaService.updatePlaylist(playlist.id, {
+      name: 'Updated Portfolio',
+      description: 'My latest professional work',
+      isPublic: true,
+      tags: ['portfolio', 'professional', '2024'],
+      items: {
+        add: [
+          { mediaId: 'media-4', position: 3 },
+          { mediaId: 'media-5', position: 4 }
+        ]
+      }
+    });
+
+    console.log('Playlist updated:', updatedPlaylist);
+
+    return updatedPlaylist;
+  } catch (error) {
+    console.error('Playlist operation failed:', error);
+    throw error;
+  }
+}
+
+/**
+ * Example 7: Media playback control
+  */
+export async function playbackExample(multimediaService: MultimediaService) {
+  const mediaId = 'media-123';
+
+  try {
+    // Start playback
+    const session = await multimediaService.play(mediaId, {
+      quality: 'high',
+      startPosition: 0
+    });
+
+    console.log('Playback started:', session);
+
+    // Subscribe to playback events
+    const eventSource = multimediaService.subscribeToPlayback(session.id, (sessionUpdate) => {
+      console.log('Playback update:', sessionUpdate);
+    });
+
+    // Control playback after some time
+    setTimeout(async () => {
+      await multimediaService.setVolume(session.id, 0.8);
+      await multimediaService.seek(session.id, 30); // Seek to 30 seconds
+    }, 5000);
+
+    return session;
+  } catch (error) {
+    console.error('Playback failed:', error);
+    throw error;
+  }
+}
+
+/**
+ * Example 8: Generate sharing URLs and embed codes
+  */
+export async function sharingExample(multimediaService: MultimediaService) {
+  const mediaId = 'media-123';
+
+  try {
+    // Generate sharing URL
+    const sharingUrl = await multimediaService.generateSharingUrl(mediaId, {
+      platform: 'linkedin',
+      privacy: 'public'
+    });
+
+    console.log('Sharing URL:', sharingUrl);
+
+    // Generate embed code
+    const embedCode = await multimediaService.generateEmbedCode(mediaId, {
+      width: 800,
+      height: 450,
+      autoplay: false,
+      controls: true
+    });
+
+    console.log('Embed code:', embedCode);
+
+    return { sharingUrl, embedCode };
+  } catch (error) {
+    console.error('Sharing operation failed:', error);
+    throw error;
+  }
+}
+
+/**
+ * Example 9: Track media engagement
+  */
+export async function trackEngagementExample(multimediaService: MultimediaService) {
+  const mediaId = 'media-123';
+
+  try {
+    // Track media view
+    await multimediaService.trackEngagement(mediaId, {
+      type: 'view'
+    });
+
+    // Track play event
+    await multimediaService.trackEngagement(mediaId, {
+      type: 'play',
+      position: 0
+    });
+
+    // Track seek event
+    await multimediaService.trackEngagement(mediaId, {
+      type: 'seek',
+      position: 45
+    });
+
+    // Track completion
+    await multimediaService.trackEngagement(mediaId, {
+      type: 'complete',
+      duration: 120
+    });
+
+    console.log('Engagement events tracked successfully');
+  } catch (error) {
+    // Engagement tracking failures are non-critical
+    console.warn('Some engagement tracking failed:', error);
+  }
+}
+
+// ============================================================================
+// CLEANUP EXAMPLE
+// ============================================================================
+
+/**
+ * Example 10: Proper service cleanup
+  */
+export function cleanupExample(multimediaService: MultimediaService) {
+  // Clean up resources when component unmounts or app closes
+  multimediaService.dispose();
+  console.log('MultimediaService resources cleaned up');
+}
+
+// ============================================================================
+// ERROR HANDLING EXAMPLE
+// ============================================================================
+
+/**
+ * Example 11: Comprehensive error handling
+  */
+export async function errorHandlingExample(multimediaService: MultimediaService) {
+  try {
+    const job = await multimediaService.generatePodcast(
+      {
+        id: 'cv-123',
+        userId: 'user-456',
+        personalInfo: { name: 'Test User', email: 'test@example.com' },
+        experience: [],
+        education: [],
+        skills: []
+      },
+      { style: 'professional', duration: 'short' }
+    );
+
+    // Handle success
+    console.log('Operation successful:', job);
+  } catch (error: any) {
+    // Handle different types of errors
+    if (error.message.includes('Authentication required')) {
+      console.error('User not authenticated. Please log in.');
+    } else if (error.message.includes('Permission denied')) {
+      console.error('Insufficient permissions. Please upgrade your account.');
+    } else if (error.message.includes('Service unavailable')) {
+      console.error('Service temporarily unavailable. Please try again later.');
+    } else if (error.message.includes('not initialized')) {
+      console.error('MultimediaService not initialized. Call initialize() first.');
+    } else {
+      console.error('Unexpected error:', error.message);
+    }
+
+    throw error;
+  }
+}

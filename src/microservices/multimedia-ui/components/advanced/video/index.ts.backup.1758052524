@@ -1,0 +1,50 @@
+// @ts-ignore
+/**
+ * Advanced Video Components Index
+ * 
+ * Exports all advanced video generation and processing components
+ * for the multimedia submodule's Phase 3 implementation.
+ * 
+ * @author Gil Klainert
+ * @version 1.0.0
+ */
+
+// Multi-Provider Video Generation
+export { MultiProviderVideoGenerator } from './MultiProviderVideoGenerator';
+export type { MultiProviderVideoGeneratorProps } from './MultiProviderVideoGenerator';
+
+// Real-Time Processing Monitoring
+export { VideoProcessingMonitor } from './VideoProcessingMonitor';
+export type { VideoProcessingMonitorProps } from './VideoProcessingMonitor';
+
+// Provider Selection and Comparison
+export { ProviderSelectionPanel } from './ProviderSelectionPanel';
+export type { ProviderSelectionPanelProps } from './ProviderSelectionPanel';
+
+// Quality Optimization
+export { VideoQualityOptimizer } from './VideoQualityOptimizer';
+export type { VideoQualityOptimizerProps } from './VideoQualityOptimizer';
+
+// Re-export for convenience
+export {
+  MultiProviderVideoGenerator as VideoGenerator,
+  VideoProcessingMonitor as ProcessingMonitor,
+  ProviderSelectionPanel as ProviderSelector,
+  VideoQualityOptimizer as QualityOptimizer
+} from './';
+
+/**
+ * Advanced Video Components Collection
+ * 
+ * Comprehensive collection of enterprise-grade video generation
+ * and processing components with multi-provider support,
+ * real-time monitoring, and AI-powered optimization.
+ */
+export const AdvancedVideoComponents = {
+  MultiProviderVideoGenerator,
+  VideoProcessingMonitor,
+  ProviderSelectionPanel,
+  VideoQualityOptimizer
+} as const;
+
+export default AdvancedVideoComponents;

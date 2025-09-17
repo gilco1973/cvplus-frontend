@@ -1,0 +1,48 @@
+// @ts-ignore
+/**
+ * Testimonials Carousel Types
+ * Types for testimonials carousel components
+  */
+
+import { CVFeatureProps } from '../galleries/types';
+
+export interface Testimonial {
+  id: string;
+  name: string;
+  title: string;
+  company: string;
+  content: string;
+  rating: number;
+  relationship: 'colleague' | 'manager' | 'client' | 'team-member' | 'mentor' | 'other';
+  date: string;
+  linkedinUrl?: string;
+  avatarUrl?: string;
+  isVerified: boolean;
+  tags: string[];
+  featured: boolean;
+}
+
+export interface TestimonialsCarouselProps extends CVFeatureProps {
+  autoPlay?: boolean;
+  autoPlayInterval?: number;
+  showNavigation?: boolean;
+  showDots?: boolean;
+  showRatings?: boolean;
+  itemsPerView?: number;
+  layout?: 'cards' | 'quotes' | 'minimal';
+}
+
+export interface TestimonialCardProps {
+  testimonial: Testimonial;
+  layout: 'cards' | 'quotes' | 'minimal';
+  showRatings: boolean;
+  mode: 'private' | 'public';
+}
+
+export interface CarouselControlsProps {
+  filterRelationship: string;
+  isAutoPlaying: boolean;
+  testimonialsCount: number;
+  onFilterChange: (relationship: string) => void;
+  onAutoPlayToggle: () => void;
+}

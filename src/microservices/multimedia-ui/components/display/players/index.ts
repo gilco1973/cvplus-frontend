@@ -1,0 +1,54 @@
+// @ts-ignore
+/**
+ * MultimediaPlayer Components
+ *
+ * Professional multimedia player system with playlist management,
+ * keyboard shortcuts, and comprehensive media format support.
+  */
+
+// Main components
+export { MultimediaPlayer } from './MultimediaPlayer';
+export { MultimediaPlayerCore } from './MultimediaPlayerCore';
+export { PlaylistManager } from './PlaylistManager';
+export { MultimediaPlayerIntegration } from './MultimediaPlayerIntegration';
+
+// Sub-components
+export { MediaControls } from './MediaControls';
+export { ProgressBar } from './ProgressBar';
+export { TrackInfo } from './TrackInfo';
+export { MediaElement } from './MediaElement';
+export type { MediaElementRef } from './MediaElement';
+
+// Playlist sub-components
+export { PlaylistManagerCore } from './PlaylistManagerCore';
+export { PlaylistHeader } from './PlaylistHeader';
+export { PlaylistTracks } from './PlaylistTracks';
+export { QueueSection } from './QueueSection';
+
+// Accessibility and utilities
+export { KeyboardShortcuts, useKeyboardShortcuts, KEYBOARD_SHORTCUTS } from './KeyboardShortcuts';
+
+// Utility components and hooks
+export { ContentProcessor } from './ContentProcessor';
+export type { GeneratedContent } from './ContentProcessor';
+export { PremiumFeatures } from './PremiumFeatures';
+export { usePlayerState } from './PlayerState';
+export type { PlayerStateHook } from './PlayerState';
+
+export type {
+  MediaTrack,
+  MediaMetadata,
+  MultimediaPlayerProps,
+  PlayerState,
+  PlayerControls,
+  PlaybackSpeed,
+  QueueItem,
+  PlaylistManagement,
+} from './types';
+
+// Legacy compatibility exports
+export { MultimediaPlayer as MediaPlayer } from './MultimediaPlayer';
+export { PlaylistManager as PlaylistComponent } from './PlaylistManager';
+
+// Default export for convenience
+export { MultimediaPlayer as default } from './MultimediaPlayer';

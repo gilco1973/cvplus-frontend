@@ -1,0 +1,46 @@
+// @ts-ignore
+/**
+ * Testimonials Carousel Utilities
+ * Utility functions for testimonials carousel
+  */
+
+import { Testimonial } from './types';
+
+export const getRelationshipIcon = (relationship: string) => {
+  switch (relationship) {
+    case 'manager': return '👨‍💼';
+    case 'colleague': return '🤝';
+    case 'client': return '🎯';
+    case 'team-member': return '👥';
+    case 'mentor': return '🧭';
+    default: return '💼';
+  }
+};
+
+export const getRelationshipColor = (relationship: string) => {
+  switch (relationship) {
+    case 'manager': return 'bg-blue-100 text-blue-800';
+    case 'colleague': return 'bg-green-100 text-green-800';
+    case 'client': return 'bg-purple-100 text-purple-800';
+    case 'team-member': return 'bg-orange-100 text-orange-800';
+    case 'mentor': return 'bg-indigo-100 text-indigo-800';
+    default: return 'bg-gray-100 text-gray-800';
+  }
+};
+
+export const sortTestimonials = (testimonials: Testimonial[]) => {
+  return testimonials.sort((a: Testimonial, b: Testimonial) => {
+    if (a.featured && !b.featured) return -1;
+    if (!a.featured && b.featured) return 1;
+    return new Date(b.date).getTime() - new Date(a.date).getTime();
+  });
+};
+
+export const calculateAverageRating = (testimonials: Testimonial[]) => {
+  if (testimonials.length === 0) return 0;
+  return testimonials.reduce((sum, t) => sum + t.rating, 0) / testimonials.length;
+};
+
+export const getVerifiedCount = (testimonials: Testimonial[]) => {
+  return testimonials.filter(t => t.isVerified).length;
+};

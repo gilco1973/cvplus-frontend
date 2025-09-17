@@ -1,0 +1,86 @@
+// @ts-ignore
+/**
+ * MultimediaPlayer Types
+ *
+ * Type definitions for the professional multimedia player component
+ * supporting audio, video, and playlist functionality.
+  */
+
+export interface MediaTrack {
+  id: string;
+  src: string;
+  title: string;
+  type: 'audio' | 'video';
+  duration?: number;
+  artist?: string;
+  description?: string;
+  thumbnail?: string;
+  metadata?: MediaMetadata;
+}
+
+export interface MediaMetadata {
+  bitrate?: number;
+  sampleRate?: number;
+  channels?: number;
+  codec?: string;
+  size?: number;
+  createdAt?: string;
+  tags?: Record<string, string>;
+}
+
+export interface MultimediaPlayerProps extends React.HTMLAttributes<HTMLDivElement> {
+  playlist: MediaTrack[];
+  initialTrackIndex?: number;
+  autoplay?: boolean;
+  showPlaylist?: boolean;
+  showDownload?: boolean;
+  showShare?: boolean;
+  showFullscreen?: boolean;
+  enableKeyboardShortcuts?: boolean;
+  onTrackChange?: (trackIndex: number) => void;
+  onPlaybackEnd?: (trackIndex: number) => void;
+  onError?: (error: Error) => void;
+}
+
+export interface PlayerState {
+  currentTrackIndex: number;
+  isPlaying: boolean;
+  currentTime: number;
+  duration: number;
+  volume: number;
+  isMuted: boolean;
+  playbackRate: number;
+  isFullscreen: boolean;
+  isLoading: boolean;
+  error?: string;
+}
+
+export interface PlayerControls {
+  play: () => Promise<void>;
+  pause: () => void;
+  togglePlayPause: () => Promise<void>;
+  seekTo: (time: number) => void;
+  changeTrack: (index: number) => void;
+  previousTrack: () => void;
+  nextTrack: () => void;
+  setVolume: (volume: number) => void;
+  toggleMute: () => void;
+  setPlaybackRate: (rate: number) => void;
+  toggleFullscreen: () => Promise<void>;
+}
+
+export type PlaybackSpeed = 0.5 | 1 | 1.25 | 1.5 | 2;
+
+export interface QueueItem extends MediaTrack {
+  queueIndex: number;
+  addedAt: Date;
+}
+
+export interface PlaylistManagement {
+  addToQueue: (track: MediaTrack) => void;
+  removeFromQueue: (queueIndex: number) => void;
+  clearQueue: () => void;
+  reorderQueue: (fromIndex: number, toIndex: number) => void;
+  shuffle: () => void;
+  repeat: 'none' | 'one' | 'all';
+}

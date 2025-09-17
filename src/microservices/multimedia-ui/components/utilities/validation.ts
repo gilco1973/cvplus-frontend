@@ -1,0 +1,399 @@
+// @ts-ignore
+/**
+ * Comprehensive validation functions for multimedia components
+  */
+
+export interface ValidationOptions {
+  maxSize?: number;
+  allowedTypes?: string[];
+  allowedExtensions?: string[];
+  minDimensions?: { width: number; height: number };
+  maxDimensions?: { width: number; height: number };
+  requireAspectRatio?: number;
+}
+
+export interface DetailedValidationResult {
+  valid: boolean;
+  error?: string;
+  warnings?: string[];
+  suggestions?: string[];
+  metadata?: {
+    size: number;
+    type: string;
+    dimensions?: { width: number; height: number };
+    aspectRatio?: number;
+  };
+}
+
+export const validateFileType = (file: File, allowedTypes: string[]): boolean => {
+  return allowedTypes.includes(file.type);
+};
+
+export const validateFileSize = (file: File, maxSizeBytes: number): boolean => {
+  return file.size <= maxSizeBytes;
+};
+
+/**
+ * Enhanced image file validation with comprehensive checks
+  */
+export const validateImageFile = (file: File, options: ValidationOptions = {}): DetailedValidationResult => {
+  const {
+    maxSize = 10 * 1024 * 1024, // 10MB
+    allowedTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/webp', 'image/gif'],
+    minDimensions,
+    maxDimensions,
+    requireAspectRatio
+  } = options;
+  
+  const warnings: string[] = [];
+  const suggestions: string[] = [];
+  
+  // Check if it's an image
+  if (!file.type.startsWith('image/')) {
+    return { valid: false, error: 'File must be an image' };
+  }
+  
+  // Check allowed types
+  if (!allowedTypes.includes(file.type)) {
+    return {
+      valid: false,
+      error: `Image type not allowed. Allowed types: ${allowedTypes.join(', ')}`,
+      suggestions: ['Convert the image to JPEG or PNG format']
+    };
+  }
+  
+  // Check file size
+  if (file.size > maxSize) {
+    return {
+      valid: false,
+      error: `Image too large: ${(file.size / (1024 * 1024)).toFixed(2)}MB. Max: ${(maxSize / (1024 * 1024)).toFixed(2)}MB`,
+      suggestions: [
+        'Compress the image using online tools',
+        'Resize the image to smaller dimensions',
+        'Save in a more compressed format like JPEG'
+      ]
+    };
+  }
+  
+  // Warning for large files
+  if (file.size > maxSize * 0.7) {
+    warnings.push(`Large file size: ${(file.size / (1024 * 1024)).toFixed(2)}MB`);
+  }
+  
+  return {
+    valid: true,
+    warnings: warnings.length > 0 ? warnings : undefined,
+    suggestions: suggestions.length > 0 ? suggestions : undefined,
+    metadata: {
+      size: file.size,
+      type: file.type
+    }
+  };
+};
+
+/**
+ * Validate image dimensions (requires loading the image)
+  */
+export const validateImageDimensions = (file: File, options: ValidationOptions = {}): Promise<DetailedValidationResult> => {
+  return new Promise((resolve) => {
+    if (!file.type.startsWith('image/')) {
+      resolve({ valid: true, metadata: { size: file.size, type: file.type } });
+      return;
+    }
+    
+    const { minDimensions, maxDimensions, requireAspectRatio } = options;
+    const img = document.createElement('img') as HTMLImageElement;
+    const warnings: string[] = [];
+    const suggestions: string[] = [];
+    
+    img.onload = () => {
+      const width = img.naturalWidth;
+      const height = img.naturalHeight;
+      const aspectRatio = width / height;
+      
+      // Check minimum dimensions
+      if (minDimensions) {
+        if (width < minDimensions.width || height < minDimensions.height) {
+          resolve({
+            valid: false,
+            error: `Image too small: ${width}x${height}px. Minimum: ${minDimensions.width}x${minDimensions.height}px`,
+            suggestions: ['Use a higher resolution image']
+          });
+          return;
+        }
+      }
+      
+      // Check maximum dimensions
+      if (maxDimensions) {
+        if (width > maxDimensions.width || height > maxDimensions.height) {
+          resolve({
+            valid: false,
+            error: `Image too large: ${width}x${height}px. Maximum: ${maxDimensions.width}x${maxDimensions.height}px`,
+            suggestions: ['Resize the image to smaller dimensions']
+          });
+          return;
+        }
+      }
+      
+      // Check aspect ratio
+      if (requireAspectRatio) {
+        const tolerance = 0.1; // 10% tolerance
+        const ratioMin = requireAspectRatio * (1 - tolerance);
+        const ratioMax = requireAspectRatio * (1 + tolerance);
+        
+        if (aspectRatio < ratioMin || aspectRatio > ratioMax) {
+          resolve({
+            valid: false,
+            error: `Invalid aspect ratio: ${aspectRatio.toFixed(2)}. Required: ${requireAspectRatio.toFixed(2)}`,
+            suggestions: ['Crop the image to the required aspect ratio']
+          });
+          return;
+        }
+      }
+      
+      // Warnings for extreme aspect ratios
+      if (aspectRatio > 3 || aspectRatio < 0.33) {
+        warnings.push(`Extreme aspect ratio: ${aspectRatio.toFixed(2)}`);
+      }
+      
+      // Warning for very high resolution
+      const megapixels = (width * height) / 1000000;
+      if (megapixels > 25) {
+        warnings.push(`Very high resolution: ${megapixels.toFixed(1)}MP`);
+        suggestions.push('Consider resizing for faster processing');
+      }
+      
+      resolve({
+        valid: true,
+        warnings: warnings.length > 0 ? warnings : undefined,
+        suggestions: suggestions.length > 0 ? suggestions : undefined,
+        metadata: {
+          size: file.size,
+          type: file.type,
+          dimensions: { width, height },
+          aspectRatio
+        }
+      });
+      
+      URL.revokeObjectURL(img.src);
+    };
+    
+    img.onerror = () => {
+      resolve({
+        valid: false,
+        error: 'Could not load image for dimension validation',
+        suggestions: ['Check if the image file is corrupted']
+      });
+      URL.revokeObjectURL(img.src);
+    };
+    
+    img.src = URL.createObjectURL(file);
+  });
+};
+
+/**
+ * Validate document files
+  */
+export const validateDocumentFile = (file: File, options: ValidationOptions = {}): DetailedValidationResult => {
+  const {
+    maxSize = 50 * 1024 * 1024, // 50MB
+    allowedTypes = [
+      'application/pdf',
+      'application/msword',
+      'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+      'text/plain',
+      'text/csv'
+    ]
+  } = options;
+  
+  const warnings: string[] = [];
+  const suggestions: string[] = [];
+  
+  // Check allowed types
+  if (!allowedTypes.includes(file.type)) {
+    return {
+      valid: false,
+      error: `Document type not allowed: ${file.type}`,
+      suggestions: ['Convert to PDF, DOCX, or TXT format']
+    };
+  }
+  
+  // Check file size
+  if (file.size > maxSize) {
+    return {
+      valid: false,
+      error: `Document too large: ${(file.size / (1024 * 1024)).toFixed(2)}MB. Max: ${(maxSize / (1024 * 1024)).toFixed(2)}MB`,
+      suggestions: [
+        'Compress the document',
+        'Remove large images from the document',
+        'Split into smaller documents'
+      ]
+    };
+  }
+  
+  // Warning for large documents
+  if (file.size > 10 * 1024 * 1024) {
+    warnings.push('Large document size may affect processing time');
+  }
+  
+  return {
+    valid: true,
+    warnings: warnings.length > 0 ? warnings : undefined,
+    metadata: {
+      size: file.size,
+      type: file.type
+    }
+  };
+};
+
+/**
+ * Validate video files
+  */
+export const validateVideoFile = (file: File, options: ValidationOptions = {}): DetailedValidationResult => {
+  const {
+    maxSize = 100 * 1024 * 1024, // 100MB
+    allowedTypes = ['video/mp4', 'video/webm', 'video/ogg', 'video/quicktime']
+  } = options;
+  
+  const warnings: string[] = [];
+  const suggestions: string[] = [];
+  
+  // Check if it's a video
+  if (!file.type.startsWith('video/')) {
+    return { valid: false, error: 'File must be a video' };
+  }
+  
+  // Check allowed types
+  if (!allowedTypes.includes(file.type)) {
+    return {
+      valid: false,
+      error: `Video format not supported: ${file.type}`,
+      suggestions: ['Convert to MP4 or WebM format']
+    };
+  }
+  
+  // Check file size
+  if (file.size > maxSize) {
+    return {
+      valid: false,
+      error: `Video too large: ${(file.size / (1024 * 1024)).toFixed(2)}MB. Max: ${(maxSize / (1024 * 1024)).toFixed(2)}MB`,
+      suggestions: [
+        'Compress the video using video editing software',
+        'Reduce video resolution or bitrate',
+        'Trim the video to shorter duration'
+      ]
+    };
+  }
+  
+  // Warning for large videos
+  if (file.size > maxSize * 0.7) {
+    warnings.push('Large video file may take longer to upload and process');
+  }
+  
+  return {
+    valid: true,
+    warnings: warnings.length > 0 ? warnings : undefined,
+    metadata: {
+      size: file.size,
+      type: file.type
+    }
+  };
+};
+
+/**
+ * Comprehensive file validation that automatically detects type
+  */
+export const validateFile = async (file: File, options: ValidationOptions = {}): Promise<DetailedValidationResult> => {
+  // Determine file category
+  if (file.type.startsWith('image/')) {
+    const basicValidation = validateImageFile(file, options);
+    if (!basicValidation.valid) {
+      return basicValidation;
+    }
+    
+    // If basic validation passes, check dimensions if needed
+    if (options.minDimensions || options.maxDimensions || options.requireAspectRatio) {
+      return await validateImageDimensions(file, options);
+    }
+    
+    return basicValidation;
+  }
+  
+  if (file.type.startsWith('video/')) {
+    return validateVideoFile(file, options);
+  }
+  
+  // Default to document validation for other types
+  return validateDocumentFile(file, options);
+};
+
+/**
+ * Batch validate multiple files
+  */
+export const validateFiles = async (
+  files: File[], 
+  options: ValidationOptions = {}
+): Promise<{ file: File; result: DetailedValidationResult }[]> => {
+  const results = [];
+  
+  for (const file of files) {
+    const result = await validateFile(file, options);
+    results.push({ file, result });
+  }
+  
+  return results;
+};
+
+/**
+ * Security validation for filenames
+  */
+export const validateFilename = (filename: string): DetailedValidationResult => {
+  const warnings: string[] = [];
+  const suggestions: string[] = [];
+  
+  // Check for dangerous characters
+  const dangerousChars = /[<>:"|?*\x00-\x1f]/;
+  if (dangerousChars.test(filename)) {
+    return {
+      valid: false,
+      error: 'Filename contains dangerous characters',
+      suggestions: ['Remove special characters: < > : " | ? * and control characters']
+    };
+  }
+  
+  // Check for executable extensions
+  const executableExts = /\.(exe|bat|cmd|com|pif|scr|vbs|js|jar|app|sh)$/i;
+  if (executableExts.test(filename)) {
+    return {
+      valid: false,
+      error: 'Executable files are not allowed',
+      suggestions: ['Use a safe file format like PDF, image, or document']
+    };
+  }
+  
+  // Check filename length
+  if (filename.length > 255) {
+    return {
+      valid: false,
+      error: 'Filename too long (max 255 characters)',
+      suggestions: ['Shorten the filename']
+    };
+  }
+  
+  // Warning for very long filenames
+  if (filename.length > 100) {
+    warnings.push('Filename is quite long');
+  }
+  
+  // Warning for special characters that might cause issues
+  if (/[#%&{}\\$!'":@<>*?/+`|=]/.test(filename)) {
+    warnings.push('Filename contains characters that might cause compatibility issues');
+    suggestions.push('Consider using only letters, numbers, hyphens, and underscores');
+  }
+  
+  return {
+    valid: true,
+    warnings: warnings.length > 0 ? warnings : undefined,
+    suggestions: suggestions.length > 0 ? suggestions : undefined
+  };
+};

@@ -1,0 +1,552 @@
+// @ts-ignore - Export conflicts// @ts-ignore - Export conflicts// @ts-ignore
+/**
+ * Service Types for ProfileService
+ * Defines all types used by the ProfileService for API operations
+  */
+
+// ========================================
+// Template Types
+// ========================================
+
+export interface ProfileTemplate {
+  id: string;
+  name: string;
+  description: string;
+  category: TemplateCategory;
+  preview: string;
+  thumbnails: string[];
+  features: string[];
+  customizationOptions: CustomizationOption[];
+  pricing: TemplatePricing;
+  metadata: TemplateMetadata;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export type TemplateCategory =
+  | 'professional'
+  | 'creative'
+  | 'executive'
+  | 'tech'
+  | 'academic'
+  | 'healthcare'
+  | 'sales'
+  | 'marketing';
+
+export interface CustomizationOption {
+  id: string;
+  name: string;
+  type: 'color' | 'font' | 'layout' | 'section' | 'image';
+  options: any[];
+  default: any;
+  required: boolean;
+}
+
+export interface TemplatePricing {
+  free: boolean;
+  premiumRequired: boolean;
+  price?: number;
+  currency?: string;
+}
+
+export interface TemplateMetadata {
+  author: string;
+  version: string;
+  lastUpdated: string;
+  downloads: number;
+  rating: number;
+  reviews: number;
+  tags: string[];
+}
+
+export interface TemplateCustomization {
+  templateId: string;
+  colorScheme?: ColorScheme;
+  typography?: TypographySettings;
+  layout?: LayoutSettings;
+  sections?: SectionCustomization[];
+  branding?: BrandingSettings;
+}
+
+export interface ColorScheme {
+  primary: string;
+  secondary: string;
+  accent: string;
+  background: string;
+  text: string;
+  muted: string;
+}
+
+export interface TypographySettings {
+  headingFont: string;
+  bodyFont: string;
+  fontSize: 'small' | 'medium' | 'large';
+  fontWeight: 'light' | 'normal' | 'bold';
+  lineHeight: number;
+}
+
+export interface LayoutSettings {
+  style: 'single-column' | 'two-column' | 'sidebar';
+  spacing: 'compact' | 'normal' | 'spacious';
+  borderRadius: 'none' | 'small' | 'medium' | 'large';
+  shadows: boolean;
+}
+
+export interface SectionCustomization {
+  sectionId: string;
+  visible: boolean;
+  order: number;
+  title?: string;
+  customization?: Record<string, any>;
+}
+
+export interface BrandingSettings {
+  logo?: string;
+  watermark?: string;
+  customCSS?: string;
+  favicon?: string;
+}
+
+// ========================================
+// Profile Operation Types
+// ========================================
+
+export interface ProfileOptions {
+  templateId?: string;
+  customizations?: TemplateCustomization;
+  privacy?: PrivacyLevel;
+  seoOptimization?: boolean;
+  socialIntegration?: boolean;
+  analyticsEnabled?: boolean;
+  customDomain?: string;
+  publishImmediately?: boolean;
+}
+
+export interface ProfileUpdate {
+  basicInfo?: Partial<BasicInfo>;
+  experience?: ExperienceEntry[];
+  education?: EducationEntry[];
+  skills?: Skill[];
+  portfolio?: PortfolioItem[];
+  contact?: ContactInfo;
+  customizations?: TemplateCustomization;
+  privacy?: PrivacySettings;
+  seo?: SEOUpdate;
+}
+
+export interface BasicInfo {
+  name: string;
+  title: string;
+  bio: string;
+  location: string;
+  profileImage?: string;
+  coverImage?: string;
+  socialLinks?: SocialLink[];
+}
+
+export interface ExperienceEntry {
+  id: string;
+  company: string;
+  position: string;
+  startDate: string;
+  endDate?: string;
+  current: boolean;
+  description: string;
+  achievements: string[];
+  skills: string[];
+  location: string;
+}
+
+export interface EducationEntry {
+  id: string;
+  institution: string;
+  degree: string;
+  field: string;
+  startDate: string;
+  endDate?: string;
+  gpa?: number;
+  achievements: string[];
+  description: string;
+}
+
+export interface Skill {
+  id: string;
+  name: string;
+  category: string;
+  proficiency: 'beginner' | 'intermediate' | 'advanced' | 'expert';
+  years?: number;
+  endorsed: boolean;
+  endorsements: number;
+}
+
+export interface PortfolioItem {
+  id: string;
+  title: string;
+  description: string;
+  category: string;
+  images: string[];
+  videos?: string[];
+  links: { name: string; url: string; }[];
+  technologies: string[];
+  dateCreated: string;
+  featured: boolean;
+}
+
+export interface ContactInfo {
+  email: string;
+  phone?: string;
+  website?: string;
+  calendly?: string;
+  preferredContactMethod: 'email' | 'phone' | 'website' | 'calendly';
+  availability: string;
+}
+
+export interface SocialLink {
+  platform: SocialPlatform;
+  url: string;
+  username: string;
+  verified: boolean;
+}
+
+// ========================================
+// Social Sharing Types
+// ========================================
+
+export type SocialPlatform =
+  | 'linkedin'
+  | 'twitter'
+  | 'facebook'
+  | 'instagram'
+  | 'github'
+  | 'behance'
+  | 'dribbble'
+  | 'youtube'
+  | 'tiktok'
+  | 'discord'
+  | 'telegram'
+  | 'whatsapp'
+  | 'email';
+
+export interface QROptions {
+  size?: number;
+  format?: 'png' | 'svg' | 'pdf';
+  errorCorrection?: 'L' | 'M' | 'Q' | 'H';
+  backgroundColor?: string;
+  foregroundColor?: string;
+  logo?: string;
+  margin?: number;
+}
+
+export interface QRCodeResult {
+  qrCode: string; // Base64 encoded image or SVG string
+  url: string;
+  format: string;
+  size: number;
+  downloadUrl: string;
+}
+
+export interface EmbedOptions {
+  width?: number;
+  height?: number;
+  theme?: 'light' | 'dark' | 'auto';
+  sections?: string[];
+  interactive?: boolean;
+  responsive?: boolean;
+  customCSS?: string;
+}
+
+// ========================================
+// Privacy & Access Control Types
+// ========================================
+
+export type PrivacyLevel = 'public' | 'unlisted' | 'private' | 'password-protected';
+
+export interface PrivacySettings {
+  level: PrivacyLevel;
+  password?: string;
+  allowSearch: boolean;
+  showContactInfo: boolean;
+  showSocialLinks: boolean;
+  allowDownload: boolean;
+  allowSharing: boolean;
+  blockedCountries?: string[];
+  allowedDomains?: string[];
+  accessExpiry?: string;
+}
+
+export interface AccessControl {
+  id: string;
+  type: 'user' | 'domain' | 'token' | 'password';
+  value: string;
+  permissions: Permission[];
+  expiresAt?: string;
+  createdAt: string;
+  lastUsed?: string;
+  usageCount: number;
+}
+
+export type Permission =
+  | 'view'
+  | 'download'
+  | 'share'
+  | 'contact'
+  | 'analytics'
+  | 'embed';
+
+// ========================================
+// Analytics Types
+// ========================================
+
+export interface DateRange {
+  days?: number;
+  startDate?: string;
+  endDate?: string;
+}
+
+export interface ViewData {
+  sessionId?: string;
+  visitorId?: string;
+  ipAddress?: string;
+  userAgent?: string;
+  referrer?: string;
+  country?: string;
+  city?: string;
+  device?: string;
+  browser?: string;
+  source?: string;
+  medium?: string;
+  campaign?: string;
+  timestamp?: string;
+}
+
+export interface EngagementData {
+  type: EngagementType;
+  section?: string;
+  element?: string;
+  value?: any;
+  duration?: number;
+  timestamp?: string;
+  metadata?: Record<string, any>;
+}
+
+export type EngagementType =
+  | 'click'
+  | 'scroll'
+  | 'hover'
+  | 'download'
+  | 'contact'
+  | 'share'
+  | 'like'
+  | 'bookmark'
+  | 'copy'
+  | 'print';
+
+export interface ProfileAnalytics {
+  profileId: string;
+  period: DateRange;
+  summary: AnalyticsSummary;
+  traffic: TrafficAnalytics;
+  engagement: EngagementAnalytics;
+  conversions: ConversionAnalytics;
+  geographic: GeographicAnalytics;
+  devices: DeviceAnalytics;
+  referrers: ReferrerAnalytics;
+  trends: TrendsAnalytics;
+  generatedAt: string;
+}
+
+export interface AnalyticsSummary {
+  totalViews: number;
+  uniqueVisitors: number;
+  averageSessionDuration: number;
+  bounceRate: number;
+  conversionRate: number;
+  growthRate: number;
+}
+
+export interface TrafficAnalytics {
+  dailyViews: { date: string; views: number; visitors: number; }[];
+  hourlyDistribution: { hour: number; views: number; }[];
+  peakHours: number[];
+  totalPageViews: number;
+  averagePagesPerSession: number;
+}
+
+export interface EngagementAnalytics {
+  topSections: { section: string; views: number; timeSpent: number; }[];
+  averageScrollDepth: number;
+  interactionRate: number;
+  downloadCount: number;
+  shareCount: number;
+  contactFormSubmissions: number;
+}
+
+export interface ConversionAnalytics {
+  goals: { name: string; completions: number; rate: number; }[];
+  funnelData: { stage: string; users: number; dropOff: number; }[];
+  conversionPaths: string[];
+}
+
+export interface GeographicAnalytics {
+  countries: { country: string; visitors: number; percentage: number; }[];
+  cities: { city: string; visitors: number; percentage: number; }[];
+  languages: { language: string; visitors: number; percentage: number; }[];
+}
+
+export interface DeviceAnalytics {
+  devices: { device: string; visitors: number; percentage: number; }[];
+  browsers: { browser: string; visitors: number; percentage: number; }[];
+  operatingSystems: { os: string; visitors: number; percentage: number; }[];
+  screenResolutions: { resolution: string; visitors: number; percentage: number; }[];
+}
+
+export interface ReferrerAnalytics {
+  sources: { source: string; visitors: number; percentage: number; }[];
+  socialMedia: { platform: string; visitors: number; clicks: number; }[];
+  searchEngines: { engine: string; visitors: number; keywords: string[]; }[];
+  directTraffic: number;
+}
+
+export interface TrendsAnalytics {
+  viewsTrend: { period: string; growth: number; }[];
+  engagementTrend: { period: string; rate: number; }[];
+  popularContent: { content: string; views: number; engagement: number; }[];
+}
+
+// ========================================
+// Domain Management Types
+// ========================================
+
+export interface DomainMapping {
+  id: string;
+  profileId: string;
+  domain: string;
+  subdomain?: string;
+  status: DomainStatus;
+  sslEnabled: boolean;
+  verificationRecord: string;
+  verificationStatus: 'pending' | 'verified' | 'failed';
+  createdAt: string;
+  verifiedAt?: string;
+  expiresAt?: string;
+  metadata: DomainMetadata;
+}
+
+export type DomainStatus =
+  | 'pending'
+  | 'active'
+  | 'inactive'
+  | 'expired'
+  | 'error';
+
+export interface DomainMetadata {
+  registrar?: string;
+  nameservers?: string[];
+  dnsRecords?: DNSRecord[];
+  sslCertificate?: SSLCertificate;
+}
+
+export interface DNSRecord {
+  type: string;
+  name: string;
+  value: string;
+  ttl: number;
+}
+
+export interface SSLCertificate {
+  issuer: string;
+  validFrom: string;
+  validTo: string;
+  fingerprint: string;
+}
+
+export interface DomainValidation {
+  domain: string;
+  valid: boolean;
+  errors: string[];
+  suggestions: string[];
+  availability: boolean;
+  estimatedCost?: number;
+  requirements: DomainRequirement[];
+}
+
+export interface DomainRequirement {
+  type: string;
+  description: string;
+  required: boolean;
+  completed: boolean;
+}
+
+// ========================================
+// Version Control Types
+// ========================================
+
+export interface VersionData {
+  description: string;
+  changes: VersionChange[];
+  tags?: string[];
+  major?: boolean;
+  automatic?: boolean;
+}
+
+export interface VersionChange {
+  section: string;
+  type: 'added' | 'modified' | 'removed';
+  description: string;
+  oldValue?: any;
+  newValue?: any;
+}
+
+export interface ProfileVersion {
+  id: string;
+  profileId: string;
+  version: string;
+  description: string;
+  changes: VersionChange[];
+  profileData: any; // Snapshot of profile data
+  metadata: VersionMetadata;
+  createdAt: string;
+  createdBy: string;
+}
+
+export interface VersionMetadata {
+  size: number;
+  checksum: string;
+  tags: string[];
+  automatic: boolean;
+  changeCount: number;
+  majorVersion: boolean;
+}
+
+// ========================================
+// SEO Update Types
+// ========================================
+
+export interface SEOUpdate {
+  title?: string;
+  description?: string;
+  keywords?: string[];
+  canonicalUrl?: string;
+  openGraph?: OpenGraphData;
+  twitterCard?: TwitterCardData;
+  structuredData?: Record<string, any>;
+}
+
+export interface OpenGraphData {
+  title: string;
+  description: string;
+  image: string;
+  url: string;
+  type: string;
+  siteName: string;
+  locale: string;
+}
+
+export interface TwitterCardData {
+  card: 'summary' | 'summary_large_image' | 'app' | 'player';
+  title: string;
+  description: string;
+  image: string;
+  creator?: string;
+  site?: string;
+}

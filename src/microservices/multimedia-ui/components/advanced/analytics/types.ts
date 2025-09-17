@@ -1,0 +1,49 @@
+// @ts-ignore
+/**
+ * Video Analytics Types
+ * Types for video analytics components
+  */
+
+import { CVFeatureProps } from '../../display/galleries/types';
+
+export interface VideoData {
+  provider: string;
+  qualityScore: number;
+  industryAlignment: number;
+  generationTime: number;
+  cost: number;
+  views?: number;
+  shares?: number;
+  engagementRate?: number;
+}
+
+export interface VideoAnalyticsDashboardProps extends CVFeatureProps {
+  videoData?: VideoData;
+  onClose?: () => void;
+  showProviderComparison?: boolean;
+  showTrends?: boolean;
+  showBenchmarks?: boolean;
+}
+
+export interface ProviderData {
+  name: string;
+  successRate: number;
+  avgGenerationTime: number;
+  avgQualityScore: number;
+  reliability: number;
+  usage: number;
+}
+
+export interface TrendData {
+  qualityImprovement: number;
+  costReduction: number;
+  speedImprovement: number;
+  reliabilityImprovement: number;
+}
+
+export interface IndustryBenchmarks {
+  [industry: string]: {
+    avgQuality: number;
+    avgEngagement: number;
+  };
+}

@@ -1,0 +1,109 @@
+// @ts-ignore
+/**
+ * CV Upload Helper Functions
+ *
+ * Utility functions for CV file upload and processing
+ *
+ * @author Gil Klainert
+ * @version 3.0.0 - Enhanced T063 Implementation
+  */
+
+import type { UploadOptions } from '../types/upload';
+
+/**
+ * Enhanced file upload with validation
+  */
+export async function uploadFileToStorage(
+  file: File,
+  options: UploadOptions
+): Promise<{ success: boolean; jobId?: string; error?: string }> {
+  // Simulate enhanced file upload with validation
+  return new Promise((resolve) => {
+    setTimeout(() => {
+      // Simulate various upload scenarios
+      if (file.size > options.maxSize) {
+        resolve({ success: false, error: 'File too large' });
+      } else if (!options.allowedTypes.includes(file.type)) {
+        resolve({ success: false, error: 'Invalid file type' });
+      } else if (Math.random() < 0.05) { // 5% chance of upload error
+        resolve({ success: false, error: 'Network error. Please try again.' });
+      } else {
+        resolve({
+          success: true,
+          jobId: `cvjob_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`
+        });
+      }
+    }, 1000 + Math.random() * 1000); // Variable upload time
+  });
+}
+
+/**
+ * Simulate processing step delay
+  */
+export async function simulateProcessingStep(duration: number): Promise<void> {
+  return new Promise(resolve => setTimeout(resolve, duration));
+}
+
+/**
+ * Generate unique processing job ID
+  */
+export function generateJobId(): string {
+  return `cvjob_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+}
+
+/**
+ * Calculate total estimated processing time for selected features
+  */
+export function calculateEstimatedTime(
+  selectedFeatures: string[],
+  featureList: Array<{ id: string; estimatedTime?: number }>,
+  baseTime = 30
+): number {
+  const selectedFeatureObjs = featureList.filter(f =>
+    selectedFeatures.includes(f.id)
+  );
+  return selectedFeatureObjs.reduce((total, feature) =>
+    total + (feature.estimatedTime || 0), baseTime
+  );
+}
+
+/**
+ * Format file size for display
+  */
+export function formatFileSize(bytes: number): string {
+  if (bytes === 0) return '0 Bytes';
+
+  const k = 1024;
+  const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+  const i = Math.floor(Math.log(bytes) / Math.log(k));
+
+  return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+}
+
+/**
+ * Validate file before upload
+  */
+export function validateFile(
+  file: File,
+  maxSize: number,
+  allowedTypes: string[]
+): { isValid: boolean; error?: string } {
+  // Check file size
+  if (file.size > maxSize) {
+    const maxSizeMB = Math.round(maxSize / (1024 * 1024));
+    return {
+      isValid: false,
+      error: `File size must be less than ${maxSizeMB}MB`
+    };
+  }
+
+  // Check file type
+  if (!allowedTypes.includes(file.type)) {
+    return {
+      isValid: false,
+      error: 'Please upload a PDF, DOCX, or DOC file'
+    };
+  }
+
+  return { isValid: true };
+}

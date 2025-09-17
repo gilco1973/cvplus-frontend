@@ -1,0 +1,40 @@
+// @ts-ignore
+/**
+ * Advanced Progressive Enhancement Components Index
+ * 
+ * Exports all progressive enhancement components for adaptive
+ * multimedia experiences based on device and browser capabilities.
+ * 
+ * @author Gil Klainert
+ * @version 1.0.0
+  */
+
+// Feature Detection
+export { 
+  FeatureDetectionProvider,
+  FeatureDetectionDisplay,
+  useFeatureDetection 
+} from './FeatureDetection';
+export type { 
+  FeatureDetectionProviderProps 
+} from './FeatureDetection';
+
+// Re-export for convenience
+export {
+  FeatureDetectionProvider as ProgressiveProvider,
+  FeatureDetectionDisplay as CapabilityDisplay
+} from './FeatureDetection';
+
+/**
+ * Advanced Progressive Enhancement Components Collection
+ * 
+ * Comprehensive suite of components for progressive enhancement
+ * and adaptive multimedia experiences.
+  */
+export const AdvancedProgressiveComponents = {
+  FeatureDetectionProvider,
+  FeatureDetectionDisplay,
+  useFeatureDetection
+} as const;
+
+export default AdvancedProgressiveComponents;

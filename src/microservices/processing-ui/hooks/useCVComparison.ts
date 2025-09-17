@@ -1,0 +1,316 @@
+// @ts-ignore
+/**
+ * CVPlus CV Processing - CV Comparison Hook
+ * 
+ * React hook for comparing CV versions and tracking changes.
+ * 
+ * @author Gil Klainert
+ * @version 1.0.0
+  */
+
+import { useState, useCallback, useMemo } from 'react';
+import type { CVParsedData } from '../../types';
+
+// ============================================================================
+// TYPES
+// ============================================================================
+
+export interface CVComparison {
+  id: string;
+  original: CVParsedData;
+  modified: CVParsedData;
+  changes: CVChange[];
+  improvementScore: number;
+  createdAt: Date;
+}
+
+export interface CVChange {
+  id: string;
+  section: string;
+  field: string;
+  type: 'added' | 'modified' | 'removed';
+  originalValue?: any;
+  newValue?: any;
+  impact: 'high' | 'medium' | 'low';
+  description: string;
+}
+
+export interface ComparisonMetrics {
+  totalChanges: number;
+  improvements: number;
+  newAdditions: number;
+  removals: number;
+  overallScore: number;
+}
+
+// ============================================================================
+// HOOK
+// ============================================================================
+
+export function useCVComparison() {
+  const [comparisons, setComparisons] = useState<CVComparison[]>([]);
+  const [activeComparison, setActiveComparison] = useState<CVComparison | null>(null);
+  const [isComparing, setIsComparing] = useState(false);
+
+  const createComparison = useCallback(
+    (original: CVParsedData, modified: CVParsedData): CVComparison => {
+      const changes = detectChanges(original, modified);
+      const improvementScore = calculateImprovementScore(changes);
+      
+      const comparison: CVComparison = {
+        id: `comparison-${Date.now()}`,
+        original,
+        modified,
+        changes,
+        improvementScore,
+        createdAt: new Date(),
+      };
+
+      setComparisons(prev => [comparison, ...prev.slice(0, 9)]); // Keep last 10
+      setActiveComparison(comparison);
+      
+      return comparison;
+    },
+    []
+  );
+
+  const compareVersions = useCallback(
+    async (original: CVParsedData, modified: CVParsedData) => {
+      setIsComparing(true);
+      
+      try {
+        const comparison = createComparison(original, modified);
+        return comparison;
+      } finally {
+        setIsComparing(false);
+      }
+    },
+    [createComparison]
+  );
+
+  const removeComparison = useCallback((comparisonId: string) => {
+    setComparisons(prev => prev.filter(c => c.id !== comparisonId));
+    
+    // If active comparison is removed, set to null
+    if (activeComparison?.id === comparisonId) {
+      setActiveComparison(null);
+    }
+  }, [activeComparison?.id]);
+
+  const clearComparisons = useCallback(() => {
+    setComparisons([]);
+    setActiveComparison(null);
+  }, []);
+
+  const metrics = useMemo((): ComparisonMetrics | null => {
+    if (!activeComparison) return null;
+
+    const { changes } = activeComparison;
+    const totalChanges = changes.length;
+    const improvements = changes.filter(c => c.impact === 'high').length;
+    const newAdditions = changes.filter(c => c.type === 'added').length;
+    const removals = changes.filter(c => c.type === 'removed').length;
+
+    return {
+      totalChanges,
+      improvements,
+      newAdditions,
+      removals,
+      overallScore: activeComparison.improvementScore,
+    };
+  }, [activeComparison]);
+
+  return {
+    comparisons,
+    activeComparison,
+    isComparing,
+    metrics,
+    compareVersions,
+    setActiveComparison,
+    removeComparison,
+    clearComparisons,
+  };
+}
+
+// ============================================================================
+// HELPER FUNCTIONS
+// ============================================================================
+
+function detectChanges(original: CVParsedData, modified: CVParsedData): CVChange[] {
+  const changes: CVChange[] = [];
+  let changeId = 1;
+
+  // Compare basic info
+  if (original.personalInfo && modified.personalInfo) {
+    const personalChanges = compareObjects(
+      original.personalInfo,
+      modified.personalInfo,
+      'personalInfo'
+    );
+    changes.push(...personalChanges.map(c => ({ ...c, id: `change-${changeId++}` })));
+  }
+
+  // Compare skills
+  if (original.skills !== modified.skills) {
+    changes.push({
+      id: `change-${changeId++}`,
+      section: 'skills',
+      field: 'skills',
+      type: 'modified',
+      originalValue: original.skills,
+      newValue: modified.skills,
+      impact: 'medium',
+      description: 'Skills section updated',
+    });
+  }
+
+  // Compare work experience
+  const experienceChanges = compareArrays(
+    original.experience || [],
+    modified.experience || [],
+    'experience'
+  );
+  changes.push(...experienceChanges.map(c => ({ ...c, id: `change-${changeId++}` })));
+
+  // Compare education
+  const educationChanges = compareArrays(
+    original.education || [],
+    modified.education || [],
+    'education'
+  );
+  changes.push(...educationChanges.map(c => ({ ...c, id: `change-${changeId++}` })));
+
+  // Compare projects
+  const projectChanges = compareArrays(
+    original.projects || [],
+    modified.projects || [],
+    'projects'
+  );
+  changes.push(...projectChanges.map(c => ({ ...c, id: `change-${changeId++}` })));
+
+  return changes;
+}
+
+function compareObjects(
+  original: any,
+  modified: any,
+  section: string
+): Omit<CVChange, 'id'>[] {
+  const changes: Omit<CVChange, 'id'>[] = [];
+
+  // Get all unique keys
+  const allKeys = new Set([...Object.keys(original), ...Object.keys(modified)]);
+
+  allKeys.forEach(key => {
+    const originalValue = original[key];
+    const modifiedValue = modified[key];
+
+    if (originalValue === undefined && modifiedValue !== undefined) {
+      changes.push({
+        section,
+        field: key,
+        type: 'added',
+        newValue: modifiedValue,
+        impact: determineImpact(key, 'added'),
+        description: `Added ${key}`,
+      });
+    } else if (originalValue !== undefined && modifiedValue === undefined) {
+      changes.push({
+        section,
+        field: key,
+        type: 'removed',
+        originalValue,
+        impact: determineImpact(key, 'removed'),
+        description: `Removed ${key}`,
+      });
+    } else if (originalValue !== modifiedValue) {
+      changes.push({
+        section,
+        field: key,
+        type: 'modified',
+        originalValue,
+        newValue: modifiedValue,
+        impact: determineImpact(key, 'modified'),
+        description: `Modified ${key}`,
+      });
+    }
+  });
+
+  return changes;
+}
+
+function compareArrays(
+  original: any[],
+  modified: any[],
+  section: string
+): Omit<CVChange, 'id'>[] {
+  const changes: Omit<CVChange, 'id'>[] = [];
+
+  // Simple comparison based on array length and content
+  if (original.length !== modified.length) {
+    changes.push({
+      section,
+      field: 'items',
+      type: modified.length > original.length ? 'added' : 'removed',
+      originalValue: original.length,
+      newValue: modified.length,
+      impact: 'medium',
+      description: `${section} count changed from ${original.length} to ${modified.length}`,
+    });
+  }
+
+  // Compare individual items (simplified)
+  modified.forEach((item, index) => {
+    if (!original[index] || JSON.stringify(original[index]) !== JSON.stringify(item)) {
+      changes.push({
+        section,
+        field: `item-${index}`,
+        type: original[index] ? 'modified' : 'added',
+        originalValue: original[index],
+        newValue: item,
+        impact: 'medium',
+        description: `${section} item ${index + 1} ${original[index] ? 'modified' : 'added'}`,
+      });
+    }
+  });
+
+  return changes;
+}
+
+function determineImpact(field: string, _changeType: CVChange['type']): CVChange['impact'] {
+  const highImpactFields = ['name', 'email', 'phone', 'title', 'summary'];
+  const mediumImpactFields = ['skills', 'certifications', 'languages'];
+
+  if (highImpactFields.includes(field)) {
+    return 'high';
+  }
+  
+  if (mediumImpactFields.includes(field)) {
+    return 'medium';
+  }
+
+  return 'low';
+}
+
+function calculateImprovementScore(changes: CVChange[]): number {
+  if (changes.length === 0) return 0;
+
+  let score = 0;
+  changes.forEach(change => {
+    switch (change.impact) {
+      case 'high':
+        score += change.type === 'added' ? 10 : change.type === 'modified' ? 8 : -5;
+        break;
+      case 'medium':
+        score += change.type === 'added' ? 5 : change.type === 'modified' ? 4 : -2;
+        break;
+      case 'low':
+        score += change.type === 'added' ? 2 : change.type === 'modified' ? 1 : -1;
+        break;
+    }
+  });
+
+  // Normalize to 0-100 scale
+  const maxPossibleScore = changes.length * 10;
+  return Math.max(0, Math.min(100, (score / maxPossibleScore) * 100));
+}

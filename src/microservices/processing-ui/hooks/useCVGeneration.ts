@@ -1,0 +1,413 @@
+// @ts-ignore
+/**
+ * CV Generation Hook
+ *
+ * Custom hook for managing CV generation state, content updates,
+ * template switching, version control, and exports.
+  */
+
+import { useState, useCallback, useRef, useEffect } from 'react';
+import type {
+  GeneratedCVState,
+  CVContent,
+  ExportFormat,
+  ExportOptions,
+  UseCVGenerationReturn
+} from '../components/generated-cv-display/types';
+
+/**
+ * Custom hook for CV generation management
+  */
+export const useCVGeneration = (): UseCVGenerationReturn => {
+  const [state, setState] = useState<GeneratedCVState>({
+    cv: undefined,
+    template: undefined,
+    editor: {
+      mode: 'view',
+      history: {
+        current: -1,
+        states: [],
+        maxStates: 50
+      },
+      settings: {
+        autosave: true,
+        autosaveInterval: 30000,
+        showGrid: false,
+        snapToGrid: false,
+        showRulers: false,
+        rtl: false,
+        spellCheck: true,
+        autoCorrect: false
+      },
+      tools: []
+    },
+    loading: false,
+    saving: false,
+    exporting: false,
+    error: undefined,
+    lastSaved: undefined
+  });
+
+  const autosaveTimer = useRef<NodeJS.Timeout | null>(null);
+
+  // Auto-save functionality
+  useEffect(() => {
+    if (state.editor.settings.autosave && state.cv) {
+      if (autosaveTimer.current) {
+        clearTimeout(autosaveTimer.current);
+      }
+
+      autosaveTimer.current = setTimeout(() => {
+        // Auto-save logic would go here
+        console.log('[CV-GENERATION] Auto-save triggered');
+        setState(prev => ({ ...prev, lastSaved: new Date() }));
+      }, state.editor.settings.autosaveInterval);
+    }
+
+    return () => {
+      if (autosaveTimer.current) {
+        clearTimeout(autosaveTimer.current);
+      }
+    };
+  }, [state.cv, state.editor.settings.autosave, state.editor.settings.autosaveInterval]);
+
+  // Load CV by job ID
+  const loadCV = useCallback(async (jobId: string) => {
+    setState(prev => ({ ...prev, loading: true, error: undefined }));
+
+    try {
+      // This would be replaced with actual API call
+      console.log('[CV-GENERATION] Loading CV:', jobId);
+
+      // Simulate API delay
+      await new Promise(resolve => setTimeout(resolve, 1000));
+
+      // Mock CV data - in real implementation, this would come from API
+      const mockCV = {
+        id: jobId,
+        jobId,
+        templateId: 'modern-template-1',
+        content: {
+          html: '<div>Mock CV content</div>',
+          sections: [],
+          styling: {
+            theme: 'modern',
+            colors: {
+              primary: '#0ea5e9',
+              secondary: '#64748b',
+              accent: '#06b6d4',
+              background: '#ffffff',
+              text: '#334155',
+              muted: '#94a3b8'
+            },
+            typography: {
+              headingFont: 'Inter',
+              bodyFont: 'Inter',
+              sizes: {
+                xs: '0.75rem',
+                sm: '0.875rem',
+                base: '1rem',
+                lg: '1.125rem',
+                xl: '1.25rem',
+                '2xl': '1.5rem',
+                '3xl': '1.875rem',
+                '4xl': '2.25rem'
+              },
+              weights: {
+                light: 300,
+                normal: 400,
+                medium: 500,
+                semibold: 600,
+                bold: 700
+              }
+            },
+            layout: {
+              columns: 1,
+              sidebar: false,
+              sidebarWidth: 0,
+              margins: { top: 40, right: 40, bottom: 40, left: 40 },
+              padding: { top: 20, right: 20, bottom: 20, left: 20 }
+            },
+            spacing: {
+              section: 32,
+              subsection: 16,
+              item: 8,
+              compact: false
+            }
+          },
+          interactive: []
+        },
+        metadata: {
+          templateId: 'modern-template-1',
+          templateVersion: '1.0.0',
+          generatedAt: new Date(),
+          processingTime: 2500,
+          features: ['ats-optimization', 'interactive-timeline'],
+          quality: 'professional' as const,
+          version: '1.0.0',
+          checksum: 'mock-checksum'
+        },
+        versions: []
+      };
+
+      setState(prev => ({
+        ...prev,
+        cv: mockCV,
+        loading: false
+      }));
+
+    } catch (error) {
+      console.error('[CV-GENERATION] Failed to load CV:', error);
+      setState(prev => ({
+        ...prev,
+        loading: false,
+        error: error instanceof Error ? error.message : 'Failed to load CV'
+      }));
+    }
+  }, []);
+
+  // Update CV content
+  const updateContent = useCallback((content: CVContent) => {
+    setState(prev => {
+      if (!prev.cv) return prev;
+
+      // Add to history
+      const newState = {
+        id: `state-${Date.now()}`,
+        timestamp: new Date(),
+        content: prev.cv.content,
+        description: 'Content update',
+        user: 'current-user'
+      };
+
+      const newHistory = {
+        current: prev.editor.history.current + 1,
+        states: [
+          ...prev.editor.history.states.slice(0, prev.editor.history.current + 1),
+          newState
+        ].slice(-prev.editor.history.maxStates),
+        maxStates: prev.editor.history.maxStates
+      };
+
+      return {
+        ...prev,
+        cv: {
+          ...prev.cv,
+          content
+        },
+        editor: {
+          ...prev.editor,
+          history: newHistory
+        }
+      };
+    });
+  }, []);
+
+  // Change template
+  const changeTemplate = useCallback(async (templateId: string) => {
+    setState(prev => ({ ...prev, loading: true, error: undefined }));
+
+    try {
+      console.log('[CV-GENERATION] Changing template:', templateId);
+
+      // Simulate API delay
+      await new Promise(resolve => setTimeout(resolve, 800));
+
+      setState(prev => ({
+        ...prev,
+        loading: false,
+        template: prev.template ? { ...prev.template, id: templateId } : undefined
+      }));
+
+    } catch (error) {
+      console.error('[CV-GENERATION] Failed to change template:', error);
+      setState(prev => ({
+        ...prev,
+        loading: false,
+        error: error instanceof Error ? error.message : 'Failed to change template'
+      }));
+    }
+  }, []);
+
+  // Save version
+  const saveVersion = useCallback(async (description: string) => {
+    if (!state.cv) return;
+
+    setState(prev => ({ ...prev, saving: true, error: undefined }));
+
+    try {
+      console.log('[CV-GENERATION] Saving version:', description);
+
+      // Simulate API delay
+      await new Promise(resolve => setTimeout(resolve, 600));
+
+      const newVersion = {
+        id: `version-${Date.now()}`,
+        version: `1.${state.cv.versions.length + 1}`,
+        description,
+        changes: [
+          {
+            type: 'update' as const,
+            section: 'content',
+            description: description
+          }
+        ],
+        author: 'current-user',
+        createdAt: new Date(),
+        content: state.cv.content,
+        metadata: {
+          size: JSON.stringify(state.cv.content).length,
+          checksum: `checksum-${Date.now()}`,
+          tags: [],
+          branch: 'main'
+        }
+      };
+
+      setState(prev => ({
+        ...prev,
+        cv: prev.cv ? {
+          ...prev.cv,
+          versions: [...prev.cv.versions, newVersion]
+        } : prev.cv,
+        saving: false,
+        lastSaved: new Date()
+      }));
+
+    } catch (error) {
+      console.error('[CV-GENERATION] Failed to save version:', error);
+      setState(prev => ({
+        ...prev,
+        saving: false,
+        error: error instanceof Error ? error.message : 'Failed to save version'
+      }));
+    }
+  }, [state.cv]);
+
+  // Export CV
+  const exportCV = useCallback(async (format: ExportFormat, options?: ExportOptions): Promise<string> => {
+    if (!state.cv) throw new Error('No CV to export');
+
+    setState(prev => ({ ...prev, exporting: true, error: undefined }));
+
+    try {
+      console.log('[CV-GENERATION] Exporting CV:', { format, options });
+
+      // Simulate API delay
+      await new Promise(resolve => setTimeout(resolve, 2000));
+
+      // Mock export URL - in real implementation, this would come from API
+      const mockUrl = `https://example.com/exports/cv-${state.cv.id}.${format}`;
+
+      setState(prev => ({ ...prev, exporting: false }));
+
+      return mockUrl;
+
+    } catch (error) {
+      console.error('[CV-GENERATION] Failed to export CV:', error);
+      setState(prev => ({
+        ...prev,
+        exporting: false,
+        error: error instanceof Error ? error.message : 'Failed to export CV'
+      }));
+      throw error;
+    }
+  }, [state.cv]);
+
+  // Undo last change
+  const undo = useCallback(() => {
+    setState(prev => {
+      if (!prev.cv || prev.editor.history.current <= 0) return prev;
+
+      const newCurrent = prev.editor.history.current - 1;
+      const previousState = prev.editor.history.states[newCurrent];
+
+      return {
+        ...prev,
+        cv: {
+          ...prev.cv,
+          content: previousState.content
+        },
+        editor: {
+          ...prev.editor,
+          history: {
+            ...prev.editor.history,
+            current: newCurrent
+          }
+        }
+      };
+    });
+  }, []);
+
+  // Redo last undone change
+  const redo = useCallback(() => {
+    setState(prev => {
+      if (!prev.cv || prev.editor.history.current >= prev.editor.history.states.length - 1) {
+        return prev;
+      }
+
+      const newCurrent = prev.editor.history.current + 1;
+      const nextState = prev.editor.history.states[newCurrent];
+
+      return {
+        ...prev,
+        cv: {
+          ...prev.cv,
+          content: nextState.content
+        },
+        editor: {
+          ...prev.editor,
+          history: {
+            ...prev.editor.history,
+            current: newCurrent
+          }
+        }
+      };
+    });
+  }, []);
+
+  // Reset CV to initial state
+  const reset = useCallback(() => {
+    setState({
+      cv: undefined,
+      template: undefined,
+      editor: {
+        mode: 'view',
+        history: {
+          current: -1,
+          states: [],
+          maxStates: 50
+        },
+        settings: {
+          autosave: true,
+          autosaveInterval: 30000,
+          showGrid: false,
+          snapToGrid: false,
+          showRulers: false,
+          rtl: false,
+          spellCheck: true,
+          autoCorrect: false
+        },
+        tools: []
+      },
+      loading: false,
+      saving: false,
+      exporting: false,
+      error: undefined,
+      lastSaved: undefined
+    });
+  }, []);
+
+  return {
+    state,
+    actions: {
+      loadCV,
+      updateContent,
+      changeTemplate,
+      saveVersion,
+      exportCV,
+      undo,
+      redo,
+      reset
+    }
+  };
+};

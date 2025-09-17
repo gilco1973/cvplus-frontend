@@ -1,0 +1,159 @@
+// @ts-ignore
+/**
+ * Core Types for Generated CV Display System
+ */
+
+import type { AnalysisResult } from '../../../types/analysis';
+import type { Job } from '../../../types/job';
+
+// =============================================================================
+// CORE CV TYPES
+// =============================================================================
+
+/**
+ * CV Template Definition
+ */
+export interface CVTemplate {
+  id: string;
+  name: string;
+  description: string;
+  category: 'modern' | 'classic' | 'creative' | 'ats-optimized' | 'academic';
+  previewUrl?: string;
+  features: TemplateFeature[];
+  styling: TemplateStyle;
+  metadata: TemplateMetadata;
+}
+
+export interface TemplateFeature {
+  id: string;
+  name: string;
+  description: string;
+  enabled: boolean;
+  premium?: boolean;
+}
+
+export interface TemplateStyle {
+  primaryColor: string;
+  secondaryColor: string;
+  accentColor: string;
+  fontFamily: string;
+  fontSize: number;
+  lineHeight: number;
+  spacing: 'compact' | 'normal' | 'spacious';
+  layout: 'single-column' | 'two-column' | 'multi-column';
+}
+
+export interface TemplateMetadata {
+  author?: string;
+  version: string;
+  createdAt: Date;
+  updatedAt: Date;
+  downloads?: number;
+  rating?: number;
+  tags: string[];
+}
+
+// =============================================================================
+// CV CONTENT TYPES
+// =============================================================================
+
+/**
+ * Generated CV Content
+ */
+export interface GeneratedCV {
+  id: string;
+  jobId: string;
+  templateId: string;
+  content: CVContent;
+  metadata: GenerationMetadata;
+  versions: CVVersion[];
+  exports?: CVExport[];
+}
+
+export interface CVContent {
+  html: string;
+  sections: CVSection[];
+  styling: CVStyling;
+  interactive: InteractiveElement[];
+}
+
+export interface CVSection {
+  id: string;
+  type: SectionType;
+  title: string;
+  content: any;
+  order: number;
+  visible: boolean;
+  editable: boolean;
+  styling?: SectionStyling;
+}
+
+export type SectionType =
+  | 'header'
+  | 'summary'
+  | 'experience'
+  | 'education'
+  | 'skills'
+  | 'projects'
+  | 'certifications'
+  | 'achievements'
+  | 'languages'
+  | 'interests'
+  | 'references'
+  | 'portfolio'
+  | 'testimonials'
+  | 'custom';
+
+export interface InteractiveElement {
+  id: string;
+  type: 'button' | 'link' | 'modal' | 'tooltip' | 'dropdown';
+  element: string;
+  action: ElementAction;
+  styling?: any;
+}
+
+export interface ElementAction {
+  type: 'navigate' | 'modal' | 'external' | 'download' | 'copy' | 'share';
+  target?: string;
+  data?: any;
+  confirmation?: boolean;
+}
+
+// =============================================================================
+// GENERATION METADATA
+// =============================================================================
+
+export interface GenerationMetadata {
+  templateId: string;
+  templateVersion: string;
+  generatedAt: Date;
+  processingTime: number;
+  features: string[];
+  quality: GenerationQuality;
+  analysisScore?: number;
+  atsScore?: number;
+  version: string;
+  checksum: string;
+}
+
+export type GenerationQuality = 'draft' | 'standard' | 'professional' | 'premium';
+
+// =============================================================================
+// COMPONENT PROPS
+// =============================================================================
+
+export interface GeneratedCVDisplayProps {
+  job: Job;
+  analysis?: AnalysisResult;
+  template?: CVTemplate;
+  editing?: boolean;
+  onTemplateChange?: (templateId: string) => void;
+  onContentUpdate?: (content: CVContent) => void;
+  onExport?: (format: ExportFormat, options?: ExportOptions) => void;
+  onVersionSave?: (description: string) => void;
+  className?: string;
+}
+
+// Re-export from other type files
+export type { ExportFormat, ExportOptions } from './export';
+export type { CVVersion } from './version';

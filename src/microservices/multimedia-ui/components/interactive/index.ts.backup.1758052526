@@ -1,0 +1,24 @@
+// @ts-ignore
+/**
+ * Interactive Components for Multimedia Module
+ * 
+ * This module exports interactive multimedia components including QR codes,
+ * dynamic elements, and user interaction features.
+ */
+
+// QR Code Components
+export * from './qr';
+
+// Dynamic Elements
+export * from './dynamic';
+
+// Interactive Controls
+export * from './controls';
+
+// Type exports for interactive components
+export type {
+  QRCodeProps,
+  DynamicElementProps,
+  InteractiveControlProps,
+  InteractionConfig
+} from './types';

@@ -1,0 +1,34 @@
+/**
+ * Frontend Components Index
+ *
+ * Central export point for all enhancement frontend components.
+ *
+ * @author Gil Klainert
+ * @version 3.0.0 - Enhancements Module
+  */
+
+// Progressive Enhancement Components
+export {
+  ProgressiveEnhancementRenderer,
+  type ProgressiveEnhancementRendererProps
+} from './ProgressiveEnhancementRenderer';
+
+// Calendar and Booking Components
+export {
+  AvailabilityCalendar,
+  type AvailabilityCalendarProps,
+  type TimeSlot,
+  type DurationOption,
+  type BookingDetails
+} from './AvailabilityCalendar';
+
+export {
+  AvailabilityCalendarWrapper,
+  type AvailabilityCalendarWrapperProps
+} from './AvailabilityCalendarWrapper';
+
+// export { BookingScheduler } from './BookingScheduler';
+// export { CalendarSync } from './CalendarSync';
+// export { NetworkingDashboard } from './NetworkingDashboard';
+// export { ContactManager } from './ContactManager';
+// export { MeetingScheduler } from './MeetingScheduler';

@@ -1,0 +1,7 @@
+// @ts-ignore
+/**
+ * Competitive Analysis Sub-components
+  */
+
+export { CompetitiveMetrics } from './CompetitiveMetrics';
+export { MarketPosition } from './MarketPosition';

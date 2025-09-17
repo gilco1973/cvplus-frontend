@@ -1,0 +1,58 @@
+// @ts-ignore
+/**
+ * Export Types for Generated CV Display System
+ */
+
+// =============================================================================
+// EXPORT TYPES
+// =============================================================================
+
+export interface CVExport {
+  id: string;
+  format: ExportFormat;
+  url: string;
+  filename: string;
+  size: number;
+  generatedAt: Date;
+  expiresAt?: Date;
+  metadata: ExportMetadata;
+}
+
+export type ExportFormat = 'pdf' | 'docx' | 'html' | 'png' | 'jpeg' | 'json';
+
+export interface ExportMetadata {
+  quality: ExportQuality;
+  options: ExportOptions;
+  processingTime: number;
+  version: string;
+}
+
+export type ExportQuality = 'draft' | 'standard' | 'high' | 'print';
+
+export interface ExportOptions {
+  paperSize: PaperSize;
+  orientation: 'portrait' | 'landscape';
+  margins: Spacing;
+  scale: number;
+  watermark?: boolean;
+  protection?: boolean;
+  embedFonts?: boolean;
+  optimizeImages?: boolean;
+  includeMetadata?: boolean;
+}
+
+export type PaperSize = 'a4' | 'letter' | 'legal' | 'a3' | 'tabloid';
+
+export interface Spacing {
+  top: number;
+  right: number;
+  bottom: number;
+  left: number;
+}
+
+export interface ExportMenuProps {
+  onExport: (format: ExportFormat, options?: ExportOptions) => void;
+  onClose: () => void;
+  availableFormats: ExportFormat[];
+  loading?: boolean;
+}

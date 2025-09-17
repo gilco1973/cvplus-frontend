@@ -1,0 +1,83 @@
+// @ts-ignore
+/**
+ * Type definitions for advanced multimedia components
+  */
+
+export interface AnalyticsDashboardProps {
+  data: AnalyticsData;
+  timeRange?: TimeRange;
+  metrics?: MetricType[];
+  onMetricSelect?: (metric: MetricType) => void;
+  refreshInterval?: number;
+  className?: string;
+}
+
+export interface AnalyticsData {
+  views: number;
+  engagement: number;
+  duration: number;
+  interactions: InteractionMetric[];
+  performance: PerformanceMetric[];
+}
+
+export interface ProcessingOptions {
+  quality: QualityLevel;
+  format: string;
+  resolution?: Resolution;
+  compression?: CompressionSettings;
+  optimization?: OptimizationSettings;
+}
+
+export interface MonitoringConfig {
+  enabled: boolean;
+  interval: number;
+  metrics: string[];
+  alerts?: AlertConfig[];
+}
+
+export interface ProviderSettings {
+  primary: string;
+  fallback?: string;
+  config: Record<string, unknown>;
+  timeout?: number;
+}
+
+export interface InteractionMetric {
+  type: string;
+  count: number;
+  timestamp: number;
+}
+
+export interface PerformanceMetric {
+  metric: string;
+  value: number;
+  unit: string;
+  timestamp: number;
+}
+
+export type TimeRange = '1h' | '24h' | '7d' | '30d' | '90d';
+export type MetricType = 'views' | 'engagement' | 'duration' | 'interactions';
+export type QualityLevel = 'low' | 'medium' | 'high' | 'ultra';
+
+export interface Resolution {
+  width: number;
+  height: number;
+}
+
+export interface CompressionSettings {
+  quality: number;
+  algorithm?: string;
+  preserveMetadata?: boolean;
+}
+
+export interface OptimizationSettings {
+  autoOptimize: boolean;
+  targetSize?: number;
+  preserveQuality?: boolean;
+}
+
+export interface AlertConfig {
+  metric: string;
+  threshold: number;
+  action: string;
+}

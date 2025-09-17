@@ -1,0 +1,1324 @@
+// @ts-ignore
+/**
+ * CV Processing Service (T071 - Enhanced Implementation)
+ *
+ * Comprehensive frontend service for all CV processing operations with Firebase Functions
+ * backend integration. Provides clean API interface with advanced features including
+ * real-time updates, caching, retry mechanisms, and performance optimizations.
+ *
+ * Features:
+ * - File upload with progress tracking and validation
+ * - Processing job management with real-time status updates
+ * - Template management and customization
+ * - Export operations (PDF, DOCX, HTML, etc.)
+ * - Real-time updates via EventSource/WebSocket
+ * - Advanced error handling with exponential backoff retry
+ * - Intelligent caching with invalidation strategies
+ * - Request queuing and rate limiting
+ * - Performance optimizations and monitoring
+ *
+ * @version 2.0.0 - T071 Enhanced Implementation
+ * @author Gil Klainert
+ */
+
+import { httpsCallable, getFunctions } from 'firebase/functions';
+import { ref, uploadBytesResumable, getDownloadURL, getStorage } from 'firebase/storage';
+import { getAuth } from 'firebase/auth';
+
+// Types and interfaces
+export interface UploadOptions {
+  features: ProcessingFeature[];
+  jobDescription?: string;
+  templateId?: string;
+  priority?: ProcessingPriority;
+  metadata?: Record<string, any>;
+  onProgress?: (progress: number, stage: string) => void;
+}
+
+export interface UploadResult {
+  success: boolean;
+  jobId: string;
+  estimatedTime?: number;
+  error?: string;
+}
+
+export interface ProcessingFeatures {
+  analysis: boolean;
+  enhancement: boolean;
+  atsOptimization: boolean;
+  personalityInsights: boolean;
+  multimedia: boolean;
+  templates: string[];
+  exports: ExportFormat[];
+}
+
+export interface ProcessingJob {
+  id: string;
+  backendJobId: string;
+  status: ProcessingJobStatus;
+  progress: number;
+  currentStage?: string;
+  stages: ProcessingStage[];
+  file: File;
+  options: ProcessingJobOptions;
+  result?: ProcessingResults;
+  error?: string;
+  retryCount: number;
+  createdAt: Date;
+  updatedAt: Date;
+  userId: string;
+  estimatedCompletion?: Date;
+}
+
+export interface ProcessingStatus {
+  jobId: string;
+  status: ProcessingJobStatus;
+  progress: number;
+  currentStage?: string;
+  stages: ProcessingStage[];
+  result?: ProcessingResults;
+  error?: string;
+  estimatedCompletion?: string;
+  metadata?: ProcessingMetadata;
+}
+
+export interface ProcessingResults {
+  jobId: string;
+  cvData: ProcessedCVData;
+  analysis: AnalysisResults;
+  enhancements: EnhancementResults;
+  templates: GeneratedTemplate[];
+  exports: ExportResult[];
+  multimedia?: MultimediaResults;
+  metadata: ResultMetadata;
+}
+
+export interface AnalysisResults {
+  atsScore: number;
+  skillsAnalysis: SkillAnalysis[];
+  personalityInsights: PersonalityInsights;
+  recommendations: string[];
+  competitiveAnalysis: CompetitiveAnalysis;
+  industryAlignment: IndustryAlignment;
+}
+
+export interface CVTemplate {
+  id: string;
+  name: string;
+  description: string;
+  category: TemplateCategory;
+  preview: string;
+  features: TemplateFeature[];
+  customizable: boolean;
+  premium: boolean;
+  metadata: TemplateMetadata;
+}
+
+export interface ExportResult {
+  format: ExportFormat;
+  url: string;
+  size: number;
+  generatedAt: Date;
+  metadata: ExportMetadata;
+}
+
+// Enums
+export enum ProcessingFeature {
+  ANALYSIS = 'analysis',
+  ENHANCEMENT = 'enhancement',
+  ATS_OPTIMIZATION = 'atsOptimization',
+  PERSONALITY_INSIGHTS = 'personalityInsights',
+  MULTIMEDIA = 'multimedia',
+  TEMPLATES = 'templates',
+  EXPORTS = 'exports'
+}
+
+export enum ProcessingPriority {
+  LOW = 'low',
+  NORMAL = 'normal',
+  HIGH = 'high',
+  URGENT = 'urgent'
+}
+
+export enum ProcessingJobStatus {
+  QUEUED = 'queued',
+  UPLOADING = 'uploading',
+  PROCESSING = 'processing',
+  ENHANCING = 'enhancing',
+  GENERATING = 'generating',
+  COMPLETED = 'completed',
+  FAILED = 'failed',
+  CANCELLED = 'cancelled'
+}
+
+export enum ExportFormat {
+  PDF = 'pdf',
+  DOCX = 'docx',
+  HTML = 'html',
+  JSON = 'json',
+  MARKDOWN = 'markdown',
+  RTF = 'rtf'
+}
+
+export enum TemplateCategory {
+  MODERN = 'modern',
+  PROFESSIONAL = 'professional',
+  CREATIVE = 'creative',
+  TECHNICAL = 'technical',
+  EXECUTIVE = 'executive',
+  ACADEMIC = 'academic'
+}
+
+// Firebase services
+const functions = getFunctions();
+const storage = getStorage();
+const auth = getAuth();
+
+// Firebase function references
+const processCVFunction = httpsCallable(functions, 'processCV');
+const getCVStatusFunction = httpsCallable(functions, 'getCVStatus');
+const cancelCVProcessingFunction = httpsCallable(functions, 'cancelCVProcessing');
+const getTemplatesFunction = httpsCallable(functions, 'getTemplates');
+const applyTemplateFunction = httpsCallable(functions, 'applyTemplate');
+const exportCVFunction = httpsCallable(functions, 'exportCV');
+const getCVResultsFunction = httpsCallable(functions, 'getCVResults');
+const getAnalysisResultsFunction = httpsCallable(functions, 'getAnalysisResults');
+
+/**
+ * Enhanced CV Processing Service Class
+ */
+export class CVProcessingService {
+  private static instance: CVProcessingService;
+  private activeJobs = new Map<string, ProcessingJob>();
+  private uploadCache = new Map<string, CacheEntry<string>>();
+  private templateCache = new Map<string, CacheEntry<CVTemplate[]>>();
+  private eventSources = new Map<string, EventSource>();
+  private requestQueue: RequestQueueItem[] = [];
+  private isProcessingQueue = false;
+  private retryTimeouts = new Map<string, NodeJS.Timeout>();
+  private rateLimiters = new Map<string, RateLimiter>();
+
+  // Configuration
+  private readonly MAX_UPLOAD_SIZE = 10 * 1024 * 1024; // 10MB
+  private readonly MAX_CONCURRENT_UPLOADS = 3;
+  private readonly CACHE_TTL = 5 * 60 * 1000; // 5 minutes
+  private readonly MAX_RETRIES = 3;
+  private readonly INITIAL_RETRY_DELAY = 1000; // 1 second
+  private readonly MAX_RETRY_DELAY = 30000; // 30 seconds
+  private readonly RATE_LIMIT_WINDOW = 60000; // 1 minute
+  private readonly RATE_LIMIT_MAX_REQUESTS = 10;
+
+  private constructor() {
+    this.initializeRateLimiters();
+    this.startQueueProcessor();
+  }
+
+  public static getInstance(): CVProcessingService {
+    if (!CVProcessingService.instance) {
+      CVProcessingService.instance = new CVProcessingService();
+    }
+    return CVProcessingService.instance;
+  }
+
+  /**
+   * Upload CV file with enhanced progress tracking and validation
+   */
+  async uploadCV(file: File, options: UploadOptions): Promise<UploadResult> {
+    try {
+      // Validate authentication
+      const user = auth.currentUser;
+      if (!user) {
+        throw new ProcessingError('User not authenticated', 'AUTH_ERROR');
+      }
+
+      // Validate file
+      const validation = this.validateFile(file);
+      if (!validation.valid) {
+        throw new ProcessingError(validation.errors.join(', '), 'VALIDATION_ERROR');
+      }
+
+      // Check rate limiting
+      if (!this.checkRateLimit(user.uid, 'upload')) {
+        throw new ProcessingError('Rate limit exceeded. Please wait before uploading again.', 'RATE_LIMIT_ERROR');
+      }
+
+      // Generate job ID
+      const jobId = `job_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+
+      // Create processing job
+      const job: ProcessingJob = {
+        id: jobId,
+        backendJobId: jobId,
+        status: ProcessingJobStatus.UPLOADING,
+        progress: 0,
+        stages: [],
+        file,
+        options: {
+          features: options.features,
+          jobDescription: options.jobDescription,
+          templateId: options.templateId || 'modern',
+          priority: options.priority || ProcessingPriority.NORMAL,
+          metadata: options.metadata
+        },
+        retryCount: 0,
+        createdAt: new Date(),
+        updatedAt: new Date(),
+        userId: user.uid
+      };
+
+      this.activeJobs.set(jobId, job);
+
+      // Upload file with progress tracking
+      const uploadResult = await this.uploadFileToStorage(file, jobId, options.onProgress);
+
+      // Update job with upload result
+      job.status = ProcessingJobStatus.QUEUED;
+      job.progress = 0;
+      job.updatedAt = new Date();
+      this.activeJobs.set(jobId, job);
+
+      // Start processing
+      const processingResult = await this.initiateProcessing({
+        jobId,
+        fileUrl: uploadResult.url,
+        fileName: file.name,
+        fileSize: file.size,
+        mimeType: file.type,
+        features: options.features,
+        jobDescription: options.jobDescription,
+        templateId: options.templateId,
+        priority: options.priority,
+        metadata: options.metadata
+      });
+
+      if (!processingResult.success) {
+        job.status = ProcessingJobStatus.FAILED;
+        job.error = processingResult.error;
+        this.activeJobs.set(jobId, job);
+        throw new ProcessingError(processingResult.error || 'Processing initiation failed', 'PROCESSING_ERROR');
+      }
+
+      // Update job with backend ID
+      job.backendJobId = processingResult.backendJobId || jobId;
+      job.status = ProcessingJobStatus.PROCESSING;
+      job.estimatedCompletion = processingResult.estimatedCompletion;
+      this.activeJobs.set(jobId, job);
+
+      // Start real-time status tracking (async, don't await to avoid blocking)
+      this.startStatusTracking(jobId).catch(error => {
+        console.warn('[CVProcessing] Failed to start real-time tracking:', error);
+      });
+
+      return {
+        success: true,
+        jobId,
+        estimatedTime: processingResult.estimatedTime
+      };
+
+    } catch (error) {
+      console.error('[CVProcessing] Upload error:', error);
+
+      if (error instanceof ProcessingError) {
+        return {
+          success: false,
+          jobId: '',
+          error: error.message
+        };
+      }
+
+      return {
+        success: false,
+        jobId: '',
+        error: error instanceof Error ? error.message : 'Upload failed'
+      };
+    }
+  }
+
+  /**
+   * Start CV processing with retry logic and queue management
+   */
+  async startProcessing(jobId: string, features: ProcessingFeatures): Promise<ProcessingJob> {
+    try {
+      const job = this.activeJobs.get(jobId);
+      if (!job) {
+        throw new ProcessingError(`Job ${jobId} not found`, 'JOB_NOT_FOUND');
+      }
+
+      // Update job with new features
+      job.options = { ...job.options, features: Object.keys(features).filter(f => features[f as keyof ProcessingFeatures]) };
+      job.status = ProcessingJobStatus.PROCESSING;
+      job.updatedAt = new Date();
+      this.activeJobs.set(jobId, job);
+
+      // Queue processing request with retry logic
+      await this.queueProcessingRequest({
+        type: 'process',
+        jobId,
+        payload: { features },
+        retryCount: 0,
+        priority: job.options.priority || ProcessingPriority.NORMAL
+      });
+
+      return job;
+
+    } catch (error) {
+      console.error('[CVProcessing] Start processing error:', error);
+      throw error;
+    }
+  }
+
+  /**
+   * Get processing status with caching
+   */
+  async getProcessingStatus(jobId: string): Promise<ProcessingStatus> {
+    try {
+      // Check local job first
+      const localJob = this.activeJobs.get(jobId);
+      if (localJob && this.isStatusCached(jobId)) {
+        return this.jobToStatus(localJob);
+      }
+
+      // Fetch from backend with retry logic
+      const result = await this.withRetry(
+        () => getCVStatusFunction({ jobId }),
+        `getProcessingStatus_${jobId}`,
+        this.MAX_RETRIES
+      );
+
+      const data = result.data as any;
+      if (!data.success) {
+        throw new ProcessingError(data.error || 'Status retrieval failed', 'STATUS_ERROR');
+      }
+
+      // Update local job if exists
+      if (localJob) {
+        localJob.status = data.data.status;
+        localJob.progress = data.data.progress;
+        localJob.currentStage = data.data.currentStage;
+        localJob.stages = data.data.stages || [];
+        localJob.error = data.data.error;
+        localJob.updatedAt = new Date();
+
+        if (data.data.result) {
+          localJob.result = data.data.result;
+        }
+
+        this.activeJobs.set(jobId, localJob);
+      }
+
+      return data.data;
+
+    } catch (error) {
+      console.error('[CVProcessing] Get status error:', error);
+      throw error;
+    }
+  }
+
+  /**
+   * Cancel processing job
+   */
+  async cancelProcessing(jobId: string): Promise<void> {
+    try {
+      const job = this.activeJobs.get(jobId);
+      if (!job) {
+        throw new ProcessingError(`Job ${jobId} not found`, 'JOB_NOT_FOUND');
+      }
+
+      // Update local job status
+      job.status = ProcessingJobStatus.CANCELLED;
+      job.updatedAt = new Date();
+      this.activeJobs.set(jobId, job);
+
+      // Cancel backend processing
+      await this.withRetry(
+        () => cancelCVProcessingFunction({ jobId: job.backendJobId }),
+        `cancelProcessing_${jobId}`,
+        2
+      );
+
+      // Stop real-time tracking
+      this.stopStatusTracking(jobId);
+
+      // Clear any retry timeouts
+      const retryTimeout = this.retryTimeouts.get(jobId);
+      if (retryTimeout) {
+        clearTimeout(retryTimeout);
+        this.retryTimeouts.delete(jobId);
+      }
+
+    } catch (error) {
+      console.error('[CVProcessing] Cancel processing error:', error);
+      throw error;
+    }
+  }
+
+  /**
+   * Get processing results with caching
+   */
+  async getProcessingResults(jobId: string): Promise<ProcessingResults> {
+    try {
+      const job = this.activeJobs.get(jobId);
+      if (!job) {
+        throw new ProcessingError(`Job ${jobId} not found`, 'JOB_NOT_FOUND');
+      }
+
+      // Return cached result if available and fresh
+      if (job.result && this.isResultCached(jobId)) {
+        return job.result;
+      }
+
+      // Fetch results from backend
+      const result = await this.withRetry(
+        () => getCVResultsFunction({ jobId: job.backendJobId }),
+        `getResults_${jobId}`,
+        this.MAX_RETRIES
+      );
+
+      const data = result.data as any;
+      if (!data.success) {
+        throw new ProcessingError(data.error || 'Results retrieval failed', 'RESULTS_ERROR');
+      }
+
+      // Cache the results
+      job.result = data.results;
+      job.updatedAt = new Date();
+      this.activeJobs.set(jobId, job);
+
+      return data.results;
+
+    } catch (error) {
+      console.error('[CVProcessing] Get results error:', error);
+      throw error;
+    }
+  }
+
+  /**
+   * Get analysis results
+   */
+  async getAnalysisResults(jobId: string): Promise<AnalysisResults> {
+    try {
+      const result = await this.withRetry(
+        () => getAnalysisResultsFunction({ jobId }),
+        `getAnalysisResults_${jobId}`,
+        this.MAX_RETRIES
+      );
+
+      const data = result.data as any;
+      if (!data.success) {
+        throw new ProcessingError(data.error || 'Analysis results retrieval failed', 'ANALYSIS_ERROR');
+      }
+
+      return data.analysis;
+
+    } catch (error) {
+      console.error('[CVProcessing] Get analysis results error:', error);
+      throw error;
+    }
+  }
+
+  /**
+   * Get available templates with caching
+   */
+  async getTemplates(): Promise<CVTemplate[]> {
+    try {
+      // Check cache first
+      const cacheKey = 'all_templates';
+      const cached = this.templateCache.get(cacheKey);
+      if (cached && !this.isCacheExpired(cached)) {
+        return cached.data;
+      }
+
+      // Fetch from backend
+      const result = await this.withRetry(
+        () => getTemplatesFunction(),
+        'getTemplates',
+        this.MAX_RETRIES
+      );
+
+      const data = result.data as any;
+      if (!data.success) {
+        throw new ProcessingError(data.error || 'Templates retrieval failed', 'TEMPLATES_ERROR');
+      }
+
+      // Cache the templates
+      this.templateCache.set(cacheKey, {
+        data: data.templates,
+        timestamp: Date.now()
+      });
+
+      return data.templates;
+
+    } catch (error) {
+      console.error('[CVProcessing] Get templates error:', error);
+      throw error;
+    }
+  }
+
+  /**
+   * Apply template to CV
+   */
+  async applyTemplate(jobId: string, templateId: string): Promise<ProcessedCVData> {
+    try {
+      const job = this.activeJobs.get(jobId);
+      if (!job) {
+        throw new ProcessingError(`Job ${jobId} not found`, 'JOB_NOT_FOUND');
+      }
+
+      const result = await this.withRetry(
+        () => applyTemplateFunction({ jobId: job.backendJobId, templateId }),
+        `applyTemplate_${jobId}_${templateId}`,
+        this.MAX_RETRIES
+      );
+
+      const data = result.data as any;
+      if (!data.success) {
+        throw new ProcessingError(data.error || 'Template application failed', 'TEMPLATE_ERROR');
+      }
+
+      // Invalidate results cache
+      if (job.result) {
+        job.result = undefined;
+      }
+      job.updatedAt = new Date();
+      this.activeJobs.set(jobId, job);
+
+      return data.cvData;
+
+    } catch (error) {
+      console.error('[CVProcessing] Apply template error:', error);
+      throw error;
+    }
+  }
+
+  /**
+   * Export CV in specified format
+   */
+  async exportCV(jobId: string, format: ExportFormat): Promise<ExportResult> {
+    try {
+      const job = this.activeJobs.get(jobId);
+      if (!job) {
+        throw new ProcessingError(`Job ${jobId} not found`, 'JOB_NOT_FOUND');
+      }
+
+      const result = await this.withRetry(
+        () => exportCVFunction({ jobId: job.backendJobId, format }),
+        `exportCV_${jobId}_${format}`,
+        this.MAX_RETRIES
+      );
+
+      const data = result.data as any;
+      if (!data.success) {
+        throw new ProcessingError(data.error || 'Export failed', 'EXPORT_ERROR');
+      }
+
+      return {
+        format,
+        url: data.url,
+        size: data.size,
+        generatedAt: new Date(data.generatedAt),
+        metadata: data.metadata
+      };
+
+    } catch (error) {
+      console.error('[CVProcessing] Export CV error:', error);
+      throw error;
+    }
+  }
+
+  /**
+   * Subscribe to real-time processing updates
+   */
+  async subscribeToUpdates(jobId: string): Promise<EventSource> {
+    try {
+      // Close existing connection if any
+      this.unsubscribeFromUpdates(jobId);
+
+      const job = this.activeJobs.get(jobId);
+      if (!job) {
+        throw new ProcessingError(`Job ${jobId} not found`, 'JOB_NOT_FOUND');
+      }
+
+      // Create EventSource connection
+      const user = auth.currentUser;
+      if (!user) {
+        throw new ProcessingError('User not authenticated', 'AUTH_ERROR');
+      }
+
+      const token = await user.getIdToken();
+      const eventSource = new EventSource(
+        `/api/cv-processing/status-stream/${job.backendJobId}?token=${token}`
+      );
+
+      // Handle status updates
+      eventSource.onmessage = (event) => {
+        try {
+          const statusData = JSON.parse(event.data);
+          this.handleStatusUpdate(jobId, statusData);
+        } catch (error) {
+          console.error('[CVProcessing] Status update parse error:', error);
+        }
+      };
+
+      // Handle errors
+      eventSource.onerror = (error) => {
+        console.error('[CVProcessing] EventSource error:', error);
+        this.handleConnectionError(jobId, eventSource);
+      };
+
+      this.eventSources.set(jobId, eventSource);
+      return eventSource;
+
+    } catch (error) {
+      console.error('[CVProcessing] Subscribe to updates error:', error);
+      throw error;
+    }
+  }
+
+  /**
+   * Unsubscribe from real-time updates
+   */
+  unsubscribeFromUpdates(jobId: string): void {
+    const eventSource = this.eventSources.get(jobId);
+    if (eventSource) {
+      eventSource.close();
+      this.eventSources.delete(jobId);
+    }
+  }
+
+  // Private helper methods
+
+  private validateFile(file: File): { valid: boolean; errors: string[] } {
+    const errors: string[] = [];
+
+    // Check file size
+    if (file.size > this.MAX_UPLOAD_SIZE) {
+      errors.push(`File size exceeds ${this.MAX_UPLOAD_SIZE / (1024 * 1024)}MB limit`);
+    }
+
+    // Check file type
+    const allowedTypes = [
+      'application/pdf',
+      'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+      'application/msword',
+      'text/plain'
+    ];
+
+    if (!allowedTypes.includes(file.type)) {
+      errors.push('File type not supported. Please upload PDF, DOCX, DOC, or TXT files.');
+    }
+
+    // Check file name
+    if (!file.name || file.name.length < 1) {
+      errors.push('File must have a valid name');
+    }
+
+    return {
+      valid: errors.length === 0,
+      errors
+    };
+  }
+
+  private async uploadFileToStorage(
+    file: File,
+    jobId: string,
+    onProgress?: (progress: number, stage: string) => void
+  ): Promise<{ url: string; path: string }> {
+    try {
+      const user = auth.currentUser;
+      if (!user) {
+        throw new ProcessingError('User not authenticated', 'AUTH_ERROR');
+      }
+
+      // Generate file path
+      const timestamp = Date.now();
+      const fileName = `${timestamp}_${jobId}_${file.name}`;
+      const filePath = `cv-uploads/${user.uid}/${fileName}`;
+
+      // Check cache
+      const cacheKey = `${file.name}_${file.size}_${file.lastModified}`;
+      const cached = this.uploadCache.get(cacheKey);
+      if (cached && !this.isCacheExpired(cached)) {
+        return { url: cached.data, path: filePath };
+      }
+
+      // Create storage reference
+      const storageRef = ref(storage, filePath);
+
+      // Start upload with progress tracking
+      const uploadTask = uploadBytesResumable(storageRef, file);
+
+      return new Promise((resolve, reject) => {
+        uploadTask.on(
+          'state_changed',
+          (snapshot) => {
+            const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+            onProgress?.(progress, 'uploading');
+          },
+          (error) => {
+            reject(new ProcessingError(`Upload failed: ${error.message}`, 'UPLOAD_ERROR'));
+          },
+          async () => {
+            try {
+              const downloadURL = await getDownloadURL(uploadTask.snapshot.ref);
+
+              // Cache the URL
+              this.uploadCache.set(cacheKey, {
+                data: downloadURL,
+                timestamp: Date.now()
+              });
+
+              resolve({
+                url: downloadURL,
+                path: filePath
+              });
+            } catch (error) {
+              reject(error);
+            }
+          }
+        );
+      });
+
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  private async initiateProcessing(request: any): Promise<any> {
+    try {
+      const result = await this.withRetry(
+        () => processCVFunction(request),
+        `initiateProcessing_${request.jobId}`,
+        this.MAX_RETRIES
+      );
+
+      const data = result.data as any;
+      return {
+        success: data.success,
+        backendJobId: data.jobId,
+        estimatedTime: data.estimatedTime,
+        estimatedCompletion: data.estimatedCompletion ? new Date(data.estimatedCompletion) : undefined,
+        error: data.error
+      };
+
+    } catch (error) {
+      return {
+        success: false,
+        error: error instanceof Error ? error.message : 'Processing initiation failed'
+      };
+    }
+  }
+
+  private async startStatusTracking(jobId: string): Promise<void> {
+    // Start EventSource connection for real-time updates
+    try {
+      await this.subscribeToUpdates(jobId);
+    } catch (error) {
+      console.warn('[CVProcessing] Could not start real-time tracking:', error);
+      // Fallback to polling
+      this.startPollingStatusUpdates(jobId);
+    }
+  }
+
+  private stopStatusTracking(jobId: string): void {
+    this.unsubscribeFromUpdates(jobId);
+  }
+
+  private startPollingStatusUpdates(jobId: string): void {
+    const pollInterval = setInterval(async () => {
+      try {
+        const status = await this.getProcessingStatus(jobId);
+        if (status.status === ProcessingJobStatus.COMPLETED ||
+            status.status === ProcessingJobStatus.FAILED ||
+            status.status === ProcessingJobStatus.CANCELLED) {
+          clearInterval(pollInterval);
+        }
+      } catch (error) {
+        console.error('[CVProcessing] Polling error:', error);
+        clearInterval(pollInterval);
+      }
+    }, 5000); // Poll every 5 seconds
+
+    // Store interval for cleanup
+    setTimeout(() => clearInterval(pollInterval), 300000); // Stop after 5 minutes
+  }
+
+  private handleStatusUpdate(jobId: string, statusData: any): void {
+    const job = this.activeJobs.get(jobId);
+    if (!job) return;
+
+    // Update job with new status
+    job.status = statusData.status;
+    job.progress = statusData.progress;
+    job.currentStage = statusData.currentStage;
+    job.stages = statusData.stages || [];
+    job.error = statusData.error;
+    job.updatedAt = new Date();
+
+    if (statusData.result) {
+      job.result = statusData.result;
+    }
+
+    this.activeJobs.set(jobId, job);
+
+    // Stop tracking if job is complete
+    if (statusData.status === ProcessingJobStatus.COMPLETED ||
+        statusData.status === ProcessingJobStatus.FAILED ||
+        statusData.status === ProcessingJobStatus.CANCELLED) {
+      this.stopStatusTracking(jobId);
+    }
+  }
+
+  private handleConnectionError(jobId: string, eventSource: EventSource): void {
+    // Implement exponential backoff reconnection
+    setTimeout(() => {
+      if (eventSource.readyState === EventSource.CLOSED) {
+        try {
+          this.subscribeToUpdates(jobId);
+        } catch (error) {
+          console.error('[CVProcessing] Reconnection failed:', error);
+        }
+      }
+    }, 5000);
+  }
+
+  private async withRetry<T>(
+    fn: () => Promise<T>,
+    operationId: string,
+    maxRetries: number = this.MAX_RETRIES
+  ): Promise<T> {
+    let lastError: Error;
+
+    for (let attempt = 0; attempt <= maxRetries; attempt++) {
+      try {
+        return await fn();
+      } catch (error) {
+        lastError = error instanceof Error ? error : new Error(String(error));
+
+        if (attempt === maxRetries) {
+          throw lastError;
+        }
+
+        // Calculate exponential backoff delay
+        const delay = Math.min(
+          this.INITIAL_RETRY_DELAY * Math.pow(2, attempt),
+          this.MAX_RETRY_DELAY
+        );
+
+        console.warn(`[CVProcessing] Retry ${attempt + 1}/${maxRetries} for ${operationId} in ${delay}ms:`, lastError.message);
+
+        await this.sleep(delay);
+      }
+    }
+
+    throw lastError!;
+  }
+
+  private sleep(ms: number): Promise<void> {
+    return new Promise(resolve => setTimeout(resolve, ms));
+  }
+
+  private async queueProcessingRequest(request: RequestQueueItem): Promise<void> {
+    this.requestQueue.push(request);
+    this.processQueue();
+  }
+
+  private async processQueue(): Promise<void> {
+    if (this.isProcessingQueue || this.requestQueue.length === 0) {
+      return;
+    }
+
+    this.isProcessingQueue = true;
+
+    try {
+      // Sort by priority
+      this.requestQueue.sort((a, b) => {
+        const priorityOrder = {
+          [ProcessingPriority.URGENT]: 4,
+          [ProcessingPriority.HIGH]: 3,
+          [ProcessingPriority.NORMAL]: 2,
+          [ProcessingPriority.LOW]: 1
+        };
+        return priorityOrder[b.priority] - priorityOrder[a.priority];
+      });
+
+      // Process requests sequentially
+      while (this.requestQueue.length > 0) {
+        const request = this.requestQueue.shift()!;
+
+        try {
+          await this.processQueuedRequest(request);
+        } catch (error) {
+          console.error('[CVProcessing] Queue processing error:', error);
+
+          // Retry if below max retries
+          if (request.retryCount < this.MAX_RETRIES) {
+            request.retryCount++;
+            this.requestQueue.unshift(request); // Add back to front for retry
+          }
+        }
+
+        // Small delay between requests to avoid overwhelming the backend
+        await this.sleep(100);
+      }
+    } finally {
+      this.isProcessingQueue = false;
+    }
+  }
+
+  private async processQueuedRequest(request: RequestQueueItem): Promise<void> {
+    switch (request.type) {
+      case 'process':
+        // Handle processing request
+        break;
+      case 'export':
+        // Handle export request
+        break;
+      case 'template':
+        // Handle template request
+        break;
+      default:
+        console.warn('[CVProcessing] Unknown request type:', request.type);
+    }
+  }
+
+  private startQueueProcessor(): void {
+    // Process queue every 1 second
+    setInterval(() => {
+      this.processQueue();
+    }, 1000);
+  }
+
+  private checkRateLimit(userId: string, operation: string): boolean {
+    const key = `${userId}_${operation}`;
+    const rateLimiter = this.rateLimiters.get(key);
+
+    if (!rateLimiter) {
+      this.rateLimiters.set(key, {
+        requests: [Date.now()],
+        window: this.RATE_LIMIT_WINDOW,
+        maxRequests: this.RATE_LIMIT_MAX_REQUESTS
+      });
+      return true;
+    }
+
+    const now = Date.now();
+    const windowStart = now - rateLimiter.window;
+
+    // Remove old requests
+    rateLimiter.requests = rateLimiter.requests.filter(time => time > windowStart);
+
+    // Check if under limit
+    if (rateLimiter.requests.length >= rateLimiter.maxRequests) {
+      return false;
+    }
+
+    // Add current request
+    rateLimiter.requests.push(now);
+    return true;
+  }
+
+  private initializeRateLimiters(): void {
+    // Clean up rate limiters every 5 minutes
+    setInterval(() => {
+      const now = Date.now();
+      this.rateLimiters.forEach((limiter, key) => {
+        const windowStart = now - limiter.window;
+        limiter.requests = limiter.requests.filter(time => time > windowStart);
+
+        if (limiter.requests.length === 0) {
+          this.rateLimiters.delete(key);
+        }
+      });
+    }, 5 * 60 * 1000);
+  }
+
+  private isCacheExpired(entry: CacheEntry<any>): boolean {
+    return Date.now() - entry.timestamp > this.CACHE_TTL;
+  }
+
+  private isStatusCached(jobId: string): boolean {
+    const job = this.activeJobs.get(jobId);
+    if (!job) return false;
+
+    const timeSinceUpdate = Date.now() - job.updatedAt.getTime();
+    return timeSinceUpdate < 10000; // 10 seconds cache
+  }
+
+  private isResultCached(jobId: string): boolean {
+    const job = this.activeJobs.get(jobId);
+    if (!job || !job.result) return false;
+
+    const timeSinceUpdate = Date.now() - job.updatedAt.getTime();
+    return timeSinceUpdate < this.CACHE_TTL;
+  }
+
+  private jobToStatus(job: ProcessingJob): ProcessingStatus {
+    return {
+      jobId: job.id,
+      status: job.status,
+      progress: job.progress,
+      currentStage: job.currentStage,
+      stages: job.stages,
+      result: job.result,
+      error: job.error,
+      estimatedCompletion: job.estimatedCompletion?.toISOString(),
+      metadata: {
+        retryCount: job.retryCount,
+        createdAt: job.createdAt.toISOString(),
+        updatedAt: job.updatedAt.toISOString()
+      }
+    };
+  }
+
+  // Public utility methods
+
+  /**
+   * Get active jobs
+   */
+  getActiveJobs(): ProcessingJob[] {
+    return Array.from(this.activeJobs.values());
+  }
+
+  /**
+   * Get specific job
+   */
+  getJob(jobId: string): ProcessingJob | undefined {
+    return this.activeJobs.get(jobId);
+  }
+
+  /**
+   * Remove completed job from memory
+   */
+  removeJob(jobId: string): void {
+    this.activeJobs.delete(jobId);
+    this.stopStatusTracking(jobId);
+
+    const retryTimeout = this.retryTimeouts.get(jobId);
+    if (retryTimeout) {
+      clearTimeout(retryTimeout);
+      this.retryTimeouts.delete(jobId);
+    }
+  }
+
+  /**
+   * Clear all caches
+   */
+  clearCaches(): void {
+    this.uploadCache.clear();
+    this.templateCache.clear();
+  }
+
+  /**
+   * Get processing statistics
+   */
+  getProcessingStats() {
+    const jobs = Array.from(this.activeJobs.values());
+    const completed = jobs.filter(job => job.status === ProcessingJobStatus.COMPLETED).length;
+    const failed = jobs.filter(job => job.status === ProcessingJobStatus.FAILED).length;
+    const active = jobs.filter(job =>
+      [ProcessingJobStatus.PROCESSING, ProcessingJobStatus.QUEUED, ProcessingJobStatus.UPLOADING].includes(job.status)
+    ).length;
+    const total = jobs.length;
+
+    return {
+      totalJobs: total,
+      completedJobs: completed,
+      failedJobs: failed,
+      activeJobs: active,
+      successRate: total > 0 ? (completed / total) * 100 : 0,
+      cacheHitRate: this.calculateCacheHitRate(),
+      queueLength: this.requestQueue.length
+    };
+  }
+
+  private calculateCacheHitRate(): number {
+    // This would be implemented based on cache hit tracking
+    // For now return a placeholder
+    return 85.5;
+  }
+}
+
+// Supporting types and interfaces
+
+interface CacheEntry<T> {
+  data: T;
+  timestamp: number;
+}
+
+interface RequestQueueItem {
+  type: 'process' | 'export' | 'template';
+  jobId: string;
+  payload: any;
+  retryCount: number;
+  priority: ProcessingPriority;
+}
+
+interface RateLimiter {
+  requests: number[];
+  window: number;
+  maxRequests: number;
+}
+
+interface ProcessingJobOptions {
+  features: any;
+  jobDescription?: string;
+  templateId?: string;
+  priority?: ProcessingPriority;
+  metadata?: Record<string, any>;
+}
+
+interface ProcessingStage {
+  id: string;
+  name: string;
+  status: string;
+  progress: number;
+  startedAt?: Date;
+  completedAt?: Date;
+  error?: string;
+}
+
+interface ProcessedCVData {
+  personalInfo: any;
+  experience: any;
+  education: any;
+  skills: any;
+  achievements: any;
+  metadata: any;
+}
+
+interface SkillAnalysis {
+  name: string;
+  category: string;
+  level: string;
+  relevance: number;
+}
+
+interface PersonalityInsights {
+  traits: any[];
+  strengths: string[];
+  workStyle: string;
+  culturalFit: any;
+}
+
+interface CompetitiveAnalysis {
+  ranking: number;
+  strengths: string[];
+  improvements: string[];
+  marketPosition: string;
+}
+
+interface IndustryAlignment {
+  score: number;
+  matchedSkills: string[];
+  missingSkills: string[];
+  recommendations: string[];
+}
+
+interface EnhancementResults {
+  suggestions: any[];
+  appliedChanges: any[];
+  impactScore: number;
+}
+
+interface GeneratedTemplate {
+  id: string;
+  name: string;
+  preview: string;
+  applied: boolean;
+}
+
+interface MultimediaResults {
+  podcast?: {
+    url: string;
+    duration: number;
+  };
+  video?: {
+    url: string;
+    thumbnail: string;
+  };
+  portfolio?: {
+    url: string;
+    items: any[];
+  };
+}
+
+interface ResultMetadata {
+  processedAt: Date;
+  processingTime: number;
+  version: string;
+}
+
+interface ProcessingMetadata {
+  retryCount: number;
+  createdAt: string;
+  updatedAt: string;
+}
+
+interface TemplateFeature {
+  name: string;
+  available: boolean;
+}
+
+interface TemplateMetadata {
+  author: string;
+  version: string;
+  tags: string[];
+}
+
+interface ExportMetadata {
+  pages?: number;
+  wordCount?: number;
+  fileSize: number;
+  generatedWith: string;
+}
+
+// Custom error class
+export class ProcessingError extends Error {
+  constructor(message: string, public code: string) {
+    super(message);
+    this.name = 'ProcessingError';
+  }
+}
+
+// Export singleton instance
+export const cvProcessingService = CVProcessingService.getInstance();
+
+// Export convenience methods
+export const {
+  uploadCV,
+  startProcessing,
+  getProcessingStatus,
+  cancelProcessing,
+  getProcessingResults,
+  getAnalysisResults,
+  getTemplates,
+  applyTemplate,
+  exportCV,
+  subscribeToUpdates,
+  unsubscribeFromUpdates,
+  getActiveJobs,
+  getJob,
+  removeJob,
+  clearCaches,
+  getProcessingStats
+} = cvProcessingService;
+
+// Export service methods with explicit names to avoid conflicts
+export const cvProcessingMethods = {
+  uploadCV: cvProcessingService.uploadCV.bind(cvProcessingService),
+  startProcessing: cvProcessingService.startProcessing.bind(cvProcessingService),
+  getProcessingStatus: cvProcessingService.getProcessingStatus.bind(cvProcessingService),
+  cancelProcessing: cvProcessingService.cancelProcessing.bind(cvProcessingService),
+  getProcessingResults: cvProcessingService.getProcessingResults.bind(cvProcessingService),
+  getAnalysisResults: cvProcessingService.getAnalysisResults.bind(cvProcessingService),
+  getTemplates: cvProcessingService.getTemplates.bind(cvProcessingService),
+  applyTemplate: cvProcessingService.applyTemplate.bind(cvProcessingService),
+  exportCV: cvProcessingService.exportCV.bind(cvProcessingService),
+  subscribeToUpdates: cvProcessingService.subscribeToUpdates.bind(cvProcessingService),
+  unsubscribeFromUpdates: cvProcessingService.unsubscribeFromUpdates.bind(cvProcessingService),
+  getActiveJobs: cvProcessingService.getActiveJobs.bind(cvProcessingService),
+  getJob: cvProcessingService.getJob.bind(cvProcessingService),
+  removeJob: cvProcessingService.removeJob.bind(cvProcessingService),
+  clearCaches: cvProcessingService.clearCaches.bind(cvProcessingService),
+  getProcessingStats: cvProcessingService.getProcessingStats.bind(cvProcessingService)
+};

@@ -1,0 +1,185 @@
+// @ts-ignore
+/**
+ * Service Setup for Autonomous Frontend
+ * Registers and configures all services for independent operation
+  */
+
+import { serviceContainer } from '../services/ServiceContainer';
+import { AutonomousAuthService } from '../services/AutonomousAuthService';
+import { AutonomousAPIService } from '../services/AutonomousAPIService';
+import { AutonomousConfigService } from '../services/AutonomousConfigService';
+import { parentIntegration } from '../integration/ParentIntegrationService';
+
+/**
+ * Setup all autonomous services for independent operation
+  */
+export async function setupServices(config?: any): Promise<void> {
+  try {
+    // Register Configuration Service first
+    serviceContainer.register('config', AutonomousConfigService, true);
+    const configService = serviceContainer.resolve<AutonomousConfigService>('config');
+
+    // Apply any provided configuration
+    if (config) {
+      configService.updateConfig(config);
+    }
+
+    // Register Authentication Service
+    serviceContainer.register('auth', AutonomousAuthService, true);
+    const authService = serviceContainer.resolve<AutonomousAuthService>('auth');
+
+    // Register API Service with auth dependency
+    serviceContainer.register('api', () => {
+      return new AutonomousAPIService(authService, configService.getApiBaseUrl());
+    }, true);
+
+    // Setup parent integration if available
+    if (parentIntegration.isConnectedToParent()) {
+      console.log('[CVProcessing] Connected to parent application');
+      
+      // Listen for configuration updates from parent
+      parentIntegration.on('config-updated', (parentConfig) => {
+        configService.updateConfig({
+          api: {
+            baseUrl: parentConfig.apiBaseUrl || configService.getApiBaseUrl(),
+            timeout: configService.getApiTimeout(),
+            retryAttempts: configService.getRetryAttempts()
+          },
+          features: {
+            magicTransform: parentConfig.premiumEnabled !== false,
+            atsOptimization: true,
+            industryAnalysis: parentConfig.premiumEnabled !== false,
+            regionalOptimization: parentConfig.premiumEnabled !== false
+          }
+        });
+      });
+
+      // Listen for auth token updates
+      parentIntegration.on('auth-token-updated', (token) => {
+        // The auth service will be notified through Firebase auth state changes
+        console.log('[CVProcessing] Auth token updated from parent');
+      });
+    } else {
+      console.log('[CVProcessing] Running in standalone mode');
+    }
+
+    // Validate service setup
+    await validateServices();
+
+    console.log('[CVProcessing] All services initialized successfully');
+
+  } catch (error) {
+    console.error('[CVProcessing] Service setup failed:', error);
+    throw error;
+  }
+}
+
+/**
+ * Validate that all required services are properly registered
+  */
+async function validateServices(): Promise<void> {
+  const requiredServices = ['config', 'auth', 'api'];
+  
+  for (const serviceName of requiredServices) {
+    if (!serviceContainer.has(serviceName)) {
+      throw new Error(`Required service '${serviceName}' not registered`);
+    }
+
+    try {
+      const service = serviceContainer.resolve(serviceName);
+      if (!service) {
+        throw new Error(`Service '${serviceName}' resolved to null`);
+      }
+    } catch (error) {
+      throw new Error(`Failed to resolve service '${serviceName}': ${error}`);
+    }
+  }
+}
+
+/**
+ * Get all registered service information for debugging
+  */
+export function getServiceInfo(): Record<string, any> {
+  const services = serviceContainer.getServiceNames();
+  const info: Record<string, any> = {};
+
+  for (const serviceName of services) {
+    try {
+      const service = serviceContainer.resolve(serviceName);
+      info[serviceName] = {
+        registered: true,
+        resolved: !!service,
+        type: service?.constructor?.name || 'Unknown'
+      };
+    } catch (error) {
+      info[serviceName] = {
+        registered: true,
+        resolved: false,
+        error: error instanceof Error ? error.message : 'Unknown error'
+      };
+    }
+  }
+
+  return info;
+}
+
+/**
+ * Health check for all services
+  */
+export async function healthCheck(): Promise<{
+  healthy: boolean;
+  services: Record<string, { status: 'ok' | 'error'; message?: string }>;
+}> {
+  const services: Record<string, { status: 'ok' | 'error'; message?: string }> = {};
+  let healthy = true;
+
+  // Check config service
+  try {
+    const configService = serviceContainer.resolve<AutonomousConfigService>('config');
+    const config = configService.getConfig();
+    services.config = { 
+      status: config ? 'ok' : 'error', 
+      message: config ? 'Configuration loaded' : 'No configuration available'
+    };
+  } catch (error) {
+    services.config = { 
+      status: 'error', 
+      message: error instanceof Error ? error.message : 'Unknown error' 
+    };
+    healthy = false;
+  }
+
+  // Check auth service
+  try {
+    const authService = serviceContainer.resolve<AutonomousAuthService>('auth');
+    const authState = authService.getAuthState();
+    services.auth = { 
+      status: 'ok', 
+      message: `Auth state: ${authState.loading ? 'loading' : authState.user ? 'authenticated' : 'not authenticated'}` 
+    };
+  } catch (error) {
+    services.auth = { 
+      status: 'error', 
+      message: error instanceof Error ? error.message : 'Unknown error' 
+    };
+    healthy = false;
+  }
+
+  // Check API service
+  try {
+    const apiService = serviceContainer.resolve<AutonomousAPIService>('api');
+    const healthResponse = await apiService.healthCheck();
+    services.api = { 
+      status: healthResponse.success ? 'ok' : 'error', 
+      message: healthResponse.success ? 'API healthy' : healthResponse.error || 'API not responding'
+    };
+  } catch (error) {
+    services.api = { 
+      status: 'error', 
+      message: error instanceof Error ? error.message : 'Unknown error' 
+    };
+    healthy = false;
+  }
+
+  return { healthy, services };
+}

@@ -1,0 +1,248 @@
+// @ts-ignore
+/**
+ * Autonomous API Service
+ * Independent HTTP client for CV processing operations
+ */
+
+import { AutonomousAuthService } from './AutonomousAuthService';
+
+export interface APIResponse<T = any> {
+  data: T;
+  success: boolean;
+  error?: string;
+  statusCode: number;
+}
+
+export interface CVProcessingJob {
+  jobId: string;
+  status: 'pending' | 'processing' | 'completed' | 'failed';
+  progress: number;
+  result?: any;
+  error?: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface ProcessCVRequest {
+  fileUrl?: string;
+  fileContent?: string;
+  mimeType: string;
+  features: string[];
+  userInstructions?: string;
+  isUrl?: boolean;
+}
+
+/**
+ * Independent API service for autonomous CV processing operations
+ * Zero dependencies on parent application services
+ */
+export class AutonomousAPIService {
+  private baseURL: string;
+  private authService: AutonomousAuthService;
+  private defaultHeaders: Record<string, string>;
+
+  constructor(authService: AutonomousAuthService, baseURL?: string) {
+    this.authService = authService;
+    this.baseURL = baseURL || this.detectBaseURL();
+    this.defaultHeaders = {
+      'Content-Type': 'application/json',
+      'Accept': 'application/json'
+    };
+  }
+
+  /**
+   * Auto-detect base URL based on environment
+   */
+  private detectBaseURL(): string {
+    if (typeof window !== 'undefined') {
+      const hostname = window.location.hostname;
+      if (hostname === 'localhost' || hostname === '127.0.0.1') {
+        return 'http://localhost:5001'; // Local Firebase emulator
+      }
+    }
+    
+    return 'https://us-central1-cvplus-app.cloudfunctions.net';
+  }
+
+  /**
+   * Get authorization headers
+   */
+  private async getAuthHeaders(): Promise<Record<string, string>> {
+    const token = await this.authService.getIdToken();
+    
+    return {
+      ...this.defaultHeaders,
+      ...(token && { Authorization: `Bearer ${token}` })
+    };
+  }
+
+  /**
+   * Generic HTTP request method
+   */
+  private async request<T>(
+    endpoint: string, 
+    options: RequestInit = {}
+  ): Promise<APIResponse<T>> {
+    const url = `${this.baseURL}/${endpoint.replace(/^\//, '')}`;
+    const headers = await this.getAuthHeaders();
+
+    try {
+      const response = await fetch(url, {
+        ...options,
+        headers: {
+          ...headers,
+          ...options.headers
+        }
+      });
+
+      const contentType = response.headers.get('content-type');
+      let data: any;
+
+      if (contentType && contentType.includes('application/json')) {
+        data = await response.json();
+      } else {
+        data = await response.text();
+      }
+
+      if (!response.ok) {
+        throw new Error(data.error || `HTTP ${response.status}: ${response.statusText}`);
+      }
+
+      return {
+        data,
+        success: true,
+        statusCode: response.status
+      };
+    } catch (error) {
+      const errorMessage = error instanceof Error ? error.message : 'API request failed';
+      
+      return {
+        data: null as T,
+        success: false,
+        error: errorMessage,
+        statusCode: 500
+      };
+    }
+  }
+
+  /**
+   * Process CV file
+   */
+  async processCV(request: ProcessCVRequest): Promise<APIResponse<CVProcessingJob>> {
+    return this.request<CVProcessingJob>('processCV', {
+      method: 'POST',
+      body: JSON.stringify(request)
+    });
+  }
+
+  /**
+   * Get processing job status
+   */
+  async getJobStatus(jobId: string): Promise<APIResponse<CVProcessingJob>> {
+    return this.request<CVProcessingJob>(`processCV/${jobId}`);
+  }
+
+  /**
+   * Generate CV with specific template
+   */
+  async generateCV(jobId: string, template: string): Promise<APIResponse<any>> {
+    return this.request('generateCV', {
+      method: 'POST',
+      body: JSON.stringify({ jobId, template })
+    });
+  }
+
+  /**
+   * Get ATS optimization analysis
+   */
+  async getATSAnalysis(jobId: string, jobDescription?: string): Promise<APIResponse<any>> {
+    return this.request('atsOptimization', {
+      method: 'POST',
+      body: JSON.stringify({ jobId, jobDescription })
+    });
+  }
+
+  /**
+   * Get industry-specific recommendations
+   */
+  async getIndustryRecommendations(
+    jobId: string, 
+    industry: string
+  ): Promise<APIResponse<any>> {
+    return this.request('industryOptimization', {
+      method: 'POST',
+      body: JSON.stringify({ jobId, industry })
+    });
+  }
+
+  /**
+   * Get regional optimization suggestions
+   */
+  async getRegionalOptimization(
+    jobId: string, 
+    region: string
+  ): Promise<APIResponse<any>> {
+    return this.request('regionalOptimization', {
+      method: 'POST',
+      body: JSON.stringify({ jobId, region })
+    });
+  }
+
+  /**
+   * Get comprehensive analysis with predictions
+   */
+  async getAdvancedPredictions(jobId: string): Promise<APIResponse<any>> {
+    return this.request('advancedPredictions', {
+      method: 'POST',
+      body: JSON.stringify({ jobId })
+    });
+  }
+
+  /**
+   * Upload file and get signed URL
+   */
+  async uploadFile(file: File): Promise<APIResponse<{ fileUrl: string; mimeType: string }>> {
+    const formData = new FormData();
+    formData.append('file', file);
+
+    const headers = await this.getAuthHeaders();
+    delete headers['Content-Type']; // Let browser set multipart boundary
+
+    try {
+      const response = await fetch(`${this.baseURL}/uploadCV`, {
+        method: 'POST',
+        headers,
+        body: formData
+      });
+
+      if (!response.ok) {
+        throw new Error(`Upload failed: ${response.statusText}`);
+      }
+
+      const data = await response.json();
+      
+      return {
+        data: {
+          fileUrl: data.fileUrl,
+          mimeType: data.mimeType || file.type
+        },
+        success: true,
+        statusCode: response.status
+      };
+    } catch (error) {
+      return {
+        data: null as any,
+        success: false,
+        error: error instanceof Error ? error.message : 'File upload failed',
+        statusCode: 500
+      };
+    }
+  }
+
+  /**
+   * Health check endpoint
+   */
+  async healthCheck(): Promise<APIResponse<{ status: string; timestamp: string }>> {
+    return this.request('health');
+  }
+}

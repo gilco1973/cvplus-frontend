@@ -85,7 +85,7 @@ export default defineConfig({
 
           // Domain microservices - independent chunks for selective loading
           'auth-ui': ['./src/microservices/auth-ui'],
-          'cv-processing-ui': ['./src/microservices/cv-processing-ui'],
+          'processing-ui': ['./src/microservices/processing-ui'],
           'multimedia-ui': ['./src/microservices/multimedia-ui'],
           'analytics-ui': ['./src/microservices/analytics-ui'],
           'premium-ui': ['./src/microservices/premium-ui'],
@@ -154,7 +154,7 @@ export default defineConfig({
       // Microservices alias mappings
       '@/microservices': '/Users/gklainert/Documents/cvplus/packages/frontend/src/microservices',
       '@/auth-ui': '/Users/gklainert/Documents/cvplus/packages/frontend/src/microservices/auth-ui',
-      '@/cv-processing-ui': '/Users/gklainert/Documents/cvplus/packages/frontend/src/microservices/cv-processing-ui',
+      '@/processing-ui': '/Users/gklainert/Documents/cvplus/packages/frontend/src/microservices/processing-ui',
       '@/multimedia-ui': '/Users/gklainert/Documents/cvplus/packages/frontend/src/microservices/multimedia-ui',
       '@/analytics-ui': '/Users/gklainert/Documents/cvplus/packages/frontend/src/microservices/analytics-ui',
       '@/premium-ui': '/Users/gklainert/Documents/cvplus/packages/frontend/src/microservices/premium-ui',

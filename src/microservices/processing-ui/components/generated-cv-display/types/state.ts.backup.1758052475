@@ -1,0 +1,92 @@
+// @ts-ignore
+/**
+ * State Management Types for Generated CV Display System
+ */
+
+import type { GeneratedCV, CVTemplate, CVContent } from './core';
+import type { CVEditor } from './editor';
+import type { ExportFormat, ExportOptions } from './export';
+
+// =============================================================================
+// STATE TYPES
+// =============================================================================
+
+export interface GeneratedCVState {
+  cv?: GeneratedCV;
+  template?: CVTemplate;
+  editor: CVEditor;
+  loading: boolean;
+  saving: boolean;
+  exporting: boolean;
+  error?: string;
+  lastSaved?: Date;
+}
+
+export interface TemplateState {
+  templates: CVTemplate[];
+  loading: boolean;
+  error?: string;
+  filters: TemplateFilters;
+}
+
+export interface TemplateFilters {
+  category?: string;
+  features: string[];
+  premium: boolean;
+  search: string;
+}
+
+// =============================================================================
+// ACTION TYPES
+// =============================================================================
+
+export interface CVAction {
+  type: CVActionType;
+  payload?: any;
+  timestamp: Date;
+  user?: string;
+}
+
+export type CVActionType =
+  | 'LOAD_CV'
+  | 'UPDATE_CONTENT'
+  | 'CHANGE_TEMPLATE'
+  | 'SAVE_VERSION'
+  | 'EXPORT_CV'
+  | 'UNDO'
+  | 'REDO'
+  | 'RESET'
+  | 'SET_MODE'
+  | 'UPDATE_SETTINGS';
+
+// =============================================================================
+// HOOK RETURN TYPES
+// =============================================================================
+
+export interface UseCVGenerationReturn {
+  state: GeneratedCVState;
+  actions: {
+    loadCV: (jobId: string) => Promise<void>;
+    updateContent: (content: CVContent) => void;
+    changeTemplate: (templateId: string) => Promise<void>;
+    saveVersion: (description: string) => Promise<void>;
+    exportCV: (format: ExportFormat, options?: ExportOptions) => Promise<string>;
+    undo: () => void;
+    redo: () => void;
+    reset: () => void;
+  };
+}
+
+export interface UseTemplatesReturn {
+  state: TemplateState;
+  actions: {
+    loadTemplates: () => Promise<void>;
+    filterTemplates: (filters: Partial<TemplateFilters>) => void;
+    selectTemplate: (templateId: string) => CVTemplate | undefined;
+  };
+  utils?: {
+    getCategories: () => string[];
+    getAvailableFeatures: () => string[];
+    getTemplateStats: () => any;
+  };
+}

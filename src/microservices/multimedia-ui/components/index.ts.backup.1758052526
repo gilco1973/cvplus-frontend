@@ -1,0 +1,69 @@
+// @ts-ignore
+/**
+ * Frontend Components for CVPlus Multimedia Module
+ * 
+ * This module provides a comprehensive collection of multimedia components
+ * organized by functionality and complexity level.
+ * 
+ * @author Gil Klainert
+ * @version 2.0.0 - Phase 1 Migration Architecture
+ * @license PROPRIETARY
+ */
+
+// ============================================================================
+// CORE MULTIMEDIA COMPONENTS (Basic functionality)
+// ============================================================================
+export * from './core';
+
+// ============================================================================
+// ADVANCED MULTIMEDIA COMPONENTS (Complex processing)
+// ============================================================================
+export * from './advanced';
+
+// ============================================================================
+// INTERACTIVE COMPONENTS (User interaction, QR codes, dynamic elements)
+// ============================================================================
+export * from './interactive';
+
+// ============================================================================
+// DISPLAY COMPONENTS (Galleries, players, carousels)
+// ============================================================================
+export * from './display';
+
+// ============================================================================
+// UTILITY COMPONENTS (Uploads, validation, helpers)
+// ============================================================================
+export * from './utilities';
+
+// ============================================================================
+// DIRECT COMPONENT EXPORTS (Updated paths after reorganization)
+// ============================================================================
+export { default as FileUpload } from './utilities/FileUpload';
+export { default as ProfilePictureUpload } from './utilities/ProfilePictureUpload';
+export { default as VideoAnalyticsDashboard } from './advanced/VideoAnalyticsDashboard';
+
+// ============================================================================
+// LEGACY EXPORTS (For backward compatibility during migration)
+// ============================================================================
+export { AIPodcastPlayer } from '../components/players/AIPodcastPlayer';
+export { PodcastPlayer } from '../components/players/PodcastPlayer';
+export { PortfolioGallery } from '../components/gallery/PortfolioGallery';
+export { PodcastGeneration } from '../components/generation/PodcastGeneration';
+export { VideoIntroduction } from '../components/generation/VideoIntroduction';
+export { TestimonialsCarousel } from '../components/media/TestimonialsCarousel';
+
+// ============================================================================
+// TYPE EXPORTS (Namespaced to prevent conflicts)
+// ============================================================================
+export type {
+  FileUploadProps as UtilityFileUploadProps,
+  FileUploadResult as UtilityFileUploadResult,
+  UploadProgress as UtilityUploadProgress,
+  UploadValidationResult as UtilityUploadValidationResult
+} from './utilities/types';
+
+export type {
+  AnalyticsDashboardProps as AdvancedAnalyticsDashboardProps,
+  ProcessingOptions as AdvancedProcessingOptions,
+  MonitoringConfig as AdvancedMonitoringConfig
+} from './advanced/types';

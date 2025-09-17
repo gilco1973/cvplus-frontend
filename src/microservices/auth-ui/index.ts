@@ -1,37 +1,37 @@
-// Auth UI Microservice - Authentication and authorization user interfaces
-// Integrates with @cvplus/auth backend module for authentication services
+/**
+ * CVPlus Authentication Module - Frontend Components
+ *
+ * Frontend-specific exports for React components and hooks.
+ * This provides a clean interface for the shell application and
+ * other frontend consumers.
+ *
+ * @author Gil Klainert
+ * @version 1.0.0 - CVPlus Auth Module
+  */
 
-// Authentication Components
-export { default as SignInDialog } from './components/SignInDialog';
-export { default as SignUpDialog } from './components/SignUpDialog';
-export { default as AuthGuard } from './components/AuthGuard';
-export { default as PermissionGate } from './components/PermissionGate';
-export { default as SessionManager } from './components/SessionManager';
-export { default as MFADialog } from './components/MFADialog';
-export { default as PasswordResetDialog } from './components/PasswordResetDialog';
+// ============================================================================
+// CONTEXT & PROVIDERS
+// ============================================================================
+export { AuthProvider, useAuthContext } from './contexts/AuthContext';
 
-// Authentication Context and Provider
-export { AuthProvider, useAuth } from './contexts/AuthContext';
-export { SessionProvider, useSession } from './contexts/SessionContext';
+// ============================================================================
+// HOOKS
+// ============================================================================
+export { useAuth } from './hooks/useAuth';
+export type { UseAuthReturn } from './hooks/useAuth';
 
-// Authentication Hooks
-export { usePermissions } from './hooks/usePermissions';
-export { useAuthGuard } from './hooks/useAuthGuard';
-export { useMFA } from './hooks/useMFA';
-export { usePasswordStrength } from './hooks/usePasswordStrength';
+// ============================================================================
+// RE-EXPORT TYPES FOR FRONTEND USE
+// ============================================================================
+export type {
+  AuthContextState,
+  AuthContextActions,
+  AuthContextValue
+} from './contexts/AuthContext';
 
-// Authentication Services (integrate with @cvplus/auth backend)
-export { AuthUIService } from './services/AuthUIService';
-export { SessionUIService } from './services/SessionUIService';
-export { PermissionUIService } from './services/PermissionUIService';
-
-// Authentication Types
-export type * from './types/auth';
-export type * from './types/session';
-export type * from './types/permissions';
-
-// Authentication Constants
-export * from './constants/authConstants';
-
-// Re-export from @cvplus/auth backend module
-export type { User, UserRole, Permission } from '@cvplus/auth';
+export type {
+  AuthenticatedUser,
+  UserProfile,
+  Permission
+} from '@cvplus/auth/types';
+// Note: PremiumFeatures moved to @cvplus/premium module

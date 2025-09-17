@@ -1,0 +1,79 @@
+// @ts-ignore
+/**
+ * LivePreview Component Types
+ *
+ * Type definitions for the LivePreview component system
+ */
+
+export type ViewportMode = 'desktop' | 'tablet' | 'mobile' | 'print';
+export type PreviewMode = 'split' | 'preview-only' | 'editor-only';
+export type ZoomLevel = 25 | 50 | 75 | 100 | 125 | 150 | 200;
+
+export interface ViewportConfig {
+  mode: ViewportMode;
+  width: number;
+  height: number;
+  orientation: 'portrait' | 'landscape';
+}
+
+export interface LivePreviewProps {
+  cvData: any; // CVParsedData from parent types
+  template?: any;
+  selectedFeatures?: Record<string, boolean>;
+  onDataChange?: (data: any) => void;
+  onTemplateChange?: (template: any) => void;
+  className?: string;
+}
+
+export interface ViewportControlsProps {
+  currentMode: ViewportMode;
+  onModeChange: (mode: ViewportMode) => void;
+  zoomLevel: ZoomLevel;
+  onZoomChange: (zoom: ZoomLevel) => void;
+  orientation: 'portrait' | 'landscape';
+  onOrientationToggle: () => void;
+}
+
+export interface PreviewPanelProps {
+  cvData: any;
+  template?: any;
+  viewportConfig: ViewportConfig;
+  zoomLevel: ZoomLevel;
+  className?: string;
+}
+
+export interface EditorPanelProps {
+  cvData: any;
+  onDataChange: (data: any) => void;
+  className?: string;
+}
+
+export interface SplitLayoutProps {
+  editorPanel: React.ReactNode;
+  previewPanel: React.ReactNode;
+  isResizable?: boolean;
+}
+
+export interface TemplateComparisonProps {
+  cvData: any;
+  templates: any[];
+  currentTemplate?: any;
+  onTemplateSelect: (template: any) => void;
+}
+
+export interface PerformanceMetrics {
+  renderTime: number;
+  updateLatency: number;
+  memoryUsage: number;
+  lastUpdate: Date;
+}
+
+export interface LivePreviewState {
+  viewportMode: ViewportMode;
+  previewMode: PreviewMode;
+  zoomLevel: ZoomLevel;
+  orientation: 'portrait' | 'landscape';
+  isFullscreen: boolean;
+  showMetrics: boolean;
+  performanceMetrics: PerformanceMetrics;
+}

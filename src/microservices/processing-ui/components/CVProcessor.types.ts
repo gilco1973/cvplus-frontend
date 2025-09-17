@@ -1,0 +1,423 @@
+// @ts-ignore
+/**
+ * CV Processor Types (T067)
+ *
+ * Type definitions for the CVProcessor component and related
+ * processing workflow, job management, and status tracking.
+ *
+ * @author Gil Klainert
+ * @version 1.0.0 - Initial T067 Implementation
+  */
+
+import { ReactNode } from 'react';
+import type { ProcessingStep } from './ProcessingStatus';
+import type { CVData } from '../../types/cv.types';
+
+/**
+ * Processing job status enumeration
+  */
+export type ProcessingJobStatus =
+  | 'idle'          // Not started
+  | 'queued'        // Waiting in queue
+  | 'processing'    // Currently being processed
+  | 'retrying'      // Retrying after failure
+  | 'completed'     // Successfully completed
+  | 'failed'        // Failed permanently
+  | 'cancelled';    // Cancelled by user
+
+/**
+ * Processing stage definition
+  */
+export interface ProcessingStage {
+  /** Unique stage identifier  */
+  id: string;
+
+  /** Human-readable stage name  */
+  name: string;
+
+  /** Stage description  */
+  description?: string;
+
+  /** Current stage status  */
+  status: 'pending' | 'processing' | 'completed' | 'failed' | 'skipped';
+
+  /** Stage progress (0-100)  */
+  progress: number;
+
+  /** Estimated duration in seconds  */
+  estimatedDuration: number;
+
+  /** Actual duration in seconds  */
+  actualDuration?: number;
+
+  /** Stage-specific error message  */
+  error?: string;
+
+  /** Stage-specific metadata  */
+  metadata?: Record<string, any>;
+}
+
+/**
+ * Processing job definition
+  */
+export interface ProcessingJob {
+  /** Unique job identifier  */
+  id: string;
+
+  /** Backend job identifier  */
+  backendJobId?: string;
+
+  /** Current job status  */
+  status: ProcessingJobStatus;
+
+  /** Overall progress (0-100)  */
+  progress: number;
+
+  /** Processing stages  */
+  stages: ProcessingStage[];
+
+  /** Currently active stage  */
+  currentStage?: string;
+
+  /** Source file being processed  */
+  file: File;
+
+  /** Processing options  */
+  options: ProcessingJobOptions;
+
+  /** Processing result (when completed)  */
+  result?: ProcessingResult;
+
+  /** Error message (if failed)  */
+  error?: string;
+
+  /** Retry attempt count  */
+  retryCount: number;
+
+  /** Job creation timestamp  */
+  createdAt: Date;
+
+  /** Last update timestamp  */
+  updatedAt: Date;
+
+  /** Estimated completion time  */
+  estimatedCompletion?: Date;
+
+  /** Job priority (for queue management)  */
+  priority?: number;
+
+  /** User identifier  */
+  userId?: string;
+
+  /** Job metadata  */
+  metadata?: Record<string, any>;
+}
+
+/**
+ * Processing job options
+  */
+export interface ProcessingJobOptions {
+  /** Selected processing features  */
+  features: string[];
+
+  /** Target job description (optional)  */
+  jobDescription?: string;
+
+  /** CV template identifier  */
+  templateId?: string;
+
+  /** Target industry  */
+  industry?: string;
+
+  /** Target role/position  */
+  targetRole?: string;
+
+  /** Processing priority  */
+  priority?: 'low' | 'normal' | 'high' | 'urgent';
+
+  /** Skip certain stages  */
+  skipStages?: string[];
+
+  /** Stage-specific configurations  */
+  stageConfigs?: Record<string, any>;
+
+  /** Notification preferences  */
+  notifications?: {
+    email?: boolean;
+    webhook?: string;
+    stages?: string[];
+  };
+
+  /** Additional processing options  */
+  options?: Record<string, any>;
+}
+
+/**
+ * Processing result definition
+  */
+export interface ProcessingResult {
+  /** Processed CV data  */
+  cvData: CVData;
+
+  /** Generated assets  */
+  assets: {
+    /** Generated documents  */
+    documents?: Array<{
+      type: string;
+      url: string;
+      name: string;
+      size: number;
+    }>;
+
+    /** Generated multimedia  */
+    multimedia?: Array<{
+      type: 'audio' | 'video' | 'image';
+      url: string;
+      name: string;
+      duration?: number;
+    }>;
+
+    /** Export formats  */
+    exports?: Array<{
+      format: string;
+      url: string;
+      name: string;
+    }>;
+  };
+
+  /** Processing analytics  */
+  analytics: {
+    /** Processing time in milliseconds  */
+    processingTime: number;
+
+    /** Stages completed  */
+    stagesCompleted: number;
+
+    /** Quality score  */
+    qualityScore: number;
+
+    /** Feature analysis results  */
+    features: Record<string, any>;
+
+    /** Performance metrics  */
+    performance: {
+      memoryUsage: number;
+      cpuTime: number;
+      apiCalls: number;
+    };
+  };
+
+  /** Processing metadata  */
+  metadata: {
+    /** Processing version  */
+    version: string;
+
+    /** Processing timestamp  */
+    processedAt: Date;
+
+    /** Processing environment  */
+    environment: string;
+
+    /** Additional metadata  */
+    [key: string]: any;
+  };
+}
+
+/**
+ * CVProcessor component props
+  */
+export interface CVProcessorProps {
+  /** Initial job ID (for resume processing)  */
+  jobId?: string;
+
+  /** Callback when processing completes successfully  */
+  onProcessingComplete?: (result: ProcessingResult) => void;
+
+  /** Callback when processing fails  */
+  onProcessingError?: (error: string) => void;
+
+  /** Callback for stage updates  */
+  onStageUpdate?: (stageId: string, progress: number) => void;
+
+  /** Enable WebSocket for real-time updates  */
+  enableWebSocket?: boolean;
+
+  /** Polling interval in milliseconds (when WebSocket disabled)  */
+  pollInterval?: number;
+
+  /** Maximum retry attempts  */
+  maxRetries?: number;
+
+  /** Enable processing queue  */
+  enableQueue?: boolean;
+
+  /** Maximum queue capacity  */
+  queueCapacity?: number;
+
+  /** Additional CSS classes  */
+  className?: string;
+
+  /** Child components  */
+  children?: ReactNode;
+
+  /** Custom configuration  */
+  config?: {
+    /** Backend API endpoint  */
+    apiEndpoint?: string;
+
+    /** WebSocket endpoint  */
+    wsEndpoint?: string;
+
+    /** Custom stage definitions  */
+    customStages?: ProcessingStage[];
+
+    /** Feature toggles  */
+    features?: {
+      analytics?: boolean;
+      notifications?: boolean;
+      queue?: boolean;
+      retries?: boolean;
+    };
+
+    /** UI customizations  */
+    ui?: {
+      showMetrics?: boolean;
+      showQueue?: boolean;
+      theme?: 'light' | 'dark';
+    };
+  };
+}
+
+/**
+ * WebSocket update message
+  */
+export interface WebSocketUpdate {
+  /** Job identifier  */
+  jobId: string;
+
+  /** Update type  */
+  type: 'status' | 'progress' | 'stage' | 'error' | 'complete';
+
+  /** Updated data  */
+  data: {
+    status?: ProcessingJobStatus;
+    progress?: number;
+    currentStage?: string;
+    stages?: ProcessingStage[];
+    error?: string;
+    result?: ProcessingResult;
+  };
+
+  /** Update timestamp  */
+  timestamp: Date;
+}
+
+/**
+ * Processing queue configuration
+  */
+export interface QueueConfig {
+  /** Maximum queue size  */
+  capacity: number;
+
+  /** Queue processing strategy  */
+  strategy: 'fifo' | 'lifo' | 'priority';
+
+  /** Auto-process queue  */
+  autoProcess: boolean;
+
+  /** Queue timeout in milliseconds  */
+  timeout: number;
+
+  /** Priority levels  */
+  priorityLevels: {
+    urgent: number;
+    high: number;
+    normal: number;
+    low: number;
+  };
+}
+
+/**
+ * Processing metrics
+  */
+export interface ProcessingMetrics {
+  /** Total jobs processed  */
+  totalProcessed: number;
+
+  /** Average processing time  */
+  averageTime: number;
+
+  /** Success rate percentage  */
+  successRate: number;
+
+  /** Current queue length  */
+  queueLength: number;
+
+  /** Active processing jobs  */
+  activeJobs: number;
+
+  /** Failed jobs in last hour  */
+  recentFailures: number;
+
+  /** System performance metrics  */
+  system: {
+    memoryUsage: number;
+    cpuUsage: number;
+    diskUsage: number;
+  };
+}
+
+/**
+ * Error recovery configuration
+  */
+export interface ErrorRecoveryConfig {
+  /** Maximum retry attempts  */
+  maxRetries: number;
+
+  /** Retry delay strategy  */
+  retryDelay: 'fixed' | 'exponential' | 'linear';
+
+  /** Base retry delay in milliseconds  */
+  baseDelay: number;
+
+  /** Maximum retry delay in milliseconds  */
+  maxDelay: number;
+
+  /** Recoverable error types  */
+  recoverableErrors: string[];
+
+  /** Fallback strategies  */
+  fallbackStrategies: Record<string, string>;
+}
+
+/**
+ * Stage execution context
+  */
+export interface StageExecutionContext {
+  /** Current job  */
+  job: ProcessingJob;
+
+  /** Stage configuration  */
+  stageConfig: any;
+
+  /** Previous stage results  */
+  previousResults: Record<string, any>;
+
+  /** Execution environment  */
+  environment: {
+    userId?: string;
+    sessionId: string;
+    requestId: string;
+    timestamp: Date;
+  };
+
+  /** Cancellation token  */
+  cancellationToken: {
+    isCancelled: boolean;
+    cancel: () => void;
+  };
+}
+
+// Re-export commonly used types
+export type { ProcessingStep } from './ProcessingStatus';
+export type { CVData } from '../../types/cv.types';

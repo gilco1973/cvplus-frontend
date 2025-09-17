@@ -1,0 +1,469 @@
+// @ts-ignore - Export conflicts
+import { profileService } from '../services/ProfileService';
+import {
+  PublicProfileData,
+  ProfileTemplate,
+  ProfileOptions,
+  ProfileUpdate,
+  ProfileAnalytics,
+  DateRange,
+  ViewData,
+  EngagementData,
+  PrivacySettings,
+  QROptions,
+  QRCodeResult,
+  EmbedOptions,
+  SocialPlatform
+} from '../types/service.types';
+
+/**
+ * Custom hook for ProfileService operations
+ * Provides state management and easy access to all profile operations
+ */
+export function useProfileService() {
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [profiles, setProfiles] = useState<PublicProfileData[]>([]);
+  const [templates, setTemplates] = useState<ProfileTemplate[]>([]);
+  const [analytics, setAnalytics] = useState<ProfileAnalytics | null>(null);
+
+  const abortControllerRef = useRef<AbortController | null>(null);
+
+  // Clear error when starting new operations
+  const clearError = useCallback(() => {
+    setError(null);
+  }, []);
+
+  // Generic error handler
+  const handleError = useCallback((err: any, operation: string) => {
+    const message = err instanceof Error ? err.message : `${operation} failed`;
+    setError(message);
+    console.error(`ProfileService ${operation} error:`, err);
+  }, []);
+
+  // Generic async operation wrapper
+  const executeOperation = useCallback(async <T>(
+    operation: () => Promise<T>,
+    operationName: string,
+    skipLoading = false
+  ): Promise<T | null> => {
+    try {
+      clearError();
+      if (!skipLoading) setLoading(true);
+
+      const result = await operation();
+      return result;
+    } catch (err) {
+      handleError(err, operationName);
+      return null;
+    } finally {
+      if (!skipLoading) setLoading(false);
+    }
+  }, [clearError, handleError]);
+
+  // ========================================
+  // Profile Management Operations
+  // ========================================
+
+  const createProfile = useCallback(async (
+    data: PublicProfileData,
+    options?: ProfileOptions
+  ) => {
+    return executeOperation(
+      () => profileService.createProfile(data, options),
+      'createProfile'
+    );
+  }, [executeOperation]);
+
+  const getProfile = useCallback(async (profileId: string) => {
+    return executeOperation(
+      () => profileService.getProfile(profileId),
+      'getProfile'
+    );
+  }, [executeOperation]);
+
+  const updateProfile = useCallback(async (
+    profileId: string,
+    updates: ProfileUpdate
+  ) => {
+    return executeOperation(
+      () => profileService.updateProfile(profileId, updates),
+      'updateProfile'
+    );
+  }, [executeOperation]);
+
+  const deleteProfile = useCallback(async (profileId: string) => {
+    const result = await executeOperation(
+      () => profileService.deleteProfile(profileId),
+      'deleteProfile'
+    );
+
+    // Remove from local profiles state
+    if (result !== null) {
+      setProfiles(prev => prev.filter(p => p.id !== profileId));
+    }
+
+    return result;
+  }, [executeOperation]);
+
+  const loadUserProfiles = useCallback(async (userId?: string) => {
+    const result = await executeOperation(
+      () => profileService.getUserProfiles(userId),
+      'getUserProfiles'
+    );
+
+    if (result) {
+      setProfiles(result);
+    }
+
+    return result;
+  }, [executeOperation]);
+
+  // ========================================
+  // Template Operations
+  // ========================================
+
+  const loadTemplates = useCallback(async () => {
+    const result = await executeOperation(
+      () => profileService.getTemplates(),
+      'getTemplates'
+    );
+
+    if (result) {
+      setTemplates(result);
+    }
+
+    return result;
+  }, [executeOperation]);
+
+  const applyTemplate = useCallback(async (
+    profileId: string,
+    templateId: string
+  ) => {
+    return executeOperation(
+      () => profileService.applyTemplate(profileId, templateId),
+      'applyTemplate'
+    );
+  }, [executeOperation]);
+
+  // ========================================
+  // Analytics Operations
+  // ========================================
+
+  const loadAnalytics = useCallback(async (
+    profileId: string,
+    dateRange?: DateRange
+  ) => {
+    const result = await executeOperation(
+      () => profileService.getProfileAnalytics(profileId, dateRange),
+      'getProfileAnalytics'
+    );
+
+    if (result) {
+      setAnalytics(result);
+    }
+
+    return result;
+  }, [executeOperation]);
+
+  const trackView = useCallback(async (
+    profileId: string,
+    viewData: ViewData
+  ) => {
+    // Track views without showing loading state
+    return executeOperation(
+      () => profileService.trackProfileView(profileId, viewData),
+      'trackProfileView',
+      true // Skip loading state
+    );
+  }, [executeOperation]);
+
+  const trackEngagement = useCallback(async (
+    profileId: string,
+    engagement: EngagementData
+  ) => {
+    // Track engagement without showing loading state
+    return executeOperation(
+      () => profileService.trackEngagement(profileId, engagement),
+      'trackEngagement',
+      true // Skip loading state
+    );
+  }, [executeOperation]);
+
+  // ========================================
+  // Sharing & Embedding Operations
+  // ========================================
+
+  const generateShareURL = useCallback(async (
+    profileId: string,
+    platform: SocialPlatform
+  ) => {
+    return executeOperation(
+      () => profileService.generateShareURL(profileId, platform),
+      'generateShareURL'
+    );
+  }, [executeOperation]);
+
+  const generateQRCode = useCallback(async (
+    profileId: string,
+    options?: QROptions
+  ) => {
+    return executeOperation(
+      () => profileService.generateQRCode(profileId, options),
+      'generateQRCode'
+    );
+  }, [executeOperation]);
+
+  const generateEmbedCode = useCallback(async (
+    profileId: string,
+    options?: EmbedOptions
+  ) => {
+    return executeOperation(
+      () => profileService.generateEmbedCode(profileId, options),
+      'generateEmbedCode'
+    );
+  }, [executeOperation]);
+
+  // ========================================
+  // Privacy & Access Control Operations
+  // ========================================
+
+  const updatePrivacySettings = useCallback(async (
+    profileId: string,
+    settings: PrivacySettings
+  ) => {
+    return executeOperation(
+      () => profileService.updatePrivacySettings(profileId, settings),
+      'updatePrivacySettings'
+    );
+  }, [executeOperation]);
+
+  // ========================================
+  // Utility Operations
+  // ========================================
+
+  const clearCache = useCallback(() => {
+    profileService.clearAllCache();
+  }, []);
+
+  const getCacheStats = useCallback(() => {
+    return profileService.getCacheStats();
+  }, []);
+
+  // ========================================
+  // Cleanup
+  // ========================================
+
+  useEffect(() => {
+    return () => {
+      // Cleanup any ongoing operations
+      if (abortControllerRef.current) {
+        abortControllerRef.current.abort();
+      }
+    };
+  }, []);
+
+  // ========================================
+  // Return Hook Interface
+  // ========================================
+
+  return {
+    // State
+    loading,
+    error,
+    profiles,
+    templates,
+    analytics,
+
+    // Profile Management
+    createProfile,
+    getProfile,
+    updateProfile,
+    deleteProfile,
+    loadUserProfiles,
+
+    // Template Operations
+    loadTemplates,
+    applyTemplate,
+
+    // Analytics Operations
+    loadAnalytics,
+    trackView,
+    trackEngagement,
+
+    // Sharing & Embedding
+    generateShareURL,
+    generateQRCode,
+    generateEmbedCode,
+
+    // Privacy & Access Control
+    updatePrivacySettings,
+
+    // Utilities
+    clearError,
+    clearCache,
+    getCacheStats
+  };
+}
+
+/**
+ * Hook for profile-specific operations
+ * Pre-loads profile data and provides profile-scoped operations
+ */
+export function useProfile(profileId: string) {
+  const [profile, setProfile] = useState<PublicProfileData | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  const profileServiceHook = useProfileService();
+
+  // Load profile data on mount or when profileId changes
+  useEffect(() => {
+    let isMounted = true;
+
+    const loadProfile = async () => {
+      if (!profileId) {
+        setProfile(null);
+        setLoading(false);
+        return;
+      }
+
+      try {
+        setLoading(true);
+        setError(null);
+
+        const result = await profileService.getProfile(profileId);
+
+        if (isMounted) {
+          setProfile(result);
+        }
+      } catch (err) {
+        if (isMounted) {
+          const message = err instanceof Error ? err.message : 'Failed to load profile';
+          setError(message);
+        }
+      } finally {
+        if (isMounted) {
+          setLoading(false);
+        }
+      }
+    };
+
+    loadProfile();
+
+    return () => {
+      isMounted = false;
+    };
+  }, [profileId]);
+
+  // Profile-specific operations that update local state
+  const updateProfile = useCallback(async (updates: ProfileUpdate) => {
+    if (!profileId) return null;
+
+    const result = await profileServiceHook.updateProfile(profileId, updates);
+
+    if (result?.profile) {
+      setProfile(result.profile as PublicProfileData);
+    }
+
+    return result;
+  }, [profileId, profileServiceHook]);
+
+  const trackView = useCallback(async (viewData: ViewData) => {
+    if (!profileId) return;
+
+    return profileServiceHook.trackView(profileId, viewData);
+  }, [profileId, profileServiceHook]);
+
+  const trackEngagement = useCallback(async (engagement: EngagementData) => {
+    if (!profileId) return;
+
+    return profileServiceHook.trackEngagement(profileId, engagement);
+  }, [profileId, profileServiceHook]);
+
+  const generateShareURL = useCallback(async (platform: SocialPlatform) => {
+    if (!profileId) return null;
+
+    return profileServiceHook.generateShareURL(profileId, platform);
+  }, [profileId, profileServiceHook]);
+
+  const generateQRCode = useCallback(async (options?: QROptions) => {
+    if (!profileId) return null;
+
+    return profileServiceHook.generateQRCode(profileId, options);
+  }, [profileId, profileServiceHook]);
+
+  const generateEmbedCode = useCallback(async (options?: EmbedOptions) => {
+    if (!profileId) return null;
+
+    return profileServiceHook.generateEmbedCode(profileId, options);
+  }, [profileId, profileServiceHook]);
+
+  const loadAnalytics = useCallback(async (dateRange?: DateRange) => {
+    if (!profileId) return null;
+
+    return profileServiceHook.loadAnalytics(profileId, dateRange);
+  }, [profileId, profileServiceHook]);
+
+  return {
+    // Profile-specific state
+    profile,
+    loading,
+    error,
+
+    // Profile-specific operations
+    updateProfile,
+    trackView,
+    trackEngagement,
+    generateShareURL,
+    generateQRCode,
+    generateEmbedCode,
+    loadAnalytics,
+
+    // Access to general service operations
+    ...profileServiceHook
+  };
+}
+
+/**
+ * Hook for analytics-focused operations
+ * Provides analytics-specific state and operations
+ */
+export function useProfileAnalytics(profileId: string, dateRange?: DateRange) {
+  const [analytics, setAnalytics] = useState<ProfileAnalytics | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  const loadAnalytics = useCallback(async () => {
+    if (!profileId) {
+      setAnalytics(null);
+      setLoading(false);
+      return;
+    }
+
+    try {
+      setLoading(true);
+      setError(null);
+
+      const result = await profileService.getProfileAnalytics(profileId, dateRange);
+      setAnalytics(result);
+    } catch (err) {
+      const message = err instanceof Error ? err.message : 'Failed to load analytics';
+      setError(message);
+    } finally {
+      setLoading(false);
+    }
+  }, [profileId, dateRange]);
+
+  // Load analytics on mount and when dependencies change
+  useEffect(() => {
+    loadAnalytics();
+  }, [loadAnalytics]);
+
+  return {
+    analytics,
+    loading,
+    error,
+    reload: loadAnalytics
+  };
+}

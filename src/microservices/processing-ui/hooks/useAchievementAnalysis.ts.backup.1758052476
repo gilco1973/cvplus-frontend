@@ -1,0 +1,235 @@
+// @ts-ignore
+/**
+ * CVPlus CV Processing - Achievement Analysis Hook
+ * 
+ * React hook for analyzing CV achievements and providing enhancement suggestions.
+ * 
+ * @author Gil Klainert
+ * @version 1.0.0
+ */
+
+import { useState, useEffect, useCallback } from 'react';
+import type { CVParsedData } from '../../types';
+
+// ============================================================================
+// TYPES
+// ============================================================================
+
+export interface AchievementAnalysis {
+  totalAchievements: number;
+  quantifiedAchievements: number;
+  impactScore: number;
+  suggestions: AchievementSuggestion[];
+  categories: AchievementCategory[];
+}
+
+export interface AchievementSuggestion {
+  id: string;
+  type: 'quantify' | 'impact' | 'keyword' | 'structure';
+  title: string;
+  description: string;
+  originalText: string;
+  suggestedText: string;
+  priority: 'high' | 'medium' | 'low';
+}
+
+export interface AchievementCategory {
+  name: string;
+  count: number;
+  examples: string[];
+}
+
+// ============================================================================
+// HOOK
+// ============================================================================
+
+export function useAchievementAnalysis(cvData?: CVParsedData) {
+  const [analysis, setAnalysis] = useState<AchievementAnalysis | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  const analyzeAchievements = useCallback(async (data: CVParsedData) => {
+    if (!data) return;
+
+    setIsLoading(true);
+    setError(null);
+
+    try {
+      // Mock achievement analysis - would integrate with AI service
+      const achievements = extractAchievements(data);
+      const quantified = achievements.filter(a => hasQuantification(a));
+      const suggestions = generateSuggestions(achievements);
+      const categories = categorizeAchievements(achievements);
+
+      const analysisResult: AchievementAnalysis = {
+        totalAchievements: achievements.length,
+        quantifiedAchievements: quantified.length,
+        impactScore: calculateImpactScore(achievements),
+        suggestions,
+        categories,
+      };
+
+      setAnalysis(analysisResult);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Achievement analysis failed');
+    } finally {
+      setIsLoading(false);
+    }
+  }, []);
+
+  useEffect(() => {
+    if (cvData) {
+      analyzeAchievements(cvData);
+    }
+  }, [cvData, analyzeAchievements]);
+
+  return {
+    analysis,
+    isLoading,
+    error,
+    reanalyze: () => cvData && analyzeAchievements(cvData),
+  };
+}
+
+// ============================================================================
+// HELPER FUNCTIONS
+// ============================================================================
+
+function extractAchievements(cvData: CVParsedData): string[] {
+  const achievements: string[] = [];
+  
+  // Extract from work experience
+  if (cvData.experience) {
+    cvData.experience.forEach((job: any) => {
+      if (job.achievements) {
+        achievements.push(...job.achievements);
+      }
+      if (job.responsibilities) {
+        achievements.push(...job.responsibilities);
+      }
+    });
+  }
+
+  // Extract from projects
+  if (cvData.projects) {
+    cvData.projects.forEach(project => {
+      if (project.description) {
+        achievements.push(project.description);
+      }
+      if (project.achievements && Array.isArray(project.achievements)) {
+        achievements.push(...project.achievements);
+      }
+    });
+  }
+
+  return achievements.filter(a => a && a.length > 10); // Filter out very short entries
+}
+
+function hasQuantification(achievement: string): boolean {
+  const quantificationRegex = /\b\d+(\.\d+)?[\s]*(%)|\$[\d,]+|\b\d+[\s]*(years?|months?|weeks?|days?|hours?)\b/i;
+  return quantificationRegex.test(achievement);
+}
+
+function calculateImpactScore(achievements: string[]): number {
+  if (achievements.length === 0) return 0;
+
+  let score = 0;
+  achievements.forEach(achievement => {
+    // Score based on various factors
+    if (hasQuantification(achievement)) score += 2;
+    if (hasActionWord(achievement)) score += 1;
+    if (hasImpactWord(achievement)) score += 1;
+    if (achievement.length > 50) score += 0.5; // Detailed descriptions
+  });
+
+  return Math.min(100, (score / achievements.length) * 20); // Normalize to 0-100
+}
+
+function hasActionWord(text: string): boolean {
+  const actionWords = [
+    'achieved', 'improved', 'increased', 'decreased', 'optimized', 'streamlined',
+    'developed', 'created', 'built', 'designed', 'implemented', 'launched',
+    'managed', 'led', 'supervised', 'coordinated', 'delivered', 'executed'
+  ];
+  return actionWords.some(word => text.toLowerCase().includes(word));
+}
+
+function hasImpactWord(text: string): boolean {
+  const impactWords = [
+    'revenue', 'profit', 'efficiency', 'productivity', 'performance', 'quality',
+    'customer satisfaction', 'user experience', 'cost reduction', 'time saving'
+  ];
+  return impactWords.some(word => text.toLowerCase().includes(word));
+}
+
+function generateSuggestions(achievements: string[]): AchievementSuggestion[] {
+  const suggestions: AchievementSuggestion[] = [];
+  
+  achievements.forEach((achievement, index) => {
+    if (!hasQuantification(achievement)) {
+      suggestions.push({
+        id: `quantify-${index}`,
+        type: 'quantify',
+        title: 'Add Quantification',
+        description: 'Include specific numbers, percentages, or metrics to make this achievement more impactful.',
+        originalText: achievement,
+        suggestedText: `${achievement} [Add specific metrics or percentages]`,
+        priority: 'high',
+      });
+    }
+
+    if (!hasActionWord(achievement)) {
+      suggestions.push({
+        id: `action-${index}`,
+        type: 'structure',
+        title: 'Start with Action Word',
+        description: 'Begin with a strong action verb to make this achievement more compelling.',
+        originalText: achievement,
+        suggestedText: `[Action verb] ${achievement.toLowerCase()}`,
+        priority: 'medium',
+      });
+    }
+  });
+
+  return suggestions.slice(0, 10); // Limit to top 10 suggestions
+}
+
+function categorizeAchievements(achievements: string[]): AchievementCategory[] {
+  const categories = new Map<string, string[]>();
+
+  achievements.forEach(achievement => {
+    const category = categorizeAchievement(achievement);
+    if (!categories.has(category)) {
+      categories.set(category, []);
+    }
+    categories.get(category)?.push(achievement);
+  });
+
+  return Array.from(categories.entries()).map(([name, examples]) => ({
+    name,
+    count: examples.length,
+    examples: examples.slice(0, 3), // Show first 3 examples
+  }));
+}
+
+function categorizeAchievement(achievement: string): string {
+  const text = achievement.toLowerCase();
+  
+  if (text.includes('revenue') || text.includes('sales') || text.includes('profit')) {
+    return 'Revenue & Sales';
+  }
+  if (text.includes('team') || text.includes('manage') || text.includes('lead')) {
+    return 'Leadership & Management';
+  }
+  if (text.includes('efficiency') || text.includes('process') || text.includes('optimize')) {
+    return 'Process Improvement';
+  }
+  if (text.includes('customer') || text.includes('client') || text.includes('user')) {
+    return 'Customer Success';
+  }
+  if (text.includes('develop') || text.includes('create') || text.includes('build')) {
+    return 'Development & Innovation';
+  }
+  
+  return 'General Achievements';
+}

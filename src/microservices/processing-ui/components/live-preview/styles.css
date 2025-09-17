@@ -1,0 +1,350 @@
+/**
+ * LivePreview Component Styles
+ *
+ * CSS styles for the LivePreview component system
+ */
+
+/* Base LivePreview Container */
+.live-preview-container {
+  @apply flex flex-col h-full bg-white;
+}
+
+/* CV Preview Content Styles */
+.cv-preview-content {
+  @apply space-y-6;
+}
+
+.cv-section {
+  @apply mb-6;
+}
+
+.cv-section h1 {
+  @apply text-3xl font-bold text-gray-900 mb-2;
+}
+
+.cv-section h2 {
+  @apply text-xl font-semibold text-gray-800 mb-3 border-b border-gray-200 pb-1;
+}
+
+.cv-section h3 {
+  @apply text-lg font-medium text-gray-800 mb-1;
+}
+
+/* Personal Info Section */
+.personal-info .name {
+  @apply text-2xl font-bold text-gray-900 mb-2;
+}
+
+.personal-info .contact-info {
+  @apply flex flex-wrap gap-4 text-sm text-gray-600;
+}
+
+.contact-info > div {
+  @apply flex items-center space-x-1;
+}
+
+/* Experience Section */
+.experience-item {
+  @apply mb-4 pb-4 border-b border-gray-100 last:border-b-0;
+}
+
+.experience-header {
+  @apply flex justify-between items-start mb-2;
+}
+
+.experience-header h3 {
+  @apply text-lg font-semibold text-gray-900;
+}
+
+.experience-header .company {
+  @apply text-gray-600 font-medium;
+}
+
+.experience-item .duration {
+  @apply text-sm text-gray-500 mb-2;
+}
+
+.experience-item .description {
+  @apply text-gray-700 mb-2;
+}
+
+.experience-item .achievements {
+  @apply list-disc list-inside text-gray-700 space-y-1;
+}
+
+/* Education Section */
+.education-item {
+  @apply mb-3 pb-3 border-b border-gray-100 last:border-b-0;
+}
+
+.education-item h3 {
+  @apply text-lg font-semibold text-gray-900;
+}
+
+.education-item .institution {
+  @apply text-gray-600 font-medium;
+}
+
+.education-item .year {
+  @apply text-sm text-gray-500;
+}
+
+/* Skills Section */
+.skills-list {
+  @apply flex flex-wrap gap-2;
+}
+
+.skill-tag {
+  @apply px-3 py-1 bg-blue-100 text-blue-800 rounded-full text-sm font-medium;
+}
+
+/* Template Styles */
+.template-modern {
+  @apply font-sans;
+}
+
+.template-modern .cv-section h2 {
+  @apply text-blue-600 border-blue-200;
+}
+
+.template-modern .skill-tag {
+  @apply bg-blue-100 text-blue-800;
+}
+
+.template-classic {
+  @apply font-serif;
+}
+
+.template-classic .cv-section h1 {
+  @apply text-center;
+}
+
+.template-classic .cv-section h2 {
+  @apply text-gray-800 border-gray-400 text-center uppercase tracking-wide;
+}
+
+.template-classic .skill-tag {
+  @apply bg-gray-100 text-gray-800 rounded-none;
+}
+
+.template-creative {
+  @apply font-sans;
+}
+
+.template-creative .cv-section h1 {
+  @apply bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent;
+}
+
+.template-creative .cv-section h2 {
+  @apply text-purple-600 border-purple-200;
+}
+
+.template-creative .skill-tag {
+  @apply bg-gradient-to-r from-purple-100 to-pink-100 text-purple-800;
+}
+
+/* Viewport Scaling */
+.preview-viewport {
+  @apply mx-auto my-4 overflow-hidden;
+}
+
+/* Mobile responsiveness */
+@media (max-width: 768px) {
+  .cv-preview-content.text-xs {
+    @apply p-2;
+  }
+
+  .cv-section h1 {
+    @apply text-xl;
+  }
+
+  .cv-section h2 {
+    @apply text-lg;
+  }
+
+  .experience-header {
+    @apply flex-col items-start space-y-1;
+  }
+
+  .contact-info {
+    @apply flex-col space-y-1;
+  }
+
+  .skills-list {
+    @apply gap-1;
+  }
+
+  .skill-tag {
+    @apply text-xs px-2 py-0.5;
+  }
+}
+
+/* Print styles */
+@media print {
+  .cv-preview-content {
+    @apply text-sm leading-normal;
+  }
+
+  .cv-section {
+    @apply break-inside-avoid;
+  }
+
+  .experience-item {
+    @apply break-inside-avoid;
+  }
+
+  .skill-tag {
+    @apply border border-gray-300 bg-transparent text-gray-800;
+  }
+}
+
+/* Animation for smooth transitions */
+.cv-preview-content * {
+  @apply transition-all duration-200 ease-in-out;
+}
+
+/* Focus styles for accessibility */
+.cv-preview-content:focus-within {
+  @apply outline-2 outline-blue-500 outline-offset-2;
+}
+
+/* Loading states */
+.cv-preview-loading {
+  @apply animate-pulse;
+}
+
+.cv-preview-loading .cv-section {
+  @apply bg-gray-100 rounded;
+}
+
+/* Error states */
+.cv-preview-error {
+  @apply bg-red-50 border border-red-200 rounded-lg p-4 text-red-700;
+}
+
+/* Performance optimization classes */
+.cv-preview-content.optimized {
+  @apply will-change-transform;
+}
+
+/* Drag and drop styles */
+.cv-section.dragging {
+  @apply opacity-50 transform rotate-1;
+}
+
+.cv-section.drag-over {
+  @apply border-2 border-dashed border-blue-400 bg-blue-50;
+}
+
+/* Split layout styles */
+.split-layout-container {
+  @apply flex h-full w-full overflow-hidden;
+}
+
+.resize-handle {
+  @apply relative w-1 bg-gray-300 cursor-col-resize flex-shrink-0 hover:bg-blue-400 transition-colors;
+}
+
+.resize-handle.resizing {
+  @apply bg-blue-500;
+}
+
+.resize-handle::before {
+  content: '';
+  @apply absolute inset-y-0 -left-1 -right-1;
+}
+
+/* Fullscreen mode */
+.live-preview-container.fullscreen {
+  @apply fixed inset-0 z-50 bg-white;
+}
+
+/* Performance metrics overlay */
+.performance-metrics {
+  @apply absolute top-16 right-4 bg-black bg-opacity-75 text-white text-xs p-3 rounded-lg z-50;
+}
+
+/* Template comparison grid */
+.template-comparison-grid {
+  @apply grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-4;
+}
+
+.template-preview-card {
+  @apply border rounded-lg p-4 hover:shadow-md transition-shadow cursor-pointer;
+}
+
+.template-preview-card.selected {
+  @apply border-blue-500 bg-blue-50 shadow-md;
+}
+
+/* Viewport controls */
+.viewport-controls {
+  @apply flex items-center space-x-4 p-3 bg-white border-b border-gray-200;
+}
+
+.viewport-button {
+  @apply p-2 rounded-md transition-colors text-gray-600 hover:bg-gray-100;
+}
+
+.viewport-button.active {
+  @apply bg-blue-100 text-blue-700 border border-blue-300;
+}
+
+/* Editor panel styles */
+.editor-panel {
+  @apply flex flex-col h-full bg-white;
+}
+
+.editor-section-tabs {
+  @apply flex border-b border-gray-200 bg-white;
+}
+
+.editor-tab {
+  @apply flex items-center space-x-2 px-4 py-3 text-sm font-medium border-b-2 transition-colors cursor-pointer;
+}
+
+.editor-tab.active {
+  @apply border-blue-500 text-blue-600 bg-blue-50;
+}
+
+.editor-tab.inactive {
+  @apply border-transparent text-gray-500 hover:text-gray-700 hover:bg-gray-50;
+}
+
+.editor-content {
+  @apply flex-1 overflow-auto p-6 bg-gray-50;
+}
+
+/* Form styles for editor */
+.editor-form-group {
+  @apply space-y-4;
+}
+
+.editor-form-field {
+  @apply space-y-1;
+}
+
+.editor-form-label {
+  @apply block text-sm font-medium text-gray-700;
+}
+
+.editor-form-input {
+  @apply w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors;
+}
+
+.editor-form-textarea {
+  @apply w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 resize-vertical transition-colors;
+}
+
+/* Button styles */
+.editor-button-primary {
+  @apply px-4 py-2 bg-blue-600 text-white text-sm rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-colors;
+}
+
+.editor-button-secondary {
+  @apply px-4 py-2 bg-gray-200 text-gray-800 text-sm rounded-md hover:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 transition-colors;
+}
+
+.editor-button-danger {
+  @apply px-3 py-1 bg-red-600 text-white text-sm rounded-md hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 transition-colors;
+}

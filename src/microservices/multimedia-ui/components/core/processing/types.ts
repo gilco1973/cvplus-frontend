@@ -1,0 +1,50 @@
+// @ts-ignore
+/**
+ * Processing Component Types
+ * Types for video processing components
+  */
+
+import { CVFeatureProps } from '../../display/galleries/types';
+
+export interface VideoIntroduction {
+  id: string;
+  videoUrl: string;
+  thumbnailUrl: string;
+  title: string;
+  description: string;
+  duration: number;
+  transcription?: string;
+  captions?: string;
+  generatedAt: string;
+  style: 'professional' | 'casual' | 'creative' | 'executive';
+  quality: '720p' | '1080p' | '4K';
+  isGenerated: boolean;
+  metadata: {
+    fileSize: number;
+    format: string;
+    aspectRatio: string;
+  };
+}
+
+export interface VideoIntroductionProps extends CVFeatureProps {
+  autoPlay?: boolean;
+  showControls?: boolean;
+  showTranscript?: boolean;
+  enableGeneration?: boolean;
+  defaultStyle?: 'professional' | 'casual' | 'creative' | 'executive';
+}
+
+export interface VideoPlayerProps {
+  video: VideoIntroduction;
+  autoPlay?: boolean;
+  showControls?: boolean;
+  showTranscript?: boolean;
+  onError?: (error: Error) => void;
+}
+
+export interface VideoGenerationPanelProps {
+  selectedStyle: VideoIntroduction['style'];
+  isGenerating: boolean;
+  onStyleChange: (style: VideoIntroduction['style']) => void;
+  onGenerate: () => void;
+}

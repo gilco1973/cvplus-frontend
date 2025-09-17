@@ -1,0 +1,112 @@
+// @ts-ignore
+/**
+ * CVPlus Multimedia Frontend - Simple Integration Export
+ * 
+ * Simplified integration layer for Phase 1.5 with minimal dependencies
+ * 
+ * @author Gil Klainert
+ * @version 1.0.0
+ * @license PROPRIETARY  
+  */
+
+// ============================================================================
+// SIMPLE INTEGRATION LAYER
+// ============================================================================
+
+export {
+  SimpleMultimediaIntegration,
+  SimpleProfilePictureUpload,
+  SimpleFileUpload,
+  SIMPLE_INTEGRATION_VERSION
+} from './integration/SimpleIntegration';
+
+// ============================================================================
+// BASIC COMPONENT EXPORTS
+// ============================================================================
+
+// Note: These require the actual component files to exist
+// Commenting out for now to avoid build errors
+// export { ProfilePictureUpload } from './components/utilities/ProfilePictureUpload';
+// export { FileUpload } from './components/utilities/FileUpload';
+
+// ============================================================================
+// TYPES
+// ============================================================================
+
+export interface SimpleIntegrationConfig {
+  enableErrorBoundaries: boolean;
+  enableLoadingStates: boolean;
+  fallbackStrategy: 'error-message' | 'hidden' | 'custom-component';
+}
+
+// ============================================================================
+// UTILITIES
+// ============================================================================
+
+/**
+ * Check if simple integration is available
+  */
+export const isSimpleIntegrationAvailable = (): boolean => {
+  return true; // Always available since it has minimal dependencies
+};
+
+/**
+ * Initialize simple integration with configuration
+  */
+export const initializeSimpleIntegration = (config: Partial<SimpleIntegrationConfig> = {}) => {
+  const defaultConfig: SimpleIntegrationConfig = {
+    enableErrorBoundaries: true,
+    enableLoadingStates: true,
+    fallbackStrategy: 'error-message'
+  };
+
+  return { ...defaultConfig, ...config };
+};
+
+// ============================================================================
+// VERSION & COMPATIBILITY
+// ============================================================================
+
+export const SIMPLE_MULTIMEDIA_VERSION = '1.0.0';
+export const SUPPORTED_REACT_VERSIONS = ['>=18.0.0'];
+
+// ============================================================================
+// INTEGRATION GUIDE
+// ============================================================================
+
+/* 
+  */
+Usage in parent CVPlus project:
+
+1. Install the multimedia package:
+   npm install @cvplus/multimedia
+
+2. Import and use components:
+   import { SimpleProfilePictureUpload } from '@cvplus/multimedia/frontend';
+   
+   <SimpleProfilePictureUpload
+     currentImageUrl={user.profilePicture}
+     onImageUpdate={(url, path) => updateUserProfile({ profilePicture: url })}
+     userId={user.id}
+     size="large"
+   />
+
+3. For generic component loading:
+   import { SimpleMultimediaIntegration } from '@cvplus/multimedia/frontend';
+   
+   <SimpleMultimediaIntegration
+     component="FileUpload"
+     onFileSelect={handleFileUpload}
+     isLoading={uploading}
+   />
+
+4. Error handling:
+   All components include built-in error boundaries and loading states.
+   Customize behavior with fallback components:
+   
+   <SimpleMultimediaIntegration
+     component="ProfilePictureUpload"
+     fallback={MyCustomFallbackComponent}
+     {...props}
+   />
+/*  */

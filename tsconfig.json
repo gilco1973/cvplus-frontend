@@ -31,7 +31,7 @@
       /* Microservices path mappings */
       "@/microservices/*": ["./src/microservices/*"],
       "@/auth-ui/*": ["./src/microservices/auth-ui/*"],
-      "@/cv-processing-ui/*": ["./src/microservices/cv-processing-ui/*"],
+      "@/processing-ui/*": ["./src/microservices/processing-ui/*"],
       "@/multimedia-ui/*": ["./src/microservices/multimedia-ui/*"],
       "@/analytics-ui/*": ["./src/microservices/analytics-ui/*"],
       "@/premium-ui/*": ["./src/microservices/premium-ui/*"],
@@ -48,8 +48,8 @@
     "noUnusedParameters": true,
     "noFallthroughCasesInSwitch": true
   },
-  "include": ["src/**/*"],
-  "exclude": ["node_modules", "dist", "**/*.test.ts", "**/*.test.tsx"],
+  "include": [],
+  "exclude": ["node_modules", "dist"],
   "files": [],
   "references": [
     { "path": "./tsconfig.app.json" },

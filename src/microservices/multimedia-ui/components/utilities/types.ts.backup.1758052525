@@ -1,0 +1,50 @@
+// @ts-ignore
+/**
+ * Type definitions for utility components
+ */
+
+export interface FileUploadProps {
+  accept?: string;
+  multiple?: boolean;
+  maxSize?: number;
+  onUpload: (files: File[]) => Promise<UploadResult[]>;
+  onProgress?: (progress: UploadProgress) => void;
+  onError?: (error: UploadError) => void;
+  disabled?: boolean;
+  className?: string;
+}
+
+export interface FileUploadResult {
+  file: File;
+  url?: string;
+  success: boolean;
+  error?: string;
+}
+
+export interface UploadProgress {
+  fileId: string;
+  fileName: string;
+  progress: number;
+  stage: 'uploading' | 'processing' | 'complete' | 'error';
+}
+
+export interface UploadValidationResult {
+  valid: boolean;
+  errors: string[];
+  warnings: string[];
+  fileType?: string;
+  fileSize?: number;
+}
+
+export interface UploadError {
+  code: string;
+  message: string;
+  details?: Record<string, unknown>;
+}
+
+export interface UploadResult {
+  success: boolean;
+  url?: string;
+  error?: string;
+  metadata?: Record<string, unknown>;
+}

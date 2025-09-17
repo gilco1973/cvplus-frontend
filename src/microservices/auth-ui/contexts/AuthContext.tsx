@@ -1,283 +1,377 @@
-// Authentication context for managing auth state across the application
-import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
-import { EventBus, EventTypes } from '@/core-ui/services/EventBus';
-import { createLogger } from '@cvplus/logging';
-import type { AuthState, SignInCredentials, SignUpData, AuthError } from '../types/auth';
-import type { User } from '@cvplus/core';
+/**
+ * Auth Context
+ * 
+ * React context for managing authentication state and providing
+ * auth-related functionality throughout the application.
+ * 
+ * @author Gil Klainert
+ * @version 1.0.0 - CVPlus Auth Module
+ */
 
-// Initialize logger for auth-ui microservice
-const logger = createLogger('auth-ui');
+import React, { createContext, useContext, useReducer, useEffect, ReactNode } from 'react';
+import { User } from 'firebase/auth';
+import { AuthService } from '@cvplus/auth/services/auth.service';
+import { UserProfile, Permission, AuthenticatedUser } from '@cvplus/auth/types';
+// PremiumFeatures removed - moved to @cvplus/premium module
 
-interface AuthContextValue extends AuthState {
-  signIn: (credentials: SignInCredentials) => Promise<void>;
-  signUp: (data: SignUpData) => Promise<void>;
+// ============================================================================
+// TYPES
+// ============================================================================
+
+export interface AuthContextState {
+  user: AuthenticatedUser | null;
+  firebaseUser?: User | null; // For backward compatibility
+  profile: UserProfile | null;
+  isLoading: boolean;
+  isAuthenticated: boolean;
+  permissions: Permission[];
+  // premiumFeatures removed - moved to @cvplus/premium module
+  error: string | null;
+  isInitialized: boolean;
+}
+
+export interface AuthContextActions {
+  signIn: (email: string, password: string) => Promise<AuthenticatedUser>;
+  signUp: (email: string, password: string, displayName?: string) => Promise<AuthenticatedUser>;
   signOut: () => Promise<void>;
-  refreshToken: () => Promise<void>;
   resetPassword: (email: string) => Promise<void>;
-  updateProfile: (updates: Partial<User>) => Promise<void>;
+  updateProfile: (data: Partial<UserProfile>) => Promise<void>;
+  refreshSession: () => Promise<void>;
+  hasPermission: (permission: string) => boolean;
+  // hasPremiumFeature removed - moved to @cvplus/premium module
   clearError: () => void;
 }
 
-const initialState: AuthState = {
-  user: null,
-  isAuthenticated: false,
-  isLoading: true,
-  error: null,
-  permissions: [],
-  premiumTier: 'free'
-};
-
-const AuthContext = createContext<AuthContextValue | undefined>(undefined);
-
-interface AuthProviderProps {
-  children: ReactNode;
+export interface AuthContextValue {
+  state: AuthContextState;
+  actions: AuthContextActions;
 }
 
-export function AuthProvider({ children }: AuthProviderProps) {
-  const [state, setState] = useState<AuthState>(initialState);
+// ============================================================================
+// REDUCER
+// ============================================================================
 
-  // Initialize authentication state on mount
-  useEffect(() => {
-    initializeAuth();
-  }, []);
+type AuthAction =
+  | { type: 'SET_LOADING'; payload: boolean }
+  | { type: 'SET_USER'; payload: AuthenticatedUser | null }
+  | { type: 'SET_PROFILE'; payload: UserProfile | null }
+  | { type: 'SET_PERMISSIONS'; payload: Permission[] }
+  // SET_PREMIUM_FEATURES action removed - moved to @cvplus/premium module
+  | { type: 'SET_ERROR'; payload: string | null }
+  | { type: 'SET_INITIALIZED'; payload: boolean }
+  | { type: 'CLEAR_ERROR' };
 
-  // Listen for auth events from backend services
-  useEffect(() => {
-    const unsubscribe = EventBus.on('auth-state-changed', (event) => {
-      const { user, isAuthenticated } = event.payload;
-      setState(prev => ({
-        ...prev,
-        user,
-        isAuthenticated,
-        isLoading: false
-      }));
-    });
+const initialState: AuthContextState = {
+  user: null,
+  profile: null,
+  isLoading: true,
+  isAuthenticated: false,
+  permissions: [],
+  // premiumFeatures removed - moved to @cvplus/premium module
+  error: null,
+  isInitialized: false
+};
 
-    return unsubscribe;
-  }, []);
-
-  const initializeAuth = async () => {
-    try {
-      logger.debug('Initializing authentication state');
-
-      // TODO: Integrate with @cvplus/auth backend service
-      // For now, check localStorage for existing session
-      const savedUser = localStorage.getItem('cvplus-user');
-      const savedToken = localStorage.getItem('cvplus-token');
-
-      if (savedUser && savedToken) {
-        try {
-          const user = JSON.parse(savedUser);
-          // TODO: Validate token with backend
-          setState(prev => ({
-            ...prev,
-            user,
-            isAuthenticated: true,
-            isLoading: false
-          }));
-
-          // Emit authentication event
-          EventBus.emit({
-            type: EventTypes.USER_LOGGED_IN,
-            source: 'auth-ui',
-            target: 'all',
-            payload: { user }
-          });
-        } catch (error) {
-          logger.error('Failed to parse saved user data', error);
-          // Clear invalid data
-          localStorage.removeItem('cvplus-user');
-          localStorage.removeItem('cvplus-token');
-        }
-      }
-
-      setState(prev => ({ ...prev, isLoading: false }));
-    } catch (error) {
-      logger.error('Failed to initialize authentication', error);
-      setState(prev => ({
-        ...prev,
-        isLoading: false,
-        error: 'Failed to initialize authentication'
-      }));
-    }
-  };
-
-  const signIn = async (credentials: SignInCredentials) => {
-    try {
-      setState(prev => ({ ...prev, isLoading: true, error: null }));
-      logger.info('Attempting sign in', { email: credentials.email });
-
-      // TODO: Integrate with @cvplus/auth backend service
-      // Mock implementation for now
-      await new Promise(resolve => setTimeout(resolve, 1000));
-
-      // TODO: Replace with actual backend call
-      const mockUser: User = {
-        id: 'user_123',
-        email: credentials.email,
-        displayName: 'Test User',
-        roles: [],
-        premiumTier: 'free',
-        lastLogin: new Date(),
-        createdAt: new Date(),
-        updatedAt: new Date()
+function authReducer(state: AuthContextState, action: AuthAction): AuthContextState {
+  switch (action.type) {
+    case 'SET_LOADING':
+      return { ...state, isLoading: action.payload };
+    
+    case 'SET_USER':
+      return { 
+        ...state, 
+        user: action.payload, 
+        isAuthenticated: !!action.payload,
+        isLoading: false 
       };
+    
+    case 'SET_PROFILE':
+      return { ...state, profile: action.payload };
+    
+    case 'SET_PERMISSIONS':
+      return { ...state, permissions: action.payload };
+    
+    // SET_PREMIUM_FEATURES case removed - moved to @cvplus/premium module
+    
+    case 'SET_ERROR':
+      return { ...state, error: action.payload, isLoading: false };
+    
+    case 'SET_INITIALIZED':
+      return { ...state, isInitialized: action.payload };
+    
+    case 'CLEAR_ERROR':
+      return { ...state, error: null };
+    
+    default:
+      return state;
+  }
+}
 
-      // Save to localStorage (TODO: use secure token storage)
-      localStorage.setItem('cvplus-user', JSON.stringify(mockUser));
-      localStorage.setItem('cvplus-token', 'mock_token_123');
+// ============================================================================
+// CONTEXT
+// ============================================================================
 
-      setState(prev => ({
-        ...prev,
-        user: mockUser,
-        isAuthenticated: true,
-        isLoading: false
-      }));
+const AuthContext = createContext<AuthContextValue | null>(null);
 
-      // Emit login event
-      EventBus.emit({
-        type: EventTypes.USER_LOGGED_IN,
-        source: 'auth-ui',
-        target: 'all',
-        payload: { user: mockUser }
-      });
+// ============================================================================
+// PROVIDER
+// ============================================================================
 
-      logger.info('Sign in successful', { userId: mockUser.id });
-    } catch (error) {
-      const authError = error as AuthError;
-      logger.error('Sign in failed', error);
-      setState(prev => ({
-        ...prev,
-        isLoading: false,
-        error: authError.message || 'Sign in failed'
-      }));
-      throw error;
-    }
-  };
+export interface AuthProviderProps {
+  children: ReactNode;
+  autoRefresh?: boolean;
+}
 
-  const signUp = async (data: SignUpData) => {
-    try {
-      setState(prev => ({ ...prev, isLoading: true, error: null }));
-      logger.info('Attempting sign up', { email: data.email });
+export const AuthProvider: React.FC<AuthProviderProps> = ({ 
+  children, 
+  autoRefresh = true 
+}) => {
+  const [state, dispatch] = useReducer(authReducer, initialState);
 
-      // TODO: Integrate with @cvplus/auth backend service
-      await new Promise(resolve => setTimeout(resolve, 1000));
+  // ============================================================================
+  // HELPER FUNCTIONS
+  // ============================================================================
 
-      logger.info('Sign up successful', { email: data.email });
-
-      // After successful signup, sign in the user
-      await signIn({ email: data.email, password: data.password });
-    } catch (error) {
-      const authError = error as AuthError;
-      logger.error('Sign up failed', error);
-      setState(prev => ({
-        ...prev,
-        isLoading: false,
-        error: authError.message || 'Sign up failed'
-      }));
-      throw error;
-    }
-  };
-
-  const signOut = async () => {
-    try {
-      setState(prev => ({ ...prev, isLoading: true }));
-      logger.info('Signing out user');
-
-      // TODO: Integrate with @cvplus/auth backend service
-      await new Promise(resolve => setTimeout(resolve, 500));
-
-      // Clear local storage
-      localStorage.removeItem('cvplus-user');
-      localStorage.removeItem('cvplus-token');
-
-      setState(initialState);
-
-      // Emit logout event
-      EventBus.emit({
-        type: EventTypes.USER_LOGGED_OUT,
-        source: 'auth-ui',
-        target: 'all',
-        payload: {}
-      });
-
-      logger.info('Sign out successful');
-    } catch (error) {
-      logger.error('Sign out failed', error);
-      setState(prev => ({ ...prev, isLoading: false }));
-    }
-  };
-
-  const refreshToken = async () => {
-    try {
-      // TODO: Integrate with @cvplus/auth backend service
-      logger.debug('Refreshing authentication token');
-    } catch (error) {
-      logger.error('Token refresh failed', error);
-      await signOut();
-    }
-  };
-
-  const resetPassword = async (email: string) => {
-    try {
-      logger.info('Sending password reset email', { email });
-      // TODO: Integrate with @cvplus/auth backend service
-      await new Promise(resolve => setTimeout(resolve, 1000));
-      logger.info('Password reset email sent', { email });
-    } catch (error) {
-      logger.error('Password reset failed', error);
-      throw error;
-    }
-  };
-
-  const updateProfile = async (updates: Partial<User>) => {
-    try {
-      setState(prev => ({ ...prev, isLoading: true }));
-      logger.info('Updating user profile');
-
-      // TODO: Integrate with @cvplus/auth backend service
-      const updatedUser = { ...state.user!, ...updates };
-
-      setState(prev => ({
-        ...prev,
-        user: updatedUser,
-        isLoading: false
-      }));
-
-      logger.info('Profile updated successfully');
-    } catch (error) {
-      logger.error('Profile update failed', error);
-      setState(prev => ({ ...prev, isLoading: false }));
-      throw error;
-    }
+  const setError = (error: string | Error | null) => {
+    const errorMessage = error instanceof Error ? error.message : error;
+    dispatch({ type: 'SET_ERROR', payload: errorMessage });
   };
 
   const clearError = () => {
-    setState(prev => ({ ...prev, error: null }));
+    dispatch({ type: 'CLEAR_ERROR' });
   };
 
-  const value: AuthContextValue = {
-    ...state,
-    signIn,
-    signUp,
-    signOut,
-    refreshToken,
-    resetPassword,
-    updateProfile,
-    clearError
+  const loadUserProfile = async () => {
+    try {
+      // Load user profile
+      const profile = await AuthService.getInstance().getUserProfile();
+      dispatch({ type: 'SET_PROFILE', payload: profile });
+
+      // Permissions are automatically loaded by AuthService
+
+      // Premium features are automatically loaded by AuthService
+
+    } catch (error: any) {
+      console.error('Failed to load user profile:', error);
+      setError(`Failed to load user profile: ${error.message}`);
+    }
+  };
+
+  // ============================================================================
+  // AUTH ACTIONS
+  // ============================================================================
+
+  const signIn = async (email: string, password: string): Promise<AuthenticatedUser> => {
+    try {
+      dispatch({ type: 'SET_LOADING', payload: true });
+      clearError();
+
+      const user = await AuthService.getInstance().signIn({ email, password, provider: 'email' });
+      dispatch({ type: 'SET_USER', payload: user });
+
+      // Load additional user data
+      await loadUserProfile();
+
+      // Session is automatically created by AuthService
+
+      return user;
+    } catch (error: any) {
+      setError(error);
+      throw error;
+    }
+  };
+
+  const signUp = async (email: string, password: string, displayName?: string): Promise<AuthenticatedUser> => {
+    try {
+      dispatch({ type: 'SET_LOADING', payload: true });
+      clearError();
+
+      const user = await AuthService.getInstance().signUp({ 
+        email, 
+        password, 
+        provider: 'email',
+        additionalData: { displayName } 
+      });
+      dispatch({ type: 'SET_USER', payload: user });
+
+      // User profile is created automatically by the signUp method
+      // and will be loaded by loadUserProfile()
+      
+      await loadUserProfile();
+
+      // Default permissions are automatically set by AuthService
+
+      // Session is automatically created by AuthService
+
+      return user;
+    } catch (error: any) {
+      setError(error);
+      throw error;
+    }
+  };
+
+  const signOut = async (): Promise<void> => {
+    try {
+      dispatch({ type: 'SET_LOADING', payload: true });
+      
+      // End session
+      // Session cleanup is handled by AuthService
+
+      await AuthService.getInstance().signOut();
+      
+      // Clear state
+      dispatch({ type: 'SET_USER', payload: null });
+      dispatch({ type: 'SET_PROFILE', payload: null });
+      dispatch({ type: 'SET_PERMISSIONS', payload: [] });
+      // Premium features dispatch removed - moved to @cvplus/premium module
+      
+    } catch (error: any) {
+      setError(error);
+      throw error;
+    }
+  };
+
+  const resetPassword = async (email: string): Promise<void> => {
+    try {
+      clearError();
+      await AuthService.getInstance().resetPassword(email);
+    } catch (error: any) {
+      setError(error);
+      throw error;
+    }
+  };
+
+  const updateProfile = async (data: Partial<UserProfile>): Promise<void> => {
+    try {
+      if (!state.user) throw new Error('No authenticated user');
+      
+      dispatch({ type: 'SET_LOADING', payload: true });
+      
+      const updatedProfile = await AuthService.getInstance().updateProfile(data);
+      dispatch({ type: 'SET_PROFILE', payload: updatedProfile });
+      
+    } catch (error: any) {
+      setError(error);
+      throw error;
+    } finally {
+      dispatch({ type: 'SET_LOADING', payload: false });
+    }
+  };
+
+  const refreshSession = async (): Promise<void> => {
+    try {
+      if (!state.user) return;
+      
+      await loadUserProfile();
+      await AuthService.getInstance().refreshSession();
+      
+    } catch (error: any) {
+      console.error('Failed to refresh session:', error);
+    }
+  };
+
+  const hasPermission = (permission: string): boolean => {
+    return state.permissions.some(p => p.name === permission);
+  };
+
+  // hasPremiumFeature method removed - moved to @cvplus/premium module
+
+  // ============================================================================
+  // EFFECTS
+  // ============================================================================
+
+  // Initialize auth state
+  useEffect(() => {
+    const initializeAuth = async () => {
+      try {
+        dispatch({ type: 'SET_LOADING', payload: true });
+        
+        // Listen for auth state changes
+        const authService = AuthService.getInstance();
+        
+        authService.addEventListener('onAuthStateChanged', async (user) => {
+          dispatch({ type: 'SET_USER', payload: user });
+          
+          if (user) {
+            await loadUserProfile();
+          } else {
+            dispatch({ type: 'SET_PROFILE', payload: null });
+            dispatch({ type: 'SET_PERMISSIONS', payload: [] });
+            // Premium features dispatch removed - moved to @cvplus/premium module
+          }
+          
+          dispatch({ type: 'SET_INITIALIZED', payload: true });
+          dispatch({ type: 'SET_LOADING', payload: false });
+        });
+
+        return () => {
+          authService.removeEventListener('onAuthStateChanged');
+        };
+      } catch (error: any) {
+        setError(error);
+        dispatch({ type: 'SET_INITIALIZED', payload: true });
+        return () => {}; // Return empty cleanup function
+      }
+    };
+
+    const unsubscribe = initializeAuth();
+    
+    return () => {
+      unsubscribe?.then(unsub => unsub?.());
+    };
+  }, []);
+
+  // Auto-refresh session
+  useEffect(() => {
+    if (!autoRefresh || !state.user) return;
+
+    const interval = setInterval(() => {
+      refreshSession();
+    }, 15 * 60 * 1000); // 15 minutes
+
+    return () => clearInterval(interval);
+  }, [state.user, autoRefresh]);
+
+  // ============================================================================
+  // CONTEXT VALUE
+  // ============================================================================
+
+  const contextValue: AuthContextValue = {
+    state: {
+      ...state,
+      // Provide Firebase User for backward compatibility
+      firebaseUser: state.user?.firebaseUser || null
+    },
+    actions: {
+      signIn,
+      signUp,
+      signOut,
+      resetPassword,
+      updateProfile,
+      refreshSession,
+      hasPermission,
+      // hasPremiumFeature removed - moved to @cvplus/premium module
+      clearError
+    }
   };
 
   return (
-    <AuthContext.Provider value={value}>
+    <AuthContext.Provider value={contextValue}>
       {children}
     </AuthContext.Provider>
   );
-}
+};
 
-export function useAuth(): AuthContextValue {
+// ============================================================================
+// HOOK
+// ============================================================================
+
+export const useAuthContext = (): AuthContextValue => {
   const context = useContext(AuthContext);
+  
   if (!context) {
-    throw new Error('useAuth must be used within an AuthProvider');
+    throw new Error('useAuthContext must be used within an AuthProvider');
   }
+  
   return context;
-}
+};

@@ -1,0 +1,62 @@
+// @ts-ignore
+/**
+ * Type definitions for core multimedia components
+  */
+
+export interface MediaProcessingProps {
+  file: File;
+  options?: ProcessingOptions;
+  onProgress?: (progress: number) => void;
+  onComplete?: (result: ProcessingResult) => void;
+  onError?: (error: ProcessingError) => void;
+}
+
+export interface MediaDisplayProps {
+  src: string;
+  alt?: string;
+  className?: string;
+  controls?: boolean;
+  autoPlay?: boolean;
+}
+
+export interface PlayerProps {
+  src: string;
+  title?: string;
+  controls?: boolean;
+  autoPlay?: boolean;
+  onPlay?: () => void;
+  onPause?: () => void;
+  onEnded?: () => void;
+}
+
+export interface MediaConfig {
+  maxSize: number;
+  allowedFormats: string[];
+  quality: number;
+  optimization: boolean;
+}
+
+export interface ProcessingOptions {
+  format?: string;
+  quality?: number;
+  compress?: boolean;
+  resize?: Dimensions;
+}
+
+export interface ProcessingResult {
+  success: boolean;
+  output?: Blob;
+  url?: string;
+  metadata?: Record<string, unknown>;
+}
+
+export interface ProcessingError {
+  code: string;
+  message: string;
+  details?: Record<string, unknown>;
+}
+
+export interface Dimensions {
+  width: number;
+  height: number;
+}

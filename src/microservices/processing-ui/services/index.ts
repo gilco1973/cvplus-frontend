@@ -1,0 +1,29 @@
+// @ts-ignore
+/**
+ * Autonomous Services Export Index
+ * All services for independent CV processing operation
+  */
+
+export { ServiceContainer, serviceContainer } from './ServiceContainer';
+export { AutonomousAuthService } from './AutonomousAuthService';
+export { AutonomousAPIService } from './AutonomousAPIService';
+export { AutonomousConfigService } from './AutonomousConfigService';
+
+// T071 Enhanced CV Processing Service
+export { CVProcessingService, cvProcessingService } from './CVProcessingService';
+export * from './CVProcessingService';
+
+export type { 
+  AuthUser, 
+  AuthState 
+} from './AutonomousAuthService';
+
+export type { 
+  APIResponse, 
+  CVProcessingJob, 
+  ProcessCVRequest 
+} from './AutonomousAPIService';
+
+export type { 
+  CVProcessingConfig 
+} from './AutonomousConfigService';

@@ -2,19 +2,23 @@
 // This microservice provides the foundation for cross-cutting concerns
 
 // Layout and Navigation
-export { default as Layout } from './components/Layout';
-export { default as Navigation } from './components/Navigation';
-export { default as Sidebar } from './components/Sidebar';
-export { default as Header } from './components/Header';
-export { default as Footer } from './components/Footer';
+export { default as GlobalLayout } from './components/layout/GlobalLayout';
+export { default as Navigation } from './components/common/Navigation';
+export { default as MobileNavigation } from './components/layout/MobileNavigation';
+export { default as Footer } from './components/layout/Footer';
+export { default as PageContainer } from './components/layout/PageContainer';
+export { default as Section } from './components/layout/Section';
+export { default as WorkflowLayout } from './components/layout/WorkflowLayout';
 
 // Common UI Components
-export { default as Button } from './components/Button';
-export { default as Input } from './components/Input';
-export { default as Card } from './components/Card';
-export { default as Modal } from './components/Modal';
-export { default as LoadingSpinner } from './components/LoadingSpinner';
-export { default as ErrorBoundary } from './components/ErrorBoundary';
+export { default as Button } from './components/common/Button';
+export { default as Input } from './components/common/Input';
+export { default as Card } from './components/common/Card';
+export { default as ErrorBoundary } from './components/common/ErrorBoundary';
+export { default as CVPreviewLayout } from './components/common/CVPreviewLayout';
+export { default as CVPreviewSkeleton } from './components/common/CVPreviewSkeleton';
+export { default as PremiumStatusBadge } from './components/common/PremiumStatusBadge';
+export { default as PremiumUpgradePrompt } from './components/common/PremiumUpgradePrompt';
 
 // Theme and Styling
 export { ThemeProvider, useTheme } from './contexts/ThemeContext';
@@ -37,8 +41,8 @@ export type * from './types/theme';
 export type * from './types/navigation';
 
 // Services
-export { EventBus } from './services/EventBus';
+export { EventBus, EventTypes } from './services/EventBus';
 export { NotificationService } from './services/NotificationService';
 
-// Use logging submodule instead of custom implementation
-export { createLogger, logger } from '@cvplus/logging';
+// Note: Logging functionality available through backend services
+// Frontend logging uses console and browser-specific logging mechanisms

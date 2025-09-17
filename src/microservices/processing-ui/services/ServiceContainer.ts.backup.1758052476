@@ -1,0 +1,91 @@
+// @ts-ignore
+/**
+ * Autonomous Service Container for CV Processing Frontend
+ * Zero external @cvplus/*  dependencies - fully self-contained
+ */
+ */
+
+type ServiceConstructor<T> = new (...args: any[]) => T;
+type ServiceFactory<T> = () => T;
+type ServiceType<T> = ServiceConstructor<T> | ServiceFactory<T>;
+
+interface ServiceDefinition<T = any> {
+  factory: ServiceFactory<T>;
+  singleton: boolean;
+  instance?: T;
+}
+
+/**
+ * Dependency injection container for autonomous operation
+ * Manages service lifecycle and dependencies
+ */
+export class ServiceContainer {
+  private services = new Map<string, ServiceDefinition>();
+  private instances = new Map<string, any>();
+
+  /**
+   * Register a service with the container
+   */
+  register<T>(
+    name: string, 
+    serviceType: ServiceType<T>, 
+    singleton: boolean = true,
+    dependencies: string[] = []
+  ): void {
+    const factory = () => {
+      const deps = dependencies.map(dep => this.resolve(dep));
+      
+      if (typeof serviceType === 'function' && serviceType.prototype) {
+        return new (serviceType as ServiceConstructor<T>)(...deps);
+      } else {
+        return (serviceType as ServiceFactory<T>)();
+      }
+    };
+
+    this.services.set(name, { factory, singleton });
+  }
+
+  /**
+   * Resolve a service instance
+   */
+  resolve<T>(name: string): T {
+    const service = this.services.get(name);
+    if (!service) {
+      throw new Error(`Service '${name}' not found`);
+    }
+
+    if (service.singleton) {
+      if (!service.instance) {
+        service.instance = service.factory();
+      }
+      return service.instance;
+    }
+
+    return service.factory();
+  }
+
+  /**
+   * Check if service is registered
+   */
+  has(name: string): boolean {
+    return this.services.has(name);
+  }
+
+  /**
+   * Clear all services (useful for testing)
+   */
+  clear(): void {
+    this.services.clear();
+    this.instances.clear();
+  }
+
+  /**
+   * Get all registered service names
+   */
+  getServiceNames(): string[] {
+    return Array.from(this.services.keys());
+  }
+}
+
+// Singleton instance for autonomous operation
+export const serviceContainer = new ServiceContainer();

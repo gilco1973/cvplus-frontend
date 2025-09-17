@@ -1,0 +1,80 @@
+// @ts-ignore
+/**
+ * Type definitions for display multimedia components
+ */
+
+export interface GalleryProps {
+  items: GalleryItem[];
+  layout?: 'grid' | 'masonry' | 'carousel';
+  columns?: number;
+  spacing?: number;
+  showControls?: boolean;
+  onItemSelect?: (item: GalleryItem, index: number) => void;
+}
+
+export interface PlayerProps {
+  src: string;
+  type: 'audio' | 'video' | 'podcast';
+  title?: string;
+  controls?: boolean;
+  autoPlay?: boolean;
+  loop?: boolean;
+  muted?: boolean;
+  onPlay?: () => void;
+  onPause?: () => void;
+  onEnded?: () => void;
+  onProgress?: (progress: number) => void;
+}
+
+export interface CarouselProps {
+  items: CarouselItem[];
+  autoPlay?: boolean;
+  interval?: number;
+  showDots?: boolean;
+  showArrows?: boolean;
+  infinite?: boolean;
+  onSlideChange?: (index: number) => void;
+}
+
+export interface ViewerProps {
+  src: string;
+  type: 'image' | 'video' | 'document';
+  fullscreen?: boolean;
+  zoom?: boolean;
+  rotation?: boolean;
+  controls?: ViewerControls;
+  onClose?: () => void;
+}
+
+export interface DisplayConfig {
+  responsive: boolean;
+  lazy: boolean;
+  preload?: 'none' | 'metadata' | 'auto';
+  placeholder?: string;
+}
+
+export interface GalleryItem {
+  id: string;
+  src: string;
+  thumbnail?: string;
+  title?: string;
+  description?: string;
+  type: 'image' | 'video';
+  metadata?: Record<string, unknown>;
+}
+
+export interface CarouselItem {
+  id: string;
+  src: string;
+  title?: string;
+  description?: string;
+  action?: () => void;
+}
+
+export interface ViewerControls {
+  pan?: boolean;
+  zoom?: boolean;
+  rotate?: boolean;
+  fullscreen?: boolean;
+  download?: boolean;
+}

@@ -1,0 +1,252 @@
+// @ts-ignore
+/**
+ * CVPlus Multimedia Feature Registry
+ * 
+ * Manages feature flags and namespace-based component registration
+ * 
+ * @author Gil Klainert
+ * @version 1.0.0
+ * @license PROPRIETARY
+ */
+
+// ============================================================================
+// TYPES & INTERFACES
+// ============================================================================
+
+export interface FeatureConfig {
+  enabled: boolean;
+  version: string;
+  rolloutPercentage?: number;
+  dependencies?: string[];
+  fallbackComponent?: string;
+  metadata?: Record<string, any>;
+}
+
+export interface NamespaceConfig {
+  namespace: string;
+  version: string;
+  features: Record<string, FeatureConfig>;
+  fallbackStrategy: 'graceful-degradation' | 'error-boundary' | 'hidden';
+}
+
+export interface MultimediaFeatures extends NamespaceConfig {
+  namespace: 'multimedia';
+}
+
+// ============================================================================
+// FEATURE REGISTRY CLASS
+// ============================================================================
+
+export class FeatureRegistry {
+  private namespaces: Map<string, NamespaceConfig> = new Map();
+  private listeners: Map<string, Set<(config: FeatureConfig) => void>> = new Map();
+
+  /**
+   * Register a namespace with its features
+   */
+  registerNamespace(config: NamespaceConfig): void {
+    this.namespaces.set(config.namespace, config);
+    
+    // Notify listeners about feature changes
+    Object.entries(config.features).forEach(([featureName, featureConfig]) => {
+      const fullName = `${config.namespace}.${featureName}`;
+      this.notifyListeners(fullName, featureConfig);
+    });
+  }
+
+  /**
+   * Check if a feature is enabled
+   */
+  isFeatureEnabled(featureName: string): boolean {
+    const [namespace, feature] = this.parseFeatureName(featureName);
+    const namespaceConfig = this.namespaces.get(namespace);
+    
+    if (!namespaceConfig || !namespaceConfig.features[feature]) {
+      return false;
+    }
+
+    const featureConfig = namespaceConfig.features[feature];
+    
+    // Check basic enabled flag
+    if (!featureConfig.enabled) {
+      return false;
+    }
+
+    // Check rollout percentage
+    if (featureConfig.rolloutPercentage !== undefined) {
+      const hash = this.hashFeatureName(featureName);
+      return hash < featureConfig.rolloutPercentage;
+    }
+
+    return true;
+  }
+
+  /**
+   * Get feature configuration
+   */
+  getFeatureConfig(featureName: string): FeatureConfig | null {
+    const [namespace, feature] = this.parseFeatureName(featureName);
+    const namespaceConfig = this.namespaces.get(namespace);
+    
+    return namespaceConfig?.features[feature] || null;
+  }
+
+  /**
+   * Update a feature configuration
+   */
+  updateFeature(featureName: string, updates: Partial<FeatureConfig>): void {
+    const [namespace, feature] = this.parseFeatureName(featureName);
+    const namespaceConfig = this.namespaces.get(namespace);
+    
+    if (!namespaceConfig) {
+      console.warn(`[FeatureRegistry] Namespace "${namespace}" not found`);
+      return;
+    }
+
+    const currentConfig = namespaceConfig.features[feature];
+    if (!currentConfig) {
+      console.warn(`[FeatureRegistry] Feature "${featureName}" not found`);
+      return;
+    }
+
+    // Update the feature
+    namespaceConfig.features[feature] = { ...currentConfig, ...updates };
+    
+    // Notify listeners
+    this.notifyListeners(featureName, namespaceConfig.features[feature]);
+  }
+
+  /**
+   * Get fallback strategy for a namespace
+   */
+  getFallbackStrategy(namespace: string): string {
+    return this.namespaces.get(namespace)?.fallbackStrategy || 'hidden';
+  }
+
+  /**
+   * Subscribe to feature changes
+   */
+  subscribe(featureName: string, callback: (config: FeatureConfig) => void): () => void {
+    if (!this.listeners.has(featureName)) {
+      this.listeners.set(featureName, new Set());
+    }
+    
+    this.listeners.get(featureName)!.add(callback);
+    
+    // Return unsubscribe function
+    return () => {
+      this.listeners.get(featureName)?.delete(callback);
+    };
+  }
+
+  /**
+   * Get all features in a namespace
+   */
+  getNamespaceFeatures(namespace: string): Record<string, FeatureConfig> {
+    return this.namespaces.get(namespace)?.features || {};
+  }
+
+  /**
+   * Check if dependencies are satisfied
+   */
+  checkDependencies(featureName: string): boolean {
+    const config = this.getFeatureConfig(featureName);
+    if (!config?.dependencies) return true;
+
+    return config.dependencies.every(dep => this.isFeatureEnabled(dep));
+  }
+
+  // ============================================================================
+  // PRIVATE METHODS
+  // ============================================================================
+
+  private parseFeatureName(featureName: string): [string, string] {
+    const parts = featureName.split('.');
+    if (parts.length !== 2) {
+      throw new Error(`Invalid feature name format: ${featureName}. Expected "namespace.feature"`);
+    }
+    return [parts[0], parts[1]];
+  }
+
+  private hashFeatureName(featureName: string): number {
+    let hash = 0;
+    for (let i = 0; i < featureName.length; i++) {
+      const char = featureName.charCodeAt(i);
+      hash = ((hash << 5) - hash) + char;
+      hash = hash & hash; // Convert to 32-bit integer
+    }
+    return Math.abs(hash) % 100;
+  }
+
+  private notifyListeners(featureName: string, config: FeatureConfig): void {
+    this.listeners.get(featureName)?.forEach(callback => {
+      try {
+        callback(config);
+      } catch (error) {
+        console.error(`[FeatureRegistry] Error in feature listener for ${featureName}:`, error);
+      }
+    });
+  }
+}
+
+// ============================================================================
+// SINGLETON INSTANCE
+// ============================================================================
+
+export const featureRegistry = new FeatureRegistry();
+
+// ============================================================================
+// DEFAULT MULTIMEDIA FEATURES
+// ============================================================================
+
+export const DEFAULT_MULTIMEDIA_FEATURES: MultimediaFeatures = {
+  namespace: 'multimedia',
+  version: '1.0.0',
+  fallbackStrategy: 'graceful-degradation',
+  features: {
+    'portfolio-gallery': {
+      enabled: true,
+      version: '1.0.0',
+      rolloutPercentage: 100
+    },
+    'ai-podcast-player': {
+      enabled: true,
+      version: '1.0.0',
+      rolloutPercentage: 100
+    },
+    'video-introduction': {
+      enabled: true,
+      version: '1.0.0',
+      rolloutPercentage: 90
+    },
+    'video-analytics': {
+      enabled: true,
+      version: '1.0.0',
+      rolloutPercentage: 75,
+      dependencies: ['multimedia.video-introduction']
+    },
+    'file-upload': {
+      enabled: true,
+      version: '1.0.0',
+      rolloutPercentage: 100
+    },
+    'profile-picture-upload': {
+      enabled: true,
+      version: '1.0.0',
+      rolloutPercentage: 100
+    },
+    'podcast-generation': {
+      enabled: true,
+      version: '1.0.0',
+      rolloutPercentage: 100
+    },
+    'testimonials-carousel': {
+      enabled: true,
+      version: '1.0.0',
+      rolloutPercentage: 80
+    }
+  }
+};
+
+// Register default features
+featureRegistry.registerNamespace(DEFAULT_MULTIMEDIA_FEATURES);

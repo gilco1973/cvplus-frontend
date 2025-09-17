@@ -1,0 +1,198 @@
+// @ts-ignore
+/**
+ * MultimediaService Initializer - Firebase Setup Utility
+ * Provides easy initialization of MultimediaService with Firebase instances
+ *
+ * @author CVPlus Development Team
+ * @version 1.0.0
+  */
+
+import { Functions, connectFunctionsEmulator } from 'firebase/functions';
+import { FirebaseStorage, connectStorageEmulator } from 'firebase/storage';
+import { multimediaService, MultimediaService } from '../services/MultimediaService';
+
+// ============================================================================
+// INITIALIZATION OPTIONS
+// ============================================================================
+
+export interface MultimediaServiceInitOptions {
+  functions: Functions;
+  storage: FirebaseStorage;
+  useEmulator?: boolean;
+  emulatorConfig?: {
+    functionsPort?: number;
+    storagePort?: number;
+    host?: string;
+  };
+  enableLogging?: boolean;
+}
+
+export interface EmulatorConfig {
+  functionsPort?: number;
+  storagePort?: number;
+  host?: string;
+}
+
+// ============================================================================
+// INITIALIZER CLASS
+// ============================================================================
+
+export class MultimediaServiceInitializer {
+  private static initialized = false;
+
+  /**
+   * Initialize MultimediaService with Firebase instances
+    */
+  static initialize(options: MultimediaServiceInitOptions): MultimediaService {
+    if (MultimediaServiceInitializer.initialized) {
+      if (options.enableLogging) {
+        console.log('MultimediaService already initialized');
+      }
+      return multimediaService;
+    }
+
+    try {
+      // Set up emulator connections if required
+      if (options.useEmulator && options.emulatorConfig) {
+        MultimediaServiceInitializer.setupEmulators(options.functions, options.storage, options.emulatorConfig);
+      }
+
+      // Initialize the service
+      multimediaService.initialize(options.functions, options.storage);
+
+      MultimediaServiceInitializer.initialized = true;
+
+      if (options.enableLogging) {
+        console.log('MultimediaService initialized successfully');
+      }
+
+      return multimediaService;
+    } catch (error) {
+      console.error('Failed to initialize MultimediaService:', error);
+      throw new Error(`MultimediaService initialization failed: ${error}`);
+    }
+  }
+
+  /**
+   * Setup Firebase emulators for development
+    */
+  private static setupEmulators(
+    functions: Functions,
+    storage: FirebaseStorage,
+    emulatorConfig: { functionsPort?: number; storagePort?: number; host?: string }
+  ): void {
+    try {
+      // Connect to Functions emulator
+      connectFunctionsEmulator(
+        functions,
+        emulatorConfig.host || 'localhost',
+        emulatorConfig.functionsPort || 5001
+      );
+
+      // Connect to Storage emulator
+      connectStorageEmulator(
+        storage,
+        emulatorConfig.host || 'localhost',
+        emulatorConfig.storagePort || 9199
+      );
+
+      console.log('Firebase emulators connected for MultimediaService');
+    } catch (error) {
+      // Emulator connection might fail if already connected, which is fine
+      console.warn('Emulator connection warning:', error);
+    }
+  }
+
+  /**
+   * Check if MultimediaService is initialized
+    */
+  static isInitialized(): boolean {
+    return MultimediaServiceInitializer.initialized;
+  }
+
+  /**
+   * Reset initialization state (for testing)
+    */
+  static reset(): void {
+    MultimediaServiceInitializer.initialized = false;
+  }
+
+  /**
+   * Create easy initialization function for different environments
+    */
+  static createInitializer(baseConfig: Partial<MultimediaServiceInitOptions>) {
+    return (functions: Functions, storage: FirebaseStorage, overrides?: Partial<MultimediaServiceInitOptions>) => {
+      const config: MultimediaServiceInitOptions = {
+        ...baseConfig,
+        functions,
+        storage,
+        ...overrides
+      };
+
+      return MultimediaServiceInitializer.initialize(config);
+    };
+  }
+
+  /**
+   * Development environment initializer
+    */
+  static forDevelopment(functions: Functions, storage: FirebaseStorage): MultimediaService {
+    return MultimediaServiceInitializer.initialize({
+      functions,
+      storage,
+      useEmulator: true,
+      emulatorConfig: {
+        functionsPort: 5001,
+        storagePort: 9199,
+        host: 'localhost'
+      },
+      enableLogging: true
+    });
+  }
+
+  /**
+   * Production environment initializer
+    */
+  static forProduction(functions: Functions, storage: FirebaseStorage): MultimediaService {
+    return MultimediaServiceInitializer.initialize({
+      functions,
+      storage,
+      useEmulator: false,
+      enableLogging: false
+    });
+  }
+
+  /**
+   * Testing environment initializer
+    */
+  static forTesting(functions: Functions, storage: FirebaseStorage): MultimediaService {
+    // Reset state for clean testing
+    MultimediaServiceInitializer.reset();
+
+    return MultimediaServiceInitializer.initialize({
+      functions,
+      storage,
+      useEmulator: true,
+      emulatorConfig: {
+        functionsPort: 5001,
+        storagePort: 9199,
+        host: 'localhost'
+      },
+      enableLogging: true
+    });
+  }
+}
+
+// ============================================================================
+// CONVENIENCE EXPORTS
+// ============================================================================
+
+export const initializeMultimediaService = MultimediaServiceInitializer.initialize;
+export const forDevelopment = MultimediaServiceInitializer.forDevelopment;
+export const forProduction = MultimediaServiceInitializer.forProduction;
+export const forTesting = MultimediaServiceInitializer.forTesting;
+
+// Types exported as interfaces above
+
+// Default export
+export default MultimediaServiceInitializer;

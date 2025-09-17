@@ -1,0 +1,129 @@
+// @ts-ignore - Export conflicts// @ts-ignore - Export conflicts// @ts-ignore - Export conflicts/types/creator.types';
+import { TemplateValidationResult } from '../types/template.types';
+
+export class BrandingValidation {
+  /**
+   * Validate branding settings compatibility
+    */
+  static validateBrandingSettings(branding: BrandingSettings): TemplateValidationResult {
+    const errors: string[] = [];
+    const warnings: string[] = [];
+    const recommendations: string[] = [];
+
+    // Validate colors
+    if (!this.isValidHexColor(branding.primaryColor)) {
+      errors.push('Primary color must be a valid hex color');
+    }
+
+    if (!this.isValidHexColor(branding.secondaryColor)) {
+      errors.push('Secondary color must be a valid hex color');
+    }
+
+    if (!this.isValidHexColor(branding.accentColor)) {
+      errors.push('Accent color must be a valid hex color');
+    }
+
+    // Check color contrast
+    const contrast = this.calculateColorContrast(branding.primaryColor, branding.secondaryColor);
+    if (contrast < 4.5) {
+      warnings.push('Low contrast between primary and secondary colors may affect readability');
+      recommendations.push('Consider adjusting colors for better accessibility');
+    }
+
+    // Validate font family
+    if (!this.isValidFontFamily(branding.fontFamily)) {
+      warnings.push('Font family may not be available on all devices');
+      recommendations.push('Consider using web-safe fonts or Google Fonts');
+    }
+
+    // Check logo URL if provided
+    if (branding.logoUrl && !this.isValidImageUrl(branding.logoUrl)) {
+      errors.push('Logo URL is not a valid image URL');
+    }
+
+    return {
+      isValid: errors.length === 0,
+      errors,
+      warnings,
+      missingFields: [],
+      recommendations,
+    };
+  }
+
+  /**
+   * Validate hex color format
+    */
+  private static isValidHexColor(color: string): boolean {
+    return /^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$/.test(color);
+  }
+
+  /**
+   * Calculate color contrast ratio
+    */
+  private static calculateColorContrast(color1: string, color2: string): number {
+    const luminance1 = this.getColorLuminance(color1);
+    const luminance2 = this.getColorLuminance(color2);
+
+    const lighter = Math.max(luminance1, luminance2);
+    const darker = Math.min(luminance1, luminance2);
+
+    return (lighter + 0.05) / (darker + 0.05);
+  }
+
+  /**
+   * Get color luminance
+    */
+  private static getColorLuminance(hex: string): number {
+    const rgb = this.hexToRgb(hex);
+    if (!rgb) return 0;
+
+    const [r, g, b] = [rgb.r, rgb.g, rgb.b].map(c => {
+      c = c / 255;
+      return c <= 0.03928 ? c / 12.92 : Math.pow((c + 0.055) / 1.055, 2.4);
+    });
+
+    return 0.2126 * r + 0.7152 * g + 0.0722 * b;
+  }
+
+  /**
+   * Convert hex to RGB
+    */
+  private static hexToRgb(hex: string): { r: number; g: number; b: number } | null {
+    const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+    return result ? {
+      r: parseInt(result[1], 16),
+      g: parseInt(result[2], 16),
+      b: parseInt(result[3], 16)
+    } : null;
+  }
+
+  /**
+   * Validate font family
+    */
+  private static isValidFontFamily(fontFamily: string): boolean {
+    const webSafeFonts = [
+      'Arial', 'Helvetica', 'Times New Roman', 'Times', 'Courier New',
+      'Verdana', 'Georgia', 'Palatino', 'Garamond', 'Comic Sans MS',
+      'Trebuchet MS', 'Arial Black', 'Impact', 'Inter', 'Roboto'
+    ];
+
+    return webSafeFonts.some(font =>
+      fontFamily.toLowerCase().includes(font.toLowerCase())
+    );
+  }
+
+  /**
+   * Validate image URL
+    */
+  private static isValidImageUrl(url: string): boolean {
+    try {
+      const urlObj = new URL(url);
+      const imageExtensions = ['.jpg', '.jpeg', '.png', '.gif', '.webp', '.svg'];
+      return imageExtensions.some(ext =>
+        urlObj.pathname.toLowerCase().endsWith(ext)
+      );
+    } catch {
+      return false;
+    }
+  }
+}

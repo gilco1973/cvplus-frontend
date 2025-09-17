@@ -1,0 +1,80 @@
+// @ts-ignore
+/**
+ * Styling Types for Generated CV Display System
+  */
+
+// =============================================================================
+// STYLING TYPES
+// =============================================================================
+
+export interface CVStyling {
+  theme: string;
+  colors: ColorScheme;
+  typography: Typography;
+  layout: LayoutConfig;
+  spacing: SpacingConfig;
+}
+
+export interface ColorScheme {
+  primary: string;
+  secondary: string;
+  accent: string;
+  background: string;
+  text: string;
+  muted: string;
+}
+
+export interface Typography {
+  headingFont: string;
+  bodyFont: string;
+  codeFont?: string;
+  sizes: {
+    xs: string;
+    sm: string;
+    base: string;
+    lg: string;
+    xl: string;
+    '2xl': string;
+    '3xl': string;
+    '4xl': string;
+  };
+  weights: {
+    light: number;
+    normal: number;
+    medium: number;
+    semibold: number;
+    bold: number;
+  };
+}
+
+export interface LayoutConfig {
+  columns: number;
+  sidebar: boolean;
+  sidebarWidth: number;
+  margins: Spacing;
+  padding: Spacing;
+}
+
+export interface SpacingConfig {
+  section: number;
+  subsection: number;
+  item: number;
+  compact: boolean;
+}
+
+export interface Spacing {
+  top: number;
+  right: number;
+  bottom: number;
+  left: number;
+}
+
+export interface SectionStyling {
+  background?: string;
+  border?: string;
+  padding?: Spacing;
+  margin?: Spacing;
+  textAlign?: 'left' | 'center' | 'right';
+  fontWeight?: number;
+  fontSize?: string;
+}

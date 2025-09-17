@@ -1,0 +1,17 @@
+// @ts-ignore
+/**
+ * Gallery display components
+ */
+
+export { PortfolioGallery, ProjectCard, LightboxModal, PortfolioFilters } from './galleries';
+export * from './galleries/types';
+export * from './galleries/utils';
+
+// Legacy exports for Phase 2A compatibility
+export const MediaGallery = () => {
+  return null; // To be implemented in future phases
+};
+
+export const ImageGallery = () => {
+  return null; // To be implemented in future phases
+};

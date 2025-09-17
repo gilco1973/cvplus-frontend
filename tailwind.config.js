@@ -7,7 +7,7 @@ export default {
     // Explicitly include all microservices for comprehensive scanning
     "./src/microservices/**/*.{js,ts,jsx,tsx}",
     "./src/microservices/auth-ui/**/*.{js,ts,jsx,tsx}",
-    "./src/microservices/cv-processing-ui/**/*.{js,ts,jsx,tsx}",
+    "./src/microservices/processing-ui/**/*.{js,ts,jsx,tsx}",
     "./src/microservices/multimedia-ui/**/*.{js,ts,jsx,tsx}",
     "./src/microservices/analytics-ui/**/*.{js,ts,jsx,tsx}",
     "./src/microservices/premium-ui/**/*.{js,ts,jsx,tsx}",

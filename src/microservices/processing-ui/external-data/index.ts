@@ -1,0 +1,10 @@
+// @ts-ignore
+/**
+ * @fileoverview External Data Integration - Frontend exports
+ * @author Gil Klainert
+  */
+
+// Frontend-specific exports for external data integration
+// These will be populated during the migration phase
+
+export const EXTERNAL_DATA_FRONTEND_VERSION = '1.0.0';

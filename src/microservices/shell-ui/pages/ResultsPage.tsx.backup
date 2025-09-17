@@ -1,0 +1,1116 @@
+import { useEffect, useState } from 'react';
+import { useParams, useNavigate } from 'react-router-dom';
+import { Home, Sparkles, Loader2, Wand2 } from 'lucide-react';
+import { getJob, generateCV } from '../services/cvService';
+import type { Job } from '../services/cvService';
+import { PIIWarning } from '../components/PIIWarning';
+import { PodcastPlayer } from '../components/PodcastPlayer';
+import { CVPreview } from '../components/CVPreview';
+import { GeneratedCVDisplay } from '../components/GeneratedCVDisplay';
+import toast from 'react-hot-toast';
+
+export const ResultsPage = () => {
+  const { jobId } = useParams<{ jobId: string }>();
+  const navigate = useNavigate();
+  const [job, setJob] = useState<Job | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [privacyMode, setPrivacyMode] = useState(false);
+  const [selectedTemplate, setSelectedTemplate] = useState('modern');
+  const [selectedFeatures, setSelectedFeatures] = useState({
+    atsOptimization: true,
+    keywordEnhancement: true,
+    achievementHighlighting: true,
+    skillsVisualization: false,
+    generatePodcast: true,
+    privacyMode: true,
+    embedQRCode: true,
+    interactiveTimeline: true,
+    skillsChart: true,
+    videoIntroduction: false,
+    portfolioGallery: false,
+    testimonialsCarousel: false,
+    contactForm: true,
+    socialMediaLinks: true,
+    availabilityCalendar: false,
+    languageProficiency: true,
+    certificationBadges: true,
+    achievementsShowcase: true,
+  });
+  const [selectedFormats, setSelectedFormats] = useState({
+    pdf: true,
+    docx: true,
+    html: true,
+  });
+
+  // Feature validation - check what data is available for features
+  const getFeatureAvailability = () => {
+    if (!job?.parsedData) return {};
+    
+    const data = job.parsedData;
+    return {
+      languageProficiency: {
+        available: !!(data.languages && Array.isArray(data.languages) && data.languages.length > 0),
+        reason: !data.languages || !Array.isArray(data.languages) || data.languages.length === 0 
+          ? "No languages found in your CV" 
+          : null
+      },
+      certificationBadges: {
+        available: !!(data.certifications && Array.isArray(data.certifications) && data.certifications.length > 0),
+        reason: !data.certifications || !Array.isArray(data.certifications) || data.certifications.length === 0
+          ? "No certifications found in your CV"
+          : null
+      },
+      achievementsShowcase: {
+        available: !!(data.achievements && Array.isArray(data.achievements) && data.achievements.length > 0) ||
+                  !!(data.experience && Array.isArray(data.experience) && data.experience.some((exp: any) => exp.achievements && exp.achievements.length > 0)),
+        reason: (!data.achievements || !Array.isArray(data.achievements) || data.achievements.length === 0) &&
+                (!data.experience || !Array.isArray(data.experience) || !data.experience.some((exp: any) => exp.achievements && exp.achievements.length > 0))
+          ? "No achievements found in your CV"
+          : null
+      },
+      skillsChart: {
+        available: !!(data.skills && ((Array.isArray(data.skills) && data.skills.length > 0) || 
+                     (typeof data.skills === 'object' && Object.keys(data.skills).length > 0))),
+        reason: !data.skills || (Array.isArray(data.skills) && data.skills.length === 0) || 
+                (typeof data.skills === 'object' && Object.keys(data.skills).length === 0)
+          ? "No skills found in your CV"
+          : null
+      },
+      portfolioGallery: {
+        available: !!(data.projects && Array.isArray(data.projects) && data.projects.length > 0) ||
+                  !!(data.portfolio && Array.isArray(data.portfolio) && data.portfolio.length > 0),
+        reason: (!data.projects || !Array.isArray(data.projects) || data.projects.length === 0) &&
+                (!data.portfolio || !Array.isArray(data.portfolio) || data.portfolio.length === 0)
+          ? "No projects or portfolio items found in your CV"
+          : null
+      },
+      interactiveTimeline: {
+        available: !!(data.experience && Array.isArray(data.experience) && data.experience.length > 0) ||
+                  !!(data.education && Array.isArray(data.education) && data.education.length > 0),
+        reason: (!data.experience || !Array.isArray(data.experience) || data.experience.length === 0) &&
+                (!data.education || !Array.isArray(data.education) || data.education.length === 0)
+          ? "No experience or education timeline found in your CV"
+          : null
+      }
+    };
+  };
+
+  const featureAvailability = getFeatureAvailability();
+
+  // Auto-disable features that are not available
+  useEffect(() => {
+    if (job?.parsedData) {
+      const availability = getFeatureAvailability();
+      const updatedFeatures = { ...selectedFeatures };
+      let hasChanges = false;
+
+      // Disable features that don't have required data
+      Object.keys(availability).forEach(feature => {
+        const isAvailable = availability[feature as keyof typeof availability]?.available;
+        if (!isAvailable && updatedFeatures[feature as keyof typeof selectedFeatures]) {
+          updatedFeatures[feature as keyof typeof selectedFeatures] = false;
+          hasChanges = true;
+        }
+      });
+
+      if (hasChanges) {
+        setSelectedFeatures(updatedFeatures);
+      }
+    }
+  }, [job?.parsedData]);
+
+  // Component for feature checkbox with validation
+  const FeatureCheckbox = ({ 
+    feature, 
+    checked, 
+    onChange, 
+    label, 
+    description,
+    className = ""
+  }: {
+    feature: string;
+    checked: boolean;
+    onChange: (checked: boolean) => void;
+    label: string;
+    description?: string;
+    className?: string;
+  }) => {
+    const availability = featureAvailability[feature as keyof typeof featureAvailability];
+    const isDisabled = availability && !availability.available;
+    
+    return (
+      <div className={`relative ${className}`}>
+        <label className={`flex items-start gap-3 p-3 rounded-lg transition-all cursor-pointer group border ${
+          isDisabled 
+            ? 'bg-gray-800/50 border-gray-700/50 opacity-60 cursor-not-allowed' 
+            : 'bg-gray-700/30 hover:bg-gray-700/50 border-gray-700/30'
+        }`}>
+          <input 
+            type="checkbox" 
+            className={`mt-1 h-4 w-4 rounded focus:ring-cyan-500 ${
+              isDisabled 
+                ? 'text-gray-500 cursor-not-allowed' 
+                : 'text-cyan-500'
+            }`}
+            checked={checked}
+            disabled={isDisabled}
+            onChange={(e) => !isDisabled && onChange(e.target.checked)}
+          />
+          <div className="flex-1">
+            <span className={`font-medium transition-colors ${
+              isDisabled 
+                ? 'text-gray-500' 
+                : 'text-gray-200 group-hover:text-cyan-400'
+            }`}>
+              {label}
+            </span>
+            {description && (
+              <span className="block text-xs text-gray-400 mt-0.5">{description}</span>
+            )}
+          </div>
+          {isDisabled && (
+            <div className="ml-2">
+              <div className="group/tooltip relative">
+                <div className="w-4 h-4 rounded-full bg-gray-600 flex items-center justify-center text-xs text-gray-400 cursor-help">
+                  ?
+                </div>
+                <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 px-3 py-2 bg-gray-800 text-gray-200 text-xs rounded-lg shadow-lg opacity-0 group-hover/tooltip:opacity-100 transition-opacity duration-200 pointer-events-none whitespace-nowrap z-50 border border-gray-700">
+                  {availability?.reason}
+                  <div className="absolute top-full left-1/2 transform -translate-x-1/2 w-0 h-0 border-l-4 border-r-4 border-t-4 border-transparent border-t-gray-800"></div>
+                </div>
+              </div>
+            </div>
+          )}
+        </label>
+      </div>
+    );
+  };
+
+  useEffect(() => {
+    const loadJob = async () => {
+      if (!jobId) return;
+      
+      try {
+        const jobData = await getJob(jobId);
+        setJob(jobData);
+      } catch (error) {
+        console.error('Error loading job:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    loadJob();
+  }, [jobId]);
+
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gray-900">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-cyan-500"></div>
+      </div>
+    );
+  }
+
+  if (!job) {
+    return (
+      <div className="min-h-screen flex items-center justify-center p-4 bg-gray-900">
+        <div className="text-center">
+          <h2 className="text-2xl font-bold mb-4 text-gray-100">CV Not Found</h2>
+          <p className="text-gray-400 mb-6">The CV you're looking for doesn't exist.</p>
+          <button
+            onClick={() => navigate('/')}
+            className="bg-cyan-600 text-white px-6 py-3 rounded-lg hover:bg-cyan-700 transition"
+          >
+            Go Home
+          </button>
+        </div>
+      </div>
+    );
+  }
+
+  // ResultsPage should only show final results for completed jobs
+  // Analyzed jobs should go through the analysis and preview steps first
+  if (job.status === 'analyzed') {
+    return (
+      <div className="min-h-screen flex items-center justify-center p-4 bg-gray-900">
+        <div className="text-center">
+          <Wand2 className="w-16 h-16 text-cyan-400 mx-auto mb-6" />
+          <h2 className="text-2xl font-bold mb-4 text-gray-100">Analysis Complete!</h2>
+          <p className="text-gray-400 mb-6">
+            Your CV has been analyzed. Please review the recommendations and continue through the customization process.
+          </p>
+          <button
+            onClick={() => navigate(`/analysis/${jobId}`)}
+            className="bg-cyan-600 text-white px-8 py-3 rounded-lg hover:bg-cyan-700 transition"
+          >
+            Review Analysis Results
+          </button>
+        </div>
+      </div>
+    );
+  }
+
+  if (job.status !== 'completed') {
+    return (
+      <div className="min-h-screen flex items-center justify-center p-4 bg-gray-900">
+        <div className="text-center">
+          <h2 className="text-2xl font-bold mb-4 text-gray-100">Processing...</h2>
+          <p className="text-gray-400 mb-6">Your CV is still being processed.</p>
+          <button
+            onClick={() => navigate(`/process/${jobId}`)}
+            className="bg-cyan-600 text-white px-6 py-3 rounded-lg hover:bg-cyan-700 transition"
+          >
+            View Progress
+          </button>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="min-h-screen bg-gray-900">
+      {/* Header */}
+      <header className="bg-gray-800 shadow-sm border-b border-gray-700">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
+          <div className="flex items-center justify-between">
+            <button
+              onClick={() => navigate('/')}
+              className="flex items-center space-x-2 text-gray-300 hover:text-gray-100"
+            >
+              <Home className="w-5 h-5" />
+              <span>Home</span>
+            </button>
+            <h1 className="text-xl font-semibold text-gray-100">Your Enhanced CV is Ready!</h1>
+            <div className="w-20"></div>
+          </div>
+        </div>
+      </header>
+
+      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+        {/* PII Warning */}
+        {job.piiDetection && (
+          <PIIWarning
+            hasPII={job.piiDetection.hasPII}
+            detectedTypes={job.piiDetection.detectedTypes}
+            recommendations={job.piiDetection.recommendations}
+            onTogglePrivacyMode={() => setPrivacyMode(!privacyMode)}
+            privacyModeEnabled={privacyMode}
+            />
+          )}
+
+          {/* Analysis Summary Card */}
+          <div className="bg-gradient-to-br from-cyan-900/20 to-purple-900/20 backdrop-blur-md rounded-2xl shadow-2xl p-8 mb-8 border border-cyan-500/20 animate-fade-in-up">
+            <div className="flex items-center gap-4 mb-6">
+              <div className="w-16 h-16 bg-gradient-to-br from-cyan-500/20 to-purple-500/20 rounded-2xl flex items-center justify-center">
+                <Sparkles className="w-8 h-8 text-cyan-400" />
+              </div>
+              <div>
+                <h2 className="text-3xl font-bold text-gray-100">Analysis Complete!</h2>
+                <p className="text-gray-400 mt-1">We've extracted your information and are ready to enhance your CV</p>
+              </div>
+            </div>
+            
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+              <div className="bg-gray-800/50 backdrop-blur-sm rounded-xl p-6 border border-gray-700/50">
+                <div className="flex items-center gap-3 mb-3">
+                  <div className="w-10 h-10 bg-cyan-500/20 rounded-lg flex items-center justify-center">
+                    <span className="text-xl">👤</span>
+                  </div>
+                  <h3 className="font-semibold text-gray-200">Profile</h3>
+                </div>
+                <p className="text-cyan-400 font-medium">{job.parsedData?.personalInfo?.name || 'Name Detected'}</p>
+                <p className="text-gray-400 text-sm mt-1">{job.parsedData?.personalInfo?.email || 'Email Detected'}</p>
+                <p className="text-gray-400 text-sm">{job.parsedData?.personalInfo?.phone || 'Phone Detected'}</p>
+              </div>
+              
+              <div className="bg-gray-800/50 backdrop-blur-sm rounded-xl p-6 border border-gray-700/50">
+                <div className="flex items-center gap-3 mb-3">
+                  <div className="w-10 h-10 bg-purple-500/20 rounded-lg flex items-center justify-center">
+                    <span className="text-xl">💼</span>
+                  </div>
+                  <h3 className="font-semibold text-gray-200">Experience</h3>
+                </div>
+                <p className="text-purple-400 text-3xl font-bold">{job.parsedData?.experience?.length || 0}</p>
+                <p className="text-gray-400 text-sm">Positions found</p>
+                <p className="text-gray-500 text-xs mt-2">Ready for enhancement</p>
+              </div>
+              
+              <div className="bg-gray-800/50 backdrop-blur-sm rounded-xl p-6 border border-gray-700/50">
+                <div className="flex items-center gap-3 mb-3">
+                  <div className="w-10 h-10 bg-green-500/20 rounded-lg flex items-center justify-center">
+                    <span className="text-xl">⚡</span>
+                  </div>
+                  <h3 className="font-semibold text-gray-200">Skills</h3>
+                </div>
+                <p className="text-green-400 text-3xl font-bold">{job.parsedData?.skills?.technical?.length || 0}</p>
+                <p className="text-gray-400 text-sm">Technical skills</p>
+                <p className="text-gray-500 text-xs mt-2">AI will optimize these</p>
+              </div>
+            </div>
+          </div>
+
+          {/* Generation Options with Live Preview */}
+          <div className="grid grid-cols-1 xl:grid-cols-2 gap-8">
+            {/* Left Column: Feature Selection */}
+            <div className="space-y-6">
+              <div className="bg-gray-800/80 backdrop-blur-md rounded-2xl shadow-2xl border border-gray-700/50 overflow-hidden animate-fade-in-left animation-delay-300">
+                {/* Section Header */}
+                <div className="bg-gradient-to-r from-cyan-600/20 to-purple-600/20 p-6 border-b border-gray-700/50">
+                  <h3 className="text-2xl font-bold text-gray-100 flex items-center gap-3">
+                    <Wand2 className="w-7 h-7 text-cyan-400" />
+                    Customize Your CV Generation
+                  </h3>
+                  <p className="text-gray-400 mt-1">Select your preferred template and features</p>
+                  <div className="mt-4 flex items-center gap-2 p-3 bg-gradient-to-r from-cyan-900/30 to-purple-900/30 rounded-lg border border-cyan-500/30">
+                    <div className="flex items-center gap-2">
+                      <div className="w-3 h-3 bg-cyan-400 rounded-full animate-pulse"></div>
+                      <span className="text-sm font-medium text-cyan-300">Live Preview Active</span>
+                    </div>
+                    <div className="flex-1 text-center">
+                      <span className="text-xs text-gray-400">👉 Changes appear instantly in the preview panel</span>
+                    </div>
+                  </div>
+                </div>
+                
+                <div className="p-6 space-y-8">
+                
+                  {/* Template Selection */}
+                  <div>
+                    <div className="flex items-center justify-between mb-4">
+                      <h4 className="text-lg font-semibold text-gray-200 flex items-center gap-2">
+                        <span className="text-2xl">🎨</span>
+                        Choose Your Template
+                      </h4>
+                      <span className="text-xs text-gray-500 bg-gray-700/50 px-3 py-1 rounded-full">3 options</span>
+                    </div>
+                    <div className="grid grid-cols-3 gap-4">
+                      <button 
+                        onClick={() => setSelectedTemplate('modern')}
+                        className={`relative p-6 rounded-xl transition-all transform hover:scale-105 ${selectedTemplate === 'modern' ? 'bg-gradient-to-br from-cyan-600/20 to-cyan-700/20 border-2 border-cyan-500 shadow-lg shadow-cyan-500/20' : 'bg-gray-700/30 border-2 border-gray-600 hover:border-gray-500'}`}
+                      >
+                        {selectedTemplate === 'modern' && (
+                          <div className="absolute top-2 right-2 w-3 h-3 bg-cyan-400 rounded-full animate-pulse"></div>
+                        )}
+                        <div className="text-4xl mb-3">🎨</div>
+                        <p className="text-sm font-bold text-gray-100">Modern</p>
+                        <p className="text-xs text-gray-400 mt-1">Clean & contemporary</p>
+                        {selectedTemplate === 'modern' && (
+                          <div className="absolute inset-0 rounded-xl bg-gradient-to-t from-cyan-500/10 to-transparent pointer-events-none"></div>
+                        )}
+                      </button>
+                      <button 
+                        onClick={() => setSelectedTemplate('classic')}
+                        className={`relative p-6 rounded-xl transition-all transform hover:scale-105 ${selectedTemplate === 'classic' ? 'bg-gradient-to-br from-cyan-600/20 to-cyan-700/20 border-2 border-cyan-500 shadow-lg shadow-cyan-500/20' : 'bg-gray-700/30 border-2 border-gray-600 hover:border-gray-500'}`}
+                      >
+                        {selectedTemplate === 'classic' && (
+                          <div className="absolute top-2 right-2 w-3 h-3 bg-cyan-400 rounded-full animate-pulse"></div>
+                        )}
+                        <div className="text-4xl mb-3">📄</div>
+                        <p className="text-sm font-bold text-gray-100">Classic</p>
+                        <p className="text-xs text-gray-400 mt-1">Traditional & professional</p>
+                        {selectedTemplate === 'classic' && (
+                          <div className="absolute inset-0 rounded-xl bg-gradient-to-t from-cyan-500/10 to-transparent pointer-events-none"></div>
+                        )}
+                      </button>
+                      <button 
+                        onClick={() => setSelectedTemplate('creative')}
+                        className={`relative p-6 rounded-xl transition-all transform hover:scale-105 ${selectedTemplate === 'creative' ? 'bg-gradient-to-br from-cyan-600/20 to-cyan-700/20 border-2 border-cyan-500 shadow-lg shadow-cyan-500/20' : 'bg-gray-700/30 border-2 border-gray-600 hover:border-gray-500'}`}
+                      >
+                        {selectedTemplate === 'creative' && (
+                          <div className="absolute top-2 right-2 w-3 h-3 bg-cyan-400 rounded-full animate-pulse"></div>
+                        )}
+                        <div className="text-4xl mb-3">✨</div>
+                        <p className="text-sm font-bold text-gray-100">Creative</p>
+                        <p className="text-xs text-gray-400 mt-1">Bold & unique</p>
+                        {selectedTemplate === 'creative' && (
+                          <div className="absolute inset-0 rounded-xl bg-gradient-to-t from-cyan-500/10 to-transparent pointer-events-none"></div>
+                        )}
+                      </button>
+                    </div>
+                  </div>
+
+                  {/* Enhancement Features */}
+                  <div>
+                    <div className="flex items-center justify-between mb-4">
+                      <h4 className="text-lg font-semibold text-gray-200 flex items-center gap-2">
+                        <span className="text-2xl">⚡</span>
+                        Core Enhancements
+                      </h4>
+                      <span className="text-xs text-gray-500 bg-gray-700/50 px-3 py-1 rounded-full">Essential features</span>
+                    </div>
+                    <div className="grid grid-cols-1 gap-3">
+                      <label className={`flex items-start gap-3 p-4 rounded-xl transition-all cursor-pointer group border-2 ${
+                        selectedFeatures.privacyMode 
+                          ? 'bg-cyan-900/30 border-cyan-500/50 shadow-lg shadow-cyan-500/10' 
+                          : 'bg-gray-700/30 border-transparent hover:bg-gray-700/50'
+                      }`}>
+                        <input 
+                          type="checkbox" 
+                          className="mt-1 h-4 w-4 text-cyan-500 rounded focus:ring-cyan-500" 
+                          checked={selectedFeatures.privacyMode}
+                          onChange={(e) => {
+                            const newValue = e.target.checked;
+                            setSelectedFeatures({...selectedFeatures, privacyMode: newValue});
+                            toast.success(`${newValue ? 'Enabled' : 'Disabled'} Privacy Mode - see preview update!`);
+                          }}
+                        />
+                        <div className="flex-1">
+                          <div className="flex items-center gap-2">
+                            <span className={`font-medium transition-colors ${
+                              selectedFeatures.privacyMode ? 'text-cyan-300' : 'text-gray-200 group-hover:text-cyan-400'
+                            }`}>Privacy Mode</span>
+                            {job.piiDetection?.hasPII && (
+                              <span className="text-xs bg-yellow-500/20 text-yellow-400 px-2 py-0.5 rounded-full">Recommended</span>
+                            )}
+                            {selectedFeatures.privacyMode && (
+                              <span className="text-xs bg-cyan-500/20 text-cyan-400 px-2 py-0.5 rounded-full animate-pulse">Active</span>
+                            )}
+                          </div>
+                          <span className="text-sm text-gray-400">Smart PII masking for safe public sharing</span>
+                        </div>
+                      </label>
+                      <label className="flex items-start gap-3 p-4 bg-gray-700/30 rounded-xl hover:bg-gray-700/50 transition-all cursor-pointer group">
+                        <input 
+                          type="checkbox" 
+                          className="mt-1 h-4 w-4 text-cyan-500 rounded focus:ring-cyan-500" 
+                          checked={selectedFeatures.atsOptimization}
+                          onChange={(e) => setSelectedFeatures({...selectedFeatures, atsOptimization: e.target.checked})}
+                        />
+                        <div className="flex-1">
+                          <span className="font-medium text-gray-200 group-hover:text-cyan-400 transition-colors">ATS Optimization</span>
+                          <span className="block text-sm text-gray-400">Ensure your CV passes applicant tracking systems</span>
+                        </div>
+                      </label>
+                      <label className="flex items-start gap-3 p-4 bg-gray-700/30 rounded-xl hover:bg-gray-700/50 transition-all cursor-pointer group">
+                        <input 
+                          type="checkbox" 
+                          className="mt-1 h-4 w-4 text-cyan-500 rounded focus:ring-cyan-500" 
+                          checked={selectedFeatures.keywordEnhancement}
+                          onChange={(e) => setSelectedFeatures({...selectedFeatures, keywordEnhancement: e.target.checked})}
+                        />
+                        <div className="flex-1">
+                          <span className="font-medium text-gray-200 group-hover:text-cyan-400 transition-colors">Keyword Enhancement</span>
+                          <span className="block text-sm text-gray-400">Add industry-specific keywords automatically</span>
+                          <button
+                            onClick={() => navigate(`/keywords/${jobId}`)}
+                            className="mt-2 text-xs text-blue-400 hover:text-blue-300 underline transition-colors"
+                          >
+                            Advanced Keyword Optimization →
+                          </button>
+                        </div>
+                      </label>
+                      <label className="flex items-start gap-3 p-4 bg-gray-700/30 rounded-xl hover:bg-gray-700/50 transition-all cursor-pointer group">
+                        <input 
+                          type="checkbox" 
+                          className="mt-1 h-4 w-4 text-cyan-500 rounded focus:ring-cyan-500" 
+                          checked={selectedFeatures.achievementHighlighting}
+                          onChange={(e) => setSelectedFeatures({...selectedFeatures, achievementHighlighting: e.target.checked})}
+                        />
+                        <div className="flex-1">
+                          <span className="font-medium text-gray-200 group-hover:text-cyan-400 transition-colors">Achievement Highlighting</span>
+                          <span className="block text-sm text-gray-400">Emphasize your accomplishments with impact metrics</span>
+                        </div>
+                      </label>
+                      <label className="flex items-start gap-3 p-4 bg-gray-700/30 rounded-xl hover:bg-gray-700/50 transition-all cursor-pointer group">
+                        <input 
+                          type="checkbox" 
+                          className="mt-1 h-4 w-4 text-cyan-500 rounded focus:ring-cyan-500" 
+                          checked={selectedFeatures.skillsVisualization}
+                          onChange={(e) => setSelectedFeatures({...selectedFeatures, skillsVisualization: e.target.checked})}
+                        />
+                        <div className="flex-1">
+                          <span className="font-medium text-gray-200 group-hover:text-cyan-400 transition-colors">Skills Visualization</span>
+                          <span className="block text-sm text-gray-400">Add visual skill ratings and proficiency bars</span>
+                        </div>
+                      </label>
+                    </div>
+                  </div>
+
+                  {/* Output Formats */}
+                  <div>
+                    <div className="flex items-center justify-between mb-4">
+                      <h4 className="text-lg font-semibold text-gray-200 flex items-center gap-2">
+                        <span className="text-2xl">📄</span>
+                        Export Formats
+                      </h4>
+                      <span className="text-xs text-gray-500 bg-gray-700/50 px-3 py-1 rounded-full">Select all that apply</span>
+                    </div>
+                    <div className="grid grid-cols-3 gap-3">
+                      <label className="flex items-center justify-center p-4 bg-gray-700/30 rounded-xl hover:bg-gray-700/50 transition-all cursor-pointer group">
+                        <input 
+                          type="checkbox" 
+                          className="mr-2 h-4 w-4 text-cyan-500 rounded focus:ring-cyan-500" 
+                          checked={selectedFormats.pdf}
+                          onChange={(e) => setSelectedFormats({...selectedFormats, pdf: e.target.checked})}
+                        />
+                        <div className="text-center">
+                          <span className="text-2xl">📑</span>
+                          <span className="block text-sm font-medium text-gray-200 group-hover:text-cyan-400 transition-colors mt-1">PDF</span>
+                        </div>
+                      </label>
+                      <label className="flex items-center justify-center p-4 bg-gray-700/30 rounded-xl hover:bg-gray-700/50 transition-all cursor-pointer group">
+                        <input 
+                          type="checkbox" 
+                          className="mr-2 h-4 w-4 text-cyan-500 rounded focus:ring-cyan-500" 
+                          checked={selectedFormats.docx}
+                          onChange={(e) => setSelectedFormats({...selectedFormats, docx: e.target.checked})}
+                        />
+                        <div className="text-center">
+                          <span className="text-2xl">📝</span>
+                          <span className="block text-sm font-medium text-gray-200 group-hover:text-cyan-400 transition-colors mt-1">DOCX</span>
+                        </div>
+                      </label>
+                      <label className="flex items-center justify-center p-4 bg-gray-700/30 rounded-xl hover:bg-gray-700/50 transition-all cursor-pointer group">
+                        <input 
+                          type="checkbox" 
+                          className="mr-2 h-4 w-4 text-cyan-500 rounded focus:ring-cyan-500" 
+                          checked={selectedFormats.html}
+                          onChange={(e) => setSelectedFormats({...selectedFormats, html: e.target.checked})}
+                        />
+                        <div className="text-center">
+                          <span className="text-2xl">🌐</span>
+                          <span className="block text-sm font-medium text-gray-200 group-hover:text-cyan-400 transition-colors mt-1">HTML</span>
+                        </div>
+                      </label>
+                    </div>
+                  </div>
+
+                  {/* AI Generated Features */}
+                  <div>
+                    <div className="flex items-center justify-between mb-4">
+                      <h4 className="text-lg font-semibold text-gray-200 flex items-center gap-2">
+                        <span className="text-2xl">🤖</span>
+                        AI-Powered Features
+                      </h4>
+                      <span className="text-xs text-purple-400 bg-purple-500/20 px-3 py-1 rounded-full">Premium features</span>
+                    </div>
+                    <div className="space-y-6">
+                      {/* Core AI Features */}
+                      <div className="space-y-3">
+                        <h5 className="text-sm font-medium text-purple-300 flex items-center gap-2">
+                          <div className="w-1.5 h-1.5 bg-purple-400 rounded-full"></div>
+                          AI Intelligence
+                        </h5>
+                        <div className="grid gap-3 ml-3">
+                          <label className="flex items-start gap-3 p-3 bg-purple-900/20 rounded-lg hover:bg-purple-900/30 transition-all cursor-pointer group border border-purple-700/30">
+                            <input 
+                              type="checkbox" 
+                              className="mt-1 h-4 w-4 text-purple-500 rounded focus:ring-purple-500" 
+                              checked={selectedFeatures.generatePodcast}
+                              onChange={(e) => setSelectedFeatures({...selectedFeatures, generatePodcast: e.target.checked})}
+                            />
+                            <div className="flex-1">
+                              <span className="font-medium text-gray-200 group-hover:text-purple-400 transition-colors">🎧 AI Career Podcast</span>
+                              <span className="block text-xs text-gray-400 mt-0.5">Auto-generated audio summary of your career</span>
+                            </div>
+                          </label>
+                        </div>
+                      </div>
+
+                      {/* Interactive Elements */}
+                      <div className="space-y-3">
+                        <h5 className="text-sm font-medium text-cyan-300 flex items-center gap-2">
+                          <div className="w-1.5 h-1.5 bg-cyan-400 rounded-full"></div>
+                          Interactive Elements
+                        </h5>
+                        <div className="grid grid-cols-2 gap-3 ml-3">
+                          <label className="flex items-center gap-2 p-3 bg-gray-700/30 rounded-lg hover:bg-gray-700/50 transition-all cursor-pointer group">
+                            <input 
+                              type="checkbox" 
+                              className="h-4 w-4 text-cyan-500 rounded focus:ring-cyan-500" 
+                              checked={selectedFeatures.embedQRCode}
+                              onChange={(e) => setSelectedFeatures({...selectedFeatures, embedQRCode: e.target.checked})}
+                            />
+                            <div className="flex-1">
+                              <span className="text-sm font-medium text-gray-200 group-hover:text-cyan-400">📦 QR Code</span>
+                            </div>
+                          </label>
+                          <FeatureCheckbox
+                            feature="interactiveTimeline"
+                            checked={selectedFeatures.interactiveTimeline}
+                            onChange={(checked) => setSelectedFeatures({...selectedFeatures, interactiveTimeline: checked})}
+                            label="📈 Timeline"
+                            className="flex items-center gap-2"
+                          />
+                          <label className="flex items-center gap-2 p-3 bg-gray-700/30 rounded-lg hover:bg-gray-700/50 transition-all cursor-pointer group">
+                            <input 
+                              type="checkbox" 
+                              className="h-4 w-4 text-cyan-500 rounded focus:ring-cyan-500" 
+                              checked={selectedFeatures.contactForm}
+                              onChange={(e) => setSelectedFeatures({...selectedFeatures, contactForm: e.target.checked})}
+                            />
+                            <div className="flex-1">
+                              <span className="text-sm font-medium text-gray-200 group-hover:text-cyan-400">📧 Contact</span>
+                            </div>
+                          </label>
+                          <label className="flex items-center gap-2 p-3 bg-gray-700/30 rounded-lg hover:bg-gray-700/50 transition-all cursor-pointer group">
+                            <input 
+                              type="checkbox" 
+                              className="h-4 w-4 text-cyan-500 rounded focus:ring-cyan-500" 
+                              checked={selectedFeatures.availabilityCalendar}
+                              onChange={(e) => setSelectedFeatures({...selectedFeatures, availabilityCalendar: e.target.checked})}
+                            />
+                            <div className="flex-1">
+                              <span className="text-sm font-medium text-gray-200 group-hover:text-cyan-400">📅 Calendar</span>
+                            </div>
+                          </label>
+                        </div>
+                      </div>
+
+                      {/* Visual Enhancements */}
+                      <div className="space-y-3">
+                        <h5 className="text-sm font-medium text-green-300 flex items-center gap-2">
+                          <div className="w-1.5 h-1.5 bg-green-400 rounded-full"></div>
+                          Visual Enhancements
+                        </h5>
+                        <div className="grid grid-cols-2 gap-3 ml-3">
+                          <FeatureCheckbox
+                            feature="skillsChart"
+                            checked={selectedFeatures.skillsChart}
+                            onChange={(checked) => setSelectedFeatures({...selectedFeatures, skillsChart: checked})}
+                            label="📊 Charts"
+                            className="flex items-center gap-2"
+                          />
+                          <FeatureCheckbox
+                            feature="achievementsShowcase"
+                            checked={selectedFeatures.achievementsShowcase}
+                            onChange={(checked) => setSelectedFeatures({...selectedFeatures, achievementsShowcase: checked})}
+                            label="🏆 Awards"
+                            className="flex items-center gap-2"
+                          />
+                          <FeatureCheckbox
+                            feature="languageProficiency"
+                            checked={selectedFeatures.languageProficiency}
+                            onChange={(checked) => setSelectedFeatures({...selectedFeatures, languageProficiency: checked})}
+                            label="🌍 Languages"
+                            className="flex items-center gap-2"
+                          />
+                          <FeatureCheckbox
+                            feature="certificationBadges"
+                            checked={selectedFeatures.certificationBadges}
+                            onChange={(checked) => setSelectedFeatures({...selectedFeatures, certificationBadges: checked})}
+                            label="🎓 Badges"
+                            className="flex items-center gap-2"
+                          />
+                        </div>
+                      </div>
+
+                      {/* Media & Social */}
+                      <div className="space-y-3">
+                        <h5 className="text-sm font-medium text-orange-300 flex items-center gap-2">
+                          <div className="w-1.5 h-1.5 bg-orange-400 rounded-full"></div>
+                          Media & Social
+                        </h5>
+                        <div className="grid grid-cols-2 gap-3 ml-3">
+                          <label className="flex items-center gap-2 p-3 bg-gray-700/30 rounded-lg hover:bg-gray-700/50 transition-all cursor-pointer group">
+                            <input 
+                              type="checkbox" 
+                              className="h-4 w-4 text-cyan-500 rounded focus:ring-cyan-500" 
+                              checked={selectedFeatures.videoIntroduction}
+                              onChange={(e) => setSelectedFeatures({...selectedFeatures, videoIntroduction: e.target.checked})}
+                            />
+                            <div className="flex-1">
+                              <span className="text-sm font-medium text-gray-200 group-hover:text-cyan-400">🎥 Video</span>
+                            </div>
+                          </label>
+                          <FeatureCheckbox
+                            feature="portfolioGallery"
+                            checked={selectedFeatures.portfolioGallery}
+                            onChange={(checked) => setSelectedFeatures({...selectedFeatures, portfolioGallery: checked})}
+                            label="🎨 Portfolio"
+                            className="flex items-center gap-2"
+                          />
+                          <label className="flex items-center gap-2 p-3 bg-gray-700/30 rounded-lg hover:bg-gray-700/50 transition-all cursor-pointer group">
+                            <input 
+                              type="checkbox" 
+                              className="h-4 w-4 text-cyan-500 rounded focus:ring-cyan-500" 
+                              checked={selectedFeatures.testimonialsCarousel}
+                              onChange={(e) => setSelectedFeatures({...selectedFeatures, testimonialsCarousel: e.target.checked})}
+                            />
+                            <div className="flex-1">
+                              <span className="text-sm font-medium text-gray-200 group-hover:text-cyan-400">💬 Reviews</span>
+                            </div>
+                          </label>
+                          <label className="flex items-center gap-2 p-3 bg-gray-700/30 rounded-lg hover:bg-gray-700/50 transition-all cursor-pointer group">
+                            <input 
+                              type="checkbox" 
+                              className="h-4 w-4 text-cyan-500 rounded focus:ring-cyan-500" 
+                              checked={selectedFeatures.socialMediaLinks}
+                              onChange={(e) => setSelectedFeatures({...selectedFeatures, socialMediaLinks: e.target.checked})}
+                            />
+                            <div className="flex-1">
+                              <span className="text-sm font-medium text-gray-200 group-hover:text-cyan-400">🔗 Socials</span>
+                            </div>
+                          </label>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Generate Button */}
+                  <div className="pt-6 border-t border-gray-700/50">
+                    <button
+                      onClick={async () => {
+                        try {
+                          setLoading(true);
+                          const features = [];
+                          if (selectedFeatures.atsOptimization) features.push('ats-optimization');
+                          if (selectedFeatures.keywordEnhancement) features.push('keyword-enhancement');
+                          if (selectedFeatures.achievementHighlighting) features.push('achievement-highlighting');
+                          if (selectedFeatures.skillsVisualization) features.push('skills-visualization');
+                          if (selectedFeatures.generatePodcast) features.push('generate-podcast');
+                          if (selectedFeatures.privacyMode) features.push('privacy-mode');
+                          if (selectedFeatures.embedQRCode) features.push('embed-qr-code');
+                          if (selectedFeatures.interactiveTimeline) features.push('interactive-timeline');
+                          if (selectedFeatures.skillsChart) features.push('skills-chart');
+                          if (selectedFeatures.videoIntroduction) features.push('video-introduction');
+                          if (selectedFeatures.portfolioGallery) features.push('portfolio-gallery');
+                          if (selectedFeatures.testimonialsCarousel) features.push('testimonials-carousel');
+                          if (selectedFeatures.contactForm) features.push('contact-form');
+                          if (selectedFeatures.socialMediaLinks) features.push('social-media-links');
+                          if (selectedFeatures.availabilityCalendar) features.push('availability-calendar');
+                          if (selectedFeatures.languageProficiency) features.push('language-proficiency');
+                          if (selectedFeatures.certificationBadges) features.push('certification-badges');
+                          if (selectedFeatures.achievementsShowcase) features.push('achievements-showcase');
+                          
+                          // Add format features
+                          if (selectedFormats.pdf) features.push('format-pdf');
+                          if (selectedFormats.docx) features.push('format-docx');
+                          if (selectedFormats.html) features.push('format-html');
+                          
+                          await generateCV(jobId!, selectedTemplate, features);
+                          toast.success('Generating your CV with selected options!');
+                          navigate(`/process/${jobId}`);
+                        } catch (error) {
+                          console.error('Error:', error);
+                          toast.error('Failed to generate CV');
+                        } finally {
+                          setLoading(false);
+                        }
+                      }}
+                      disabled={loading}
+                      className="w-full bg-gradient-to-r from-cyan-600 to-blue-600 text-white px-8 py-4 rounded-xl font-semibold hover:from-cyan-700 hover:to-blue-700 transition-all transform hover:scale-[1.02] shadow-lg disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none"
+                    >
+                      {loading ? (
+                        <>
+                          <Loader2 className="inline-block w-5 h-5 mr-2 animate-spin" />
+                          Generating Your Enhanced CV...
+                        </>
+                      ) : (
+                        <>
+                          <Wand2 className="inline-block w-5 h-5 mr-2" />
+                          Generate with Selected Options
+                        </>
+                      )}
+                    </button>
+                  </div>
+                </div>
+              </div>
+              
+              {/* Quick Generate Button */}
+              <div className="bg-gradient-to-br from-purple-600/20 to-pink-600/20 backdrop-blur-md rounded-2xl shadow-2xl border border-purple-500/30 p-6">
+                <div className="text-center mb-4">
+                  <h3 className="text-xl font-bold text-gray-100 flex items-center justify-center gap-2">
+                    <Sparkles className="w-6 h-6 text-purple-300" />
+                    Quick Magic
+                  </h3>
+                  <p className="text-purple-200 text-sm mt-1">Let AI handle everything</p>
+                </div>
+                
+                <button
+                  onClick={async () => {
+                    try {
+                      setLoading(true);
+                      await generateCV(jobId!, 'modern', [
+                        'ats-optimization',
+                        'keyword-enhancement', 
+                        'achievement-highlighting',
+                        'skills-visualization',
+                        'generate-podcast',
+                        'public-profile',
+                        'rag-chat',
+                        'video-introduction',
+                        'all-formats',
+                        'privacy-mode',
+                        'embed-qr-code',
+                        'interactive-timeline', 
+                        'skills-chart',
+                        'contact-form',
+                        'social-media-links',
+                        'language-proficiency',
+                        'certification-badges',
+                        'achievements-showcase'
+                      ]);
+                      toast.success('Generating your enhanced CV with all features!');
+                      navigate(`/process/${jobId}`);
+                    } catch (error) {
+                      console.error('Error:', error);
+                      toast.error('Failed to generate CV');
+                    } finally {
+                      setLoading(false);
+                    }
+                  }}
+                  disabled={loading}
+                  className="w-full bg-gradient-to-r from-purple-600 to-pink-600 text-white px-6 py-3 rounded-xl font-bold hover:from-purple-700 hover:to-pink-700 transition-all transform hover:scale-105 shadow-xl disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none"
+                >
+                  {loading ? (
+                    <>
+                      <Loader2 className="inline-block w-5 h-5 mr-2 animate-spin" />
+                      Working the Magic...
+                    </>
+                  ) : (
+                    <>
+                      <Sparkles className="inline-block w-5 h-5 mr-2" />
+                      Generate Everything Now
+                    </>
+                  )}
+                </button>
+              </div>
+            </div>
+
+            {/* Right Column: Live CV Preview */}
+            <div className="sticky top-24 h-fit">
+              <div className="transform scale-90 origin-top">
+                <CVPreview
+                  job={job}
+                  selectedTemplate={selectedTemplate}
+                  selectedFeatures={selectedFeatures}
+                  onUpdate={(updates) => {
+                    // Update the job's parsed data with the changes
+                    setJob(prev => prev ? {
+                      ...prev,
+                      parsedData: {
+                        ...prev.parsedData,
+                        ...updates
+                      }
+                    } : null);
+                    toast.success('CV updated! Preview shows your changes.');
+                  }}
+                  onFeatureToggle={(feature, enabled) => {
+                    // Update selected features in real-time
+                    setSelectedFeatures(prev => ({
+                      ...prev,
+                      [feature]: enabled
+                    }));
+                    toast.success(`${enabled ? 'Enabled' : 'Disabled'} ${feature.replace(/([A-Z])/g, ' $1').toLowerCase()}`);
+                  }}
+                />
+              </div>
+            </div>
+          </div>
+        </main>
+      </div>
+    );
+  }
+
+  if (job.status !== 'completed') {
+    return (
+      <div className="min-h-screen flex items-center justify-center p-4 bg-gray-900">
+        <div className="text-center">
+          <h2 className="text-2xl font-bold mb-4 text-gray-100">Processing...</h2>
+          <p className="text-gray-400 mb-6">Your CV is still being processed.</p>
+          <button
+            onClick={() => navigate(`/process/${jobId}`)}
+            className="bg-cyan-600 text-white px-6 py-3 rounded-lg hover:bg-cyan-700 transition"
+          >
+            View Progress
+          </button>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="min-h-screen bg-gray-900">
+      {/* Header */}
+      <header className="bg-gray-800 shadow-sm border-b border-gray-700">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
+          <div className="flex items-center justify-between">
+            <button
+              onClick={() => navigate('/')}
+              className="flex items-center space-x-2 text-gray-300 hover:text-gray-100"
+            >
+              <Home className="w-5 h-5" />
+              <span>Home</span>
+            </button>
+            <h1 className="text-xl font-semibold text-gray-100">Your Enhanced CV is Ready!</h1>
+            <div className="w-20"></div>
+          </div>
+        </div>
+      </header>
+
+      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+        {/* PII Warning */}
+        {job.piiDetection && (
+          <PIIWarning
+            hasPII={job.piiDetection.hasPII}
+            detectedTypes={job.piiDetection.detectedTypes}
+            recommendations={job.piiDetection.recommendations}
+            onTogglePrivacyMode={() => setPrivacyMode(!privacyMode)}
+            privacyModeEnabled={privacyMode}
+          />
+        )}
+
+        {/* Quick Create Success Banner */}
+        {job.quickCreate && (
+          <div className="bg-gradient-to-r from-purple-900/20 to-cyan-900/20 border border-purple-700/50 rounded-lg p-4 mb-6">
+            <div className="flex items-center gap-3">
+              <Sparkles className="w-5 h-5 text-purple-400" />
+              <div>
+                <h4 className="font-semibold text-purple-300">
+                  Quick Create Mode Activated!
+                </h4>
+                <p className="text-sm text-purple-400">
+                  All enhancements have been automatically applied and your CV is being generated in all available formats.
+                </p>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* CV Results */}
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+          {/* Generated CV Display */}
+          <div className="lg:col-span-2">
+            <GeneratedCVDisplay
+              job={job}
+              onDownloadPDF={async () => {
+                try {
+                  if (job.generatedCV?.pdfUrl) {
+                    const link = document.createElement('a');
+                    link.href = job.generatedCV.pdfUrl;
+                    link.download = `${job.parsedData?.personalInfo?.name || 'CV'}.pdf`;
+                    link.click();
+                    toast.success('PDF downloaded successfully!');
+                  } else {
+                    toast.error('PDF not available');
+                  }
+                } catch (error) {
+                  console.error('Error downloading PDF:', error);
+                  toast.error('Failed to download PDF');
+                }
+              }}
+              onDownloadDOCX={async () => {
+                try {
+                  if (job.generatedCV?.docxUrl) {
+                    const link = document.createElement('a');
+                    link.href = job.generatedCV.docxUrl;
+                    link.download = `${job.parsedData?.personalInfo?.name || 'CV'}.docx`;
+                    link.click();
+                    toast.success('DOCX downloaded successfully!');
+                  } else {
+                    toast.error('DOCX not available');
+                  }
+                } catch (error) {
+                  console.error('Error downloading DOCX:', error);
+                  toast.error('Failed to download DOCX');
+                }
+              }}
+              className="bg-gray-800 rounded-lg shadow-lg border border-gray-700"
+            />
+          </div>
+
+          {/* Actions Sidebar */}
+          <div className="space-y-6">
+            {/* CV Information */}
+            <div className="bg-gray-800 rounded-lg shadow-lg p-6 border border-gray-700">
+              <h3 className="text-lg font-semibold mb-4 text-gray-100">Generated CV Info</h3>
+              
+              {/* Generation Summary */}
+              <div className="space-y-4">
+                {job.generatedCV?.template && (
+                  <div className="flex items-center justify-between">
+                    <span className="text-gray-400">Template:</span>
+                    <span className="text-gray-200 capitalize">{job.generatedCV.template}</span>
+                  </div>
+                )}
+                
+                {job.generatedCV?.features && (
+                  <div className="flex items-center justify-between">
+                    <span className="text-gray-400">Features Applied:</span>
+                    <span className="text-gray-200">{job.generatedCV.features.length}</span>
+                  </div>
+                )}
+                
+                {job.updatedAt && (
+                  <div className="flex items-center justify-between">
+                    <span className="text-gray-400">Generated:</span>
+                    <span className="text-gray-200 text-sm">
+                      {new Date(job.updatedAt).toLocaleDateString()}
+                    </span>
+                  </div>
+                )}
+              </div>
+              
+              {/* Interactive Features Notice */}
+              <div className="bg-green-900/20 border border-green-700/50 rounded-lg p-4 mt-4">
+                <h4 className="text-green-300 font-medium flex items-center gap-2">
+                  <span>✨</span> Interactive Features
+                </h4>
+                <p className="text-green-200 text-sm mt-1">
+                  Your CV includes interactive elements: clickable links, functional contact forms, 
+                  multimedia content, and more. Use the download buttons above to save in your preferred format.
+                </p>
+              </div>
+            </div>
+
+            {/* Podcast Player */}
+            <div className="bg-gray-800 rounded-lg shadow-lg p-6 border border-gray-700">
+              <h3 className="text-lg font-semibold mb-4 text-gray-100">AI Career Podcast</h3>
+              {job.generatedCV?.features?.includes('generate-podcast') ? (
+                <>
+                  <div className="bg-gray-700 rounded-lg p-4">
+                    <PodcastPlayer jobId={job.id} />
+                  </div>
+                </>
+              ) : (
+                <div className="text-center py-4 text-gray-400 text-sm">
+                  <p>Podcast not included in this generation.</p>
+                  <p className="text-xs mt-1 text-gray-500">Regenerate with podcast option enabled.</p>
+                </div>
+              )}
+            </div>
+
+            {/* Share Options */}
+            <div className="bg-gray-800 rounded-lg shadow-lg p-6 border border-gray-700">
+              <h3 className="text-lg font-semibold mb-4 text-gray-100">Share Your CV</h3>
+              <div className="space-y-3">
+                <button 
+                  onClick={() => {
+                    if (job.generatedCV?.htmlUrl) {
+                      navigator.clipboard.writeText(job.generatedCV.htmlUrl);
+                      toast.success('Link copied to clipboard!');
+                    }
+                  }}
+                  className="w-full px-4 py-3 bg-gray-700 text-gray-300 rounded-lg hover:bg-gray-600 transition"
+                >
+                  Copy Shareable Link
+                </button>
+                <button 
+                  onClick={() => {
+                    if (job.generatedCV?.htmlUrl) {
+                      // Generate QR code URL using qr-server.com API
+                      const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=${encodeURIComponent(job.generatedCV.htmlUrl)}`;
+                      window.open(qrUrl, '_blank');
+                    }
+                  }}
+                  className="w-full px-4 py-3 bg-gray-700 text-gray-300 rounded-lg hover:bg-gray-600 transition"
+                >
+                  Generate QR Code
+                </button>
+              </div>
+            </div>
+
+            {/* Create Another */}
+            <button
+              onClick={() => navigate('/')}
+              className="w-full px-6 py-3 bg-cyan-600 text-white rounded-lg hover:bg-cyan-700 transition"
+            >
+              Create Another CV
+            </button>
+          </div>
+        </div>
+      </main>
+    </div>
+  );
+};

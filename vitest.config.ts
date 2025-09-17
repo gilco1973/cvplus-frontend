@@ -65,7 +65,7 @@ export default defineConfig({
       // Microservices alias mappings for tests
       '@/microservices': '/Users/gklainert/Documents/cvplus/packages/frontend/src/microservices',
       '@/auth-ui': '/Users/gklainert/Documents/cvplus/packages/frontend/src/microservices/auth-ui',
-      '@/cv-processing-ui': '/Users/gklainert/Documents/cvplus/packages/frontend/src/microservices/cv-processing-ui',
+      '@/processing-ui': '/Users/gklainert/Documents/cvplus/packages/frontend/src/microservices/processing-ui',
       '@/multimedia-ui': '/Users/gklainert/Documents/cvplus/packages/frontend/src/microservices/multimedia-ui',
       '@/analytics-ui': '/Users/gklainert/Documents/cvplus/packages/frontend/src/microservices/analytics-ui',
       '@/premium-ui': '/Users/gklainert/Documents/cvplus/packages/frontend/src/microservices/premium-ui',

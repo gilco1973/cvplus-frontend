@@ -1,0 +1,51 @@
+// @ts-ignore
+/**
+ * Feature Data Hook
+ * Temporary hook for fetching feature data - to be replaced with real implementation
+  */
+
+import { useState, useEffect } from 'react';
+
+interface UseFeatureDataParams {
+  jobId?: string;
+  featureName: string;
+  initialData?: any;
+  params?: Record<string, any>;
+}
+
+interface UseFeatureDataResult<T> {
+  data: T | null;
+  loading: boolean;
+  error: Error | null;
+  refresh: () => void;
+}
+
+export function useFeatureData<T = any>(
+  params: UseFeatureDataParams
+): UseFeatureDataResult<T> {
+  const [data, setData] = useState<T | null>(params.initialData || null);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<Error | null>(null);
+
+  const refresh = () => {
+    // For now, just use the initial data
+    setLoading(true);
+    setTimeout(() => {
+      setData(params.initialData || null);
+      setLoading(false);
+    }, 100);
+  };
+
+  useEffect(() => {
+    if (params.initialData) {
+      setData(params.initialData);
+    }
+  }, [params.initialData]);
+
+  return {
+    data,
+    loading,
+    error,
+    refresh
+  };
+}

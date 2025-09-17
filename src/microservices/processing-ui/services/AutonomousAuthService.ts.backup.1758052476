@@ -1,0 +1,178 @@
+// @ts-ignore
+/**
+ * Autonomous Authentication Service
+ * Replaces @cvplus/auth dependency for independent operation
+ */
+
+import { User, Auth, getAuth, signInWithPopup, GoogleAuthProvider, signOut } from 'firebase/auth';
+
+export interface AuthUser {
+  uid: string;
+  email: string | null;
+  displayName: string | null;
+  photoURL: string | null;
+  verified: boolean;
+}
+
+export interface AuthState {
+  user: AuthUser | null;
+  loading: boolean;
+  error: string | null;
+}
+
+type AuthStateListener = (state: AuthState) => void;
+
+/**
+ * Independent authentication service for autonomous operation
+ * Provides Firebase Auth integration without external dependencies
+ */
+export class AutonomousAuthService {
+  private auth: Auth;
+  private authState: AuthState = { user: null, loading: true, error: null };
+  private listeners: Set<AuthStateListener> = new Set();
+  private googleProvider: GoogleAuthProvider;
+
+  constructor() {
+    this.auth = getAuth();
+    this.googleProvider = new GoogleAuthProvider();
+    this.googleProvider.addScope('email');
+    this.googleProvider.addScope('profile');
+    
+    this.initializeAuthListener();
+  }
+
+  /**
+   * Initialize Firebase auth state listener
+   */
+  private initializeAuthListener(): void {
+    this.auth.onAuthStateChanged((user) => {
+      this.authState = {
+        user: user ? this.mapFirebaseUser(user) : null,
+        loading: false,
+        error: null
+      };
+      this.notifyListeners();
+    });
+  }
+
+  /**
+   * Map Firebase user to our AuthUser interface
+   */
+  private mapFirebaseUser(user: User): AuthUser {
+    return {
+      uid: user.uid,
+      email: user.email,
+      displayName: user.displayName,
+      photoURL: user.photoURL,
+      verified: user.emailVerified
+    };
+  }
+
+  /**
+   * Notify all listeners of auth state changes
+   */
+  private notifyListeners(): void {
+    this.listeners.forEach(listener => listener(this.authState));
+  }
+
+  /**
+   * Get current auth state
+   */
+  getAuthState(): AuthState {
+    return { ...this.authState };
+  }
+
+  /**
+   * Get current user
+   */
+  getCurrentUser(): AuthUser | null {
+    return this.authState.user;
+  }
+
+  /**
+   * Check if user is authenticated
+   */
+  isAuthenticated(): boolean {
+    return !!this.authState.user;
+  }
+
+  /**
+   * Subscribe to auth state changes
+   */
+  onAuthStateChange(listener: AuthStateListener): () => void {
+    this.listeners.add(listener);
+    
+    // Immediately notify with current state
+    listener(this.authState);
+    
+    // Return unsubscribe function
+    return () => {
+      this.listeners.delete(listener);
+    };
+  }
+
+  /**
+   * Sign in with Google
+   */
+  async signInWithGoogle(): Promise<AuthUser> {
+    try {
+      this.authState = { ...this.authState, loading: true, error: null };
+      this.notifyListeners();
+
+      const result = await signInWithPopup(this.auth, this.googleProvider);
+      const user = this.mapFirebaseUser(result.user);
+      
+      return user;
+    } catch (error) {
+      const errorMessage = error instanceof Error ? error.message : 'Authentication failed';
+      this.authState = { 
+        ...this.authState, 
+        loading: false, 
+        error: errorMessage 
+      };
+      this.notifyListeners();
+      throw new Error(errorMessage);
+    }
+  }
+
+  /**
+   * Sign out current user
+   */
+  async signOut(): Promise<void> {
+    try {
+      this.authState = { ...this.authState, loading: true, error: null };
+      this.notifyListeners();
+
+      await signOut(this.auth);
+    } catch (error) {
+      const errorMessage = error instanceof Error ? error.message : 'Sign out failed';
+      this.authState = { 
+        ...this.authState, 
+        loading: false, 
+        error: errorMessage 
+      };
+      this.notifyListeners();
+      throw new Error(errorMessage);
+    }
+  }
+
+  /**
+   * Get Firebase ID token for API calls
+   */
+  async getIdToken(): Promise<string | null> {
+    const user = this.auth.currentUser;
+    if (!user) return null;
+    
+    return await user.getIdToken();
+  }
+
+  /**
+   * Refresh current user token
+   */
+  async refreshToken(): Promise<string | null> {
+    const user = this.auth.currentUser;
+    if (!user) return null;
+    
+    return await user.getIdToken(true);
+  }
+}

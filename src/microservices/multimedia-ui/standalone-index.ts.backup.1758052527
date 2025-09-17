@@ -1,0 +1,85 @@
+// @ts-ignore
+/**
+ * CVPlus Multimedia Frontend - Standalone Integration Export
+ * 
+ * Zero-dependency integration layer for Phase 1.5 multimedia components
+ * 
+ * @author Gil Klainert
+ * @version 1.0.0
+ * @license PROPRIETARY  
+ */
+
+// ============================================================================
+// STANDALONE INTEGRATION LAYER
+// ============================================================================
+
+export {
+  StandaloneMultimediaIntegration,
+  StandaloneProfilePictureUpload,
+  StandaloneFileUpload,
+  registerMultimediaComponent,
+  initializeMultimediaComponents,
+  isComponentAvailable,
+  getRegisteredComponents,
+  STANDALONE_INTEGRATION_VERSION
+} from './integration/StandaloneIntegration';
+
+// ============================================================================
+// TYPES & INTERFACES
+// ============================================================================
+
+export interface StandaloneIntegrationConfig {
+  autoInitialize: boolean;
+  enableErrorBoundaries: boolean;
+  enableLoadingStates: boolean;
+  enableCache: boolean;
+}
+
+// ============================================================================
+// CONFIGURATION UTILITIES
+// ============================================================================
+
+/**
+ * Initialize standalone integration with configuration
+ */
+export const initializeStandaloneIntegration = (config: Partial<StandaloneIntegrationConfig> = {}) => {
+  const defaultConfig: StandaloneIntegrationConfig = {
+    autoInitialize: true,
+    enableErrorBoundaries: true,
+    enableLoadingStates: true,
+    enableCache: true
+  };
+
+  const finalConfig = { ...defaultConfig, ...config };
+
+  if (finalConfig.autoInitialize) {
+    // Auto-initialization will happen when components are first used
+    console.log('Standalone integration configured for auto-initialization');
+  }
+
+  return finalConfig;
+};
+
+/**
+ * Check if standalone integration is available and working
+ */
+export const isStandaloneIntegrationReady = (): boolean => {
+  return true; // Always ready since it has no dependencies
+};
+
+// ============================================================================
+// VERSION & COMPATIBILITY
+// ============================================================================
+
+export const STANDALONE_VERSION = '1.0.0';
+export const MINIMUM_REACT_VERSION = '18.0.0';
+export const SUPPORTED_ENVIRONMENTS = ['browser', 'node-ssr'];
+
+// ============================================================================
+// RE-EXPORTS FOR CONVENIENCE
+// ============================================================================
+
+// Re-export main integration component with shorter name
+export { StandaloneMultimediaIntegration as MultimediaIntegration } from './integration/StandaloneIntegration';
+export { StandaloneProfilePictureUpload as ProfilePictureUpload } from './integration/StandaloneIntegration';
+export { StandaloneFileUpload as FileUpload } from './integration/StandaloneIntegration';

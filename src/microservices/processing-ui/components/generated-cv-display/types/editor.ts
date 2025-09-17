@@ -1,0 +1,79 @@
+// @ts-ignore
+/**
+ * Editor Types for Generated CV Display System
+  */
+
+import type { CVContent } from './core';
+
+// =============================================================================
+// EDITOR TYPES
+// =============================================================================
+
+export interface CVEditor {
+  mode: EditorMode;
+  activeSection?: string;
+  history: EditorHistory;
+  settings: EditorSettings;
+  tools: EditorTool[];
+}
+
+export type EditorMode = 'view' | 'edit' | 'preview' | 'template';
+
+export interface EditorHistory {
+  current: number;
+  states: EditorState[];
+  maxStates: number;
+}
+
+export interface EditorState {
+  id: string;
+  timestamp: Date;
+  content: CVContent;
+  description: string;
+  user?: string;
+}
+
+export interface EditorSettings {
+  autosave: boolean;
+  autosaveInterval: number;
+  showGrid: boolean;
+  snapToGrid: boolean;
+  showRulers: boolean;
+  rtl: boolean;
+  spellCheck: boolean;
+  autoCorrect: boolean;
+}
+
+export interface EditorTool {
+  id: string;
+  name: string;
+  icon: string;
+  shortcut?: string;
+  group: ToolGroup;
+  action: ToolAction;
+  enabled: boolean;
+  visible: boolean;
+}
+
+export type ToolGroup =
+  | 'text'
+  | 'format'
+  | 'layout'
+  | 'insert'
+  | 'style'
+  | 'export'
+  | 'view';
+
+export interface ToolAction {
+  type: 'command' | 'toggle' | 'dropdown' | 'modal' | 'panel';
+  command?: string;
+  options?: any[];
+  defaultValue?: any;
+}
+
+export interface CVEditorProps {
+  job: any;
+  content: any;
+  onContentUpdate: (content: any) => void;
+  className?: string;
+}

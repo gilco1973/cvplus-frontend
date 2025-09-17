@@ -1,0 +1,77 @@
+// @ts-ignore - Export conflicts/types/template.types';
+import { PublicProfileData } from '../../types/profile.types';
+import { BrandingSettings } from '../types/creator.types';
+import { TemplateValidationCore } from './templateValidationCore';
+import { BrandingValidation } from './brandingValidation';
+
+export class TemplateValidator {
+  /**
+   * Validate template compatibility with profile data
+   */
+  static validateTemplateWithProfile(
+    template: TemplateDefinition,
+    profileData: Partial<PublicProfileData>
+  ): TemplateValidationResult {
+    return TemplateValidationCore.validateTemplateWithProfile(template, profileData);
+  }
+
+  /**
+   * Validate branding settings compatibility
+   */
+  static validateBrandingSettings(branding: BrandingSettings): TemplateValidationResult {
+    return BrandingValidation.validateBrandingSettings(branding);
+  }
+
+  /**
+   * Comprehensive validation for template and branding together
+   */
+  static validateComplete(
+    template: TemplateDefinition,
+    profileData: Partial<PublicProfileData>,
+    branding: BrandingSettings
+  ): TemplateValidationResult {
+    const templateResult = this.validateTemplateWithProfile(template, profileData);
+    const brandingResult = this.validateBrandingSettings(branding);
+
+    return {
+      isValid: templateResult.isValid && brandingResult.isValid,
+      errors: [...templateResult.errors, ...brandingResult.errors],
+      warnings: [...templateResult.warnings, ...brandingResult.warnings],
+      missingFields: templateResult.missingFields,
+      recommendations: [...templateResult.recommendations, ...brandingResult.recommendations],
+    };
+  }
+
+  /**
+   * Quick validation check for basic requirements
+   */
+  static isValidForTemplate(
+    template: TemplateDefinition,
+    profileData: Partial<PublicProfileData>
+  ): boolean {
+    const result = this.validateTemplateWithProfile(template, profileData);
+    return result.isValid;
+  }
+
+  /**
+   * Get validation summary for UI display
+   */
+  static getValidationSummary(
+    template: TemplateDefinition,
+    profileData: Partial<PublicProfileData>,
+    branding: BrandingSettings
+  ): {
+    isValid: boolean;
+    errorCount: number;
+    warningCount: number;
+    missingFieldCount: number;
+  } {
+    const result = this.validateComplete(template, profileData, branding);
+    return {
+      isValid: result.isValid,
+      errorCount: result.errors.length,
+      warningCount: result.warnings.length,
+      missingFieldCount: result.missingFields.length,
+    };
+  }
+}

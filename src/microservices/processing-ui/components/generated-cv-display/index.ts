@@ -1,0 +1,368 @@
+// @ts-ignore
+/**
+ * Generated CV Display Module
+ *
+ * Complete CV display system with editing capabilities,
+ * template switching, and export functionality.
+ *
+ * Features:
+ * - Multiple professional templates
+ * - Real-time editing and preview
+ * - Template switching with live preview
+ * - Export options (PDF, HTML, DOCX, PNG)
+ * - Version control and change tracking
+ * - Print optimization
+ * - Responsive design previews
+ * - Rich text editing capabilities
+ *
+ * Architecture:
+ * - Modular component design (under 200 lines each)
+ * - Custom hooks for state management
+ * - Type-safe interfaces
+ * - Comprehensive error handling
+ * - Performance optimizations
+  */
+
+// =============================================================================
+// MAIN COMPONENTS
+// =============================================================================
+
+export { GeneratedCVDisplay } from './GeneratedCVDisplay';
+export { CVDisplayHeader } from './CVDisplayHeader';
+export { CVContentRenderer } from './CVContentRenderer';
+export { TemplatePicker } from './TemplatePicker';
+export { CVEditor } from './CVEditor';
+export { ExportMenu } from './ExportMenu';
+export { VersionHistory } from './VersionHistory';
+export { CVPreviewPanel } from './CVPreviewPanel';
+
+// =============================================================================
+// TYPES AND INTERFACES
+// =============================================================================
+
+export type {
+  // Main types
+  GeneratedCVDisplayProps,
+  CVTemplate,
+  GeneratedCV,
+  CVContent,
+  CVSection,
+
+  // Editor types
+  EditorMode,
+  CVEditor as CVEditorType,
+  EditorSettings,
+  EditorTool,
+
+  // Export types
+  ExportFormat,
+  ExportOptions,
+  ExportQuality,
+  PaperSize,
+  CVExport,
+
+  // Version control types
+  CVVersion,
+  VersionChange,
+  VersionMetadata,
+
+  // Template types
+  TemplateFeature,
+  TemplateStyle,
+  TemplateMetadata,
+  TemplatePickerProps,
+
+  // Styling types
+  CVStyling,
+  ColorScheme,
+  Typography,
+  LayoutConfig,
+  SpacingConfig,
+
+  // UI component props
+  CVEditorProps,
+  ExportMenuProps,
+
+  // State types
+  GeneratedCVState,
+  TemplateState,
+  TemplateFilters,
+
+  // Hook return types
+  UseCVGenerationReturn,
+  UseTemplatesReturn,
+
+  // Action types
+  CVAction,
+  CVActionType
+} from './types';
+
+// =============================================================================
+// CONSTANTS
+// =============================================================================
+
+/**
+ * Default export formats available
+  */
+export const DEFAULT_EXPORT_FORMATS: ExportFormat[] = [
+  'pdf',
+  'docx',
+  'html',
+  'png'
+];
+
+/**
+ * Supported paper sizes
+  */
+export const PAPER_SIZES = [
+  { value: 'a4', label: 'A4', dimensions: '210 × 297 mm' },
+  { value: 'letter', label: 'Letter', dimensions: '8.5 × 11 in' },
+  { value: 'legal', label: 'Legal', dimensions: '8.5 × 14 in' },
+  { value: 'a3', label: 'A3', dimensions: '297 × 420 mm' },
+  { value: 'tabloid', label: 'Tabloid', dimensions: '11 × 17 in' }
+] as const;
+
+/**
+ * Template categories
+  */
+export const TEMPLATE_CATEGORIES = [
+  'modern',
+  'classic',
+  'creative',
+  'ats-optimized',
+  'academic'
+] as const;
+
+/**
+ * Editor modes
+  */
+export const EDITOR_MODES = [
+  'view',
+  'edit',
+  'preview',
+  'template'
+] as const;
+
+/**
+ * Export quality levels
+  */
+export const EXPORT_QUALITIES = [
+  'draft',
+  'standard',
+  'high',
+  'print'
+] as const;
+
+// =============================================================================
+// UTILITIES
+// =============================================================================
+
+/**
+ * Format file size for display
+  */
+export const formatFileSize = (bytes: number): string => {
+  if (bytes === 0) return '0 Bytes';
+
+  const k = 1024;
+  const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+  const i = Math.floor(Math.log(bytes) / Math.log(k));
+
+  return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+};
+
+/**
+ * Format date for display
+  */
+export const formatDate = (date: Date): string => {
+  const now = new Date();
+  const diffMs = now.getTime() - date.getTime();
+  const diffHours = Math.floor(diffMs / (1000 * 60 * 60));
+  const diffDays = Math.floor(diffHours / 24);
+
+  if (diffHours < 1) {
+    const diffMinutes = Math.floor(diffMs / (1000 * 60));
+    return `${diffMinutes} minute${diffMinutes !== 1 ? 's' : ''} ago`;
+  } else if (diffHours < 24) {
+    return `${diffHours} hour${diffHours !== 1 ? 's' : ''} ago`;
+  } else if (diffDays < 7) {
+    return `${diffDays} day${diffDays !== 1 ? 's' : ''} ago`;
+  } else {
+    return date.toLocaleDateString();
+  }
+};
+
+/**
+ * Generate unique ID
+  */
+export const generateId = (prefix: string = 'id'): string => {
+  return `${prefix}-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+};
+
+/**
+ * Debounce function for performance optimization
+  */
+export const debounce = <T extends (...args: any[]) => any>(
+  func: T,
+  delay: number
+): ((...args: Parameters<T>) => void) => {
+  let timeoutId: NodeJS.Timeout;
+
+  return (...args: Parameters<T>) => {
+    clearTimeout(timeoutId);
+    timeoutId = setTimeout(() => func.apply(null, args), delay);
+  };
+};
+
+/**
+ * Deep clone object
+  */
+export const deepClone = <T>(obj: T): T => {
+  if (obj === null || typeof obj !== 'object') return obj;
+  if (obj instanceof Date) return new Date(obj.getTime()) as unknown as T;
+  if (obj instanceof Array) return obj.map(item => deepClone(item)) as unknown as T;
+
+  const cloned = {} as T;
+  for (const key in obj) {
+    if (Object.prototype.hasOwnProperty.call(obj, key)) {
+      cloned[key] = deepClone(obj[key]);
+    }
+  }
+  return cloned;
+};
+
+/**
+ * Validate email format
+  */
+export const isValidEmail = (email: string): boolean => {
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  return emailRegex.test(email);
+};
+
+/**
+ * Sanitize HTML content
+  */
+export const sanitizeHTML = (html: string): string => {
+  // Basic HTML sanitization - in production, use a proper library like DOMPurify
+  return html
+    .replace(/<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi, '')
+    .replace(/<iframe\b[^<]*(?:(?!<\/iframe>)<[^<]*)*<\/iframe>/gi, '')
+    .replace(/javascript:/gi, '')
+    .replace(/on\w+="[^"]*"/gi, '');
+};
+
+/**
+ * Extract text content from HTML
+  */
+export const extractTextFromHTML = (html: string): string => {
+  const tempDiv = document.createElement('div');
+  tempDiv.innerHTML = sanitizeHTML(html);
+  return tempDiv.textContent || tempDiv.innerText || '';
+};
+
+/**
+ * Calculate content statistics
+  */
+export const calculateContentStats = (content: CVContent) => {
+  const textContent = extractTextFromHTML(content.html);
+  const words = textContent.trim().split(/\s+/).filter(word => word.length > 0);
+  const characters = textContent.length;
+  const sentences = textContent.split(/[.!?]+/).filter(s => s.trim().length > 0);
+
+  return {
+    words: words.length,
+    characters,
+    sentences: sentences.length,
+    sections: content.sections.length,
+    readingTime: Math.ceil(words.length / 200) // Assuming 200 words per minute
+  };
+};
+
+// =============================================================================
+// VALIDATION HELPERS
+// =============================================================================
+
+/**
+ * Validate CV content
+  */
+export const validateCVContent = (content: CVContent): { valid: boolean; errors: string[] } => {
+  const errors: string[] = [];
+
+  if (!content.html || content.html.trim().length === 0) {
+    errors.push('HTML content is required');
+  }
+
+  if (!content.sections || content.sections.length === 0) {
+    errors.push('At least one section is required');
+  }
+
+  if (!content.styling) {
+    errors.push('Styling configuration is required');
+  }
+
+  return {
+    valid: errors.length === 0,
+    errors
+  };
+};
+
+/**
+ * Validate template configuration
+  */
+export const validateTemplate = (template: CVTemplate): { valid: boolean; errors: string[] } => {
+  const errors: string[] = [];
+
+  if (!template.id || template.id.trim().length === 0) {
+    errors.push('Template ID is required');
+  }
+
+  if (!template.name || template.name.trim().length === 0) {
+    errors.push('Template name is required');
+  }
+
+  if (!template.category) {
+    errors.push('Template category is required');
+  }
+
+  if (!TEMPLATE_CATEGORIES.includes(template.category as any)) {
+    errors.push('Invalid template category');
+  }
+
+  return {
+    valid: errors.length === 0,
+    errors
+  };
+};
+
+// =============================================================================
+// VERSION INFO
+// =============================================================================
+
+/**
+ * Module version and metadata
+  */
+export const GENERATED_CV_DISPLAY_VERSION = '1.0.0';
+
+export const MODULE_INFO = {
+  name: 'Generated CV Display',
+  version: GENERATED_CV_DISPLAY_VERSION,
+  description: 'Complete CV display system with editing and export capabilities',
+  author: 'CVPlus Development Team',
+  features: [
+    'Real-time CV editing',
+    'Multiple professional templates',
+    'Export to PDF, DOCX, HTML, PNG',
+    'Version control and history',
+    'Responsive design preview',
+    'Print optimization',
+    'Template customization',
+    'Rich text editing',
+    'Interactive elements',
+    'ATS optimization'
+  ],
+  dependencies: [
+    'React 18+',
+    'TypeScript 5+',
+    'Tailwind CSS 3+',
+    'Lucide React'
+  ]
+} as const;

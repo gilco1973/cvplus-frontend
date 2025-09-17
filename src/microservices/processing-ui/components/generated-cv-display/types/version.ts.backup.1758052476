@@ -1,0 +1,46 @@
+// @ts-ignore
+/**
+ * Version Control Types for Generated CV Display System
+ */
+
+import type { CVContent } from './core';
+
+// =============================================================================
+// VERSION CONTROL TYPES
+// =============================================================================
+
+export interface CVVersion {
+  id: string;
+  version: string;
+  description: string;
+  changes: VersionChange[];
+  author?: string;
+  createdAt: Date;
+  content: CVContent;
+  metadata: VersionMetadata;
+}
+
+export interface VersionChange {
+  type: ChangeType;
+  section: string;
+  field?: string;
+  oldValue?: any;
+  newValue?: any;
+  description?: string;
+}
+
+export type ChangeType =
+  | 'create'
+  | 'update'
+  | 'delete'
+  | 'move'
+  | 'style'
+  | 'format';
+
+export interface VersionMetadata {
+  size: number;
+  checksum: string;
+  tags: string[];
+  branch?: string;
+  commit?: string;
+}

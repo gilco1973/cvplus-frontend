@@ -1,0 +1,257 @@
+// @ts-ignore
+/**
+ * CVPlus Multimedia Frontend Integration - Enhanced Export
+ * 
+ * Central export file for all frontend multimedia integration components,
+ * hooks, utilities, and providers with enhanced smart component resolution.
+ * 
+ * @author Gil Klainert
+ * @version 2.0.0
+ * @license PROPRIETARY  
+  */
+
+import React from 'react';
+
+// ============================================================================
+// ENHANCED INTEGRATION LAYER
+// ============================================================================
+
+// Main integration components
+export {
+  MultimediaIntegration,
+  MultimediaWrapper, // Backward compatibility
+  componentResolver,
+  featureRegistry
+} from './integration/MultimediaIntegration';
+
+// Component resolver system
+export {
+  ComponentResolver,
+  useComponentResolver
+} from './integration/ComponentResolver';
+
+// Feature registry system
+export {
+  FeatureRegistry,
+  DEFAULT_MULTIMEDIA_FEATURES,
+  type FeatureConfig,
+  type NamespaceConfig,
+  type MultimediaFeatures
+} from './integration/FeatureRegistry';
+
+// Integration utilities
+export {
+  withIntegrationWrapper,
+  createLazyComponent,
+  validateProps,
+  performanceTracker,
+  integrationState,
+  IntegrationStateManager
+} from './integration/IntegrationUtils';
+
+// Enhanced providers & context
+export {
+  MultimediaProvider,
+  MultimediaContext,
+  useMultimediaProvider,
+  useMultimediaFeature,
+  useMultimediaComponent,
+  useMultimediaMetrics
+} from './providers/MultimediaProvider';
+
+// Enhanced hooks
+export {
+  useMultimediaFeatures,
+  useFeatureFlag,
+  useComponentLoader,
+  useIntegrationState,
+  usePerformanceTracking,
+  useMultimediaPlayer
+} from './hooks/useMultimediaFeatures';
+
+// Enhanced convenience components
+export {
+  MultimediaProfilePictureUpload,
+  MultimediaFileUpload,
+  MultimediaAIPodcastPlayer,
+  MultimediaPodcastPlayer,
+  MultimediaPortfolioGallery,
+  MultimediaPodcastGeneration,
+  MultimediaVideoIntroduction,
+  MultimediaVideoAnalyticsDashboard,
+  MultimediaTestimonialsCarousel
+} from './integration/MultimediaIntegration';
+
+// ============================================================================
+// COMPONENTS (Direct Access)
+// ============================================================================
+export * from './components';
+
+// ============================================================================
+// MULTIMEDIA PLAYER COMPONENTS (T068)
+// ============================================================================
+export {
+  MultimediaPlayer,
+  PlaylistManager,
+  KeyboardShortcuts,
+  MultimediaPlayerIntegration
+} from './components/display/players';
+
+export type {
+  MultimediaPlayerProps,
+  MediaTrack,
+  PlayerControls,
+  QueueItem,
+  PlaylistManagement
+} from './components/display/players';
+
+// ============================================================================
+// UPLOAD & FILE MANAGEMENT COMPONENTS (Phase 2D)
+// ============================================================================
+export * from './components/upload';
+
+// Enhanced Upload Services
+export { ImageUploadService } from './services/imageUploadService';
+
+// Upload Component Aliases for Convenience
+export {
+  FileUpload as MultimediaFileUpload,
+  MediaUploadManager as MultimediaUploadManager,
+  UploadProgress as MultimediaUploadProgress,
+  ImageCropper as MultimediaImageCropper,
+  FileValidator as MultimediaFileValidator
+} from './components/upload';
+
+// ============================================================================
+// INTERACTIVE COMPONENTS (Phase 2C)
+// ============================================================================
+export * from './components/interactive';
+
+// ============================================================================
+// TYPES
+// ============================================================================
+export * from './types';
+
+// ============================================================================
+// RE-EXPORTS FROM EXISTING COMPONENT STRUCTURE
+// ============================================================================
+
+// Players
+export { AIPodcastPlayer } from '../components/players/AIPodcastPlayer';
+export { PodcastPlayer } from '../components/players/PodcastPlayer';
+
+// Gallery
+export { PortfolioGallery } from '../components/gallery/PortfolioGallery';
+
+// Generation
+export { PodcastGeneration } from '../components/generation/PodcastGeneration';
+export { VideoIntroduction } from '../components/generation/VideoIntroduction';
+
+// Media
+export { TestimonialsCarousel } from '../components/media/TestimonialsCarousel';
+
+// ============================================================================
+// FRONTEND SERVICES & UTILITIES
+// ============================================================================
+export { MediaService } from '../services/frontend/MediaService';
+
+// ============================================================================
+// MULTIMEDIA SERVICE
+// ============================================================================
+
+export { MultimediaService, multimediaService } from './services/MultimediaService';
+
+// Export MultimediaService initializer
+export {
+  MultimediaServiceInitializer,
+  initializeMultimediaService,
+  forDevelopment,
+  forProduction,
+  forTesting
+} from './utils/MultimediaServiceInitializer';
+
+// Export MultimediaService types
+export type {
+  CVData,
+  PodcastOptions,
+  VideoOptions,
+  GenerationJob,
+  GenerationStatus,
+  Playlist,
+  PlaylistItem,
+  PlaylistUpdate,
+  PlaybackSession,
+  UploadProgress,
+  SharingOptions,
+  MediaItem
+} from './services/MultimediaService';
+
+// Export initializer types
+export type {
+  MultimediaServiceInitOptions,
+  EmulatorConfig
+} from './utils/MultimediaServiceInitializer';
+
+// Export usage examples (development aid)
+export * as MultimediaServiceExamples from './examples/MultimediaServiceUsage';
+
+// ============================================================================
+// INTEGRATION CONFIGURATION
+// ============================================================================
+
+export interface MultimediaIntegrationConfig {
+  enableFeatureFlags: boolean;
+  enablePerformanceTracking: boolean;
+  enableErrorBoundaries: boolean;
+  enableDebugMode: boolean;
+  fallbackStrategy: 'graceful-degradation' | 'error-boundary' | 'hidden';
+}
+
+export interface ComponentWrapperProps {
+  fallback?: React.ComponentType<any>;
+  enableErrorBoundary?: boolean;
+  enablePerformanceTracking?: boolean;
+  onError?: (error: Error) => void;
+  onLoad?: (metrics: any) => void;
+  [key: string]: any;
+}
+
+/**
+ * Initialize multimedia integration with custom configuration
+  */
+export const initializeMultimediaIntegration = (config: Partial<MultimediaIntegrationConfig> = {}) => {
+  const defaultConfig: MultimediaIntegrationConfig = {
+    enableFeatureFlags: true,
+    enablePerformanceTracking: true,
+    enableErrorBoundaries: true,
+    enableDebugMode: false,
+    fallbackStrategy: 'graceful-degradation'
+  };
+
+  const finalConfig = { ...defaultConfig, ...config };
+
+  if (finalConfig.enableDebugMode) {
+    console.log('[MultimediaIntegration] Initialized with config:', finalConfig);
+  }
+
+  return finalConfig;
+};
+
+/**
+ * Check if multimedia integration is available
+  */
+export const isMultimediaIntegrationAvailable = (): boolean => {
+  try {
+    return !!(componentResolver && featureRegistry);
+  } catch {
+    return false;
+  }
+};
+
+// ============================================================================
+// VERSION INFO
+// ============================================================================
+
+export const MULTIMEDIA_INTEGRATION_VERSION = '2.0.0';
+export const SUPPORTED_REACT_VERSIONS = ['>=18.0.0'];
+export const SUPPORTED_TYPESCRIPT_VERSIONS = ['>=5.0.0'];

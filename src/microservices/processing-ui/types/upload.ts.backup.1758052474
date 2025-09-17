@@ -1,0 +1,95 @@
+// @ts-ignore
+/**
+ * CV Upload Types
+ *
+ * Type definitions for CV upload functionality
+ *
+ * @author Gil Klainert
+ * @version 3.0.0 - Enhanced T063 Implementation
+ */
+
+import type { ComponentType } from 'react';
+
+export interface CVProcessingFeature {
+  id: string;
+  name: string;
+  description: string;
+  icon: ComponentType<{ className?: string }>;
+  enabled: boolean;
+  premium?: boolean;
+  estimatedTime?: number; // in seconds
+}
+
+export interface CVUploadProps {
+  /** Callback when CV upload and processing is completed */
+  onUploadComplete?: (result: {
+    jobId: string;
+    cvData: any;
+    processingTime: number;
+    features: string[];
+    jobDescription?: string;
+  }) => void;
+
+  /** Callback when upload fails */
+  onUploadError?: (error: string) => void;
+
+  /** Callback when processing starts */
+  onProcessingStart?: (jobId: string, features: string[]) => void;
+
+  /** Template ID to use for processing */
+  templateId?: string;
+
+  /** Pre-selected features */
+  defaultFeatures?: string[];
+
+  /** Job description for targeted optimization */
+  jobDescription?: string;
+
+  /** Additional CSS classes */
+  className?: string;
+
+  /** Whether to show detailed processing steps */
+  showDetailedSteps?: boolean;
+
+  /** Whether to show feature selection */
+  showFeatureSelection?: boolean;
+
+  /** Maximum file size in bytes */
+  maxFileSize?: number;
+
+  /** Allowed file types */
+  allowedTypes?: string[];
+
+  /** User authentication state */
+  isAuthenticated?: boolean;
+
+  /** User premium status */
+  isPremium?: boolean;
+}
+
+export interface UploadState {
+  status: 'idle' | 'uploading' | 'processing' | 'completed' | 'failed';
+  progress: number;
+  error?: string;
+  jobId?: string;
+  startTime?: Date;
+  steps: ProcessingStep[];
+  currentFile?: File;
+  selectedFeatures: string[];
+  jobDescription?: string;
+  showFeatureSelection: boolean;
+  estimatedTime?: number;
+}
+
+export interface ProcessingStep {
+  id: string;
+  name: string;
+  description: string;
+  status: 'pending' | 'processing' | 'completed' | 'failed';
+  error?: string;
+}
+
+export interface UploadOptions {
+  maxSize: number;
+  allowedTypes: string[];
+}
